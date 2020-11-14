@@ -52,6 +52,11 @@ flutter:
   uses-material-design: true
   assets:
     - graphics/
+    - font/
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: font/Montserrat.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

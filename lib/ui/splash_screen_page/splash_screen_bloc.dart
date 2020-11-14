@@ -3,14 +3,28 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
+import 'package:gpa_cal/db/repo/splash_screen_repo.dart';
+import 'package:gpa_cal/util/errors.dart';
 
 import 'splash_screen_event.dart';
 import 'splash_screen_state.dart';
 
 class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
   static final log = Log("SplashScreenBloc");
+  final SplashScreenRepo _splashScreenRepo = new SplashScreenRepo();
 
-  SplashScreenBloc(BuildContext context) : super(SplashScreenState.initialState);
+  SplashScreenBloc(BuildContext context)
+      : super(SplashScreenState.initialState) {
+     this._initialize();
+  }
+
+  Future<void> _initialize() async {
+    try {
+      await this._splashScreenRepo.autoChange();
+    } on CacheNotPresentError {} on CacheError {
+      add(ErrorEvent('Stroage Limit Exceed!'));
+    } catch (e) {}
+  }
 
   @override
   Stream<SplashScreenState> mapEventToState(SplashScreenEvent event) async* {
@@ -18,7 +32,6 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
       case ErrorEvent:
         final error = (event as ErrorEvent).error;
         log.e('Error: $error');
-        yield state.clone(error: "");
         yield state.clone(error: error);
         break;
     }

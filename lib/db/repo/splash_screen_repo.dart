@@ -11,7 +11,7 @@ class SplashScreenRepo extends Repo {
       String _userDetails = _prefs.getString(USER_DETAILS);
 
       if (_userDetails == null){
-        throw (CacheNotPresentError());
+        throw (CacheError());
       } else{
         print ('Cache Present');
       }

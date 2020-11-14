@@ -8,11 +8,11 @@ import 'splash_screen_state.dart';
 
 class SplashScreenView extends StatelessWidget {
   static final log = Log("SplashScreenView");
+  static final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   static final loadingWidget = Center(
     child: CircularProgressIndicator(),
   );
-
-   static final  scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,22 +21,34 @@ class SplashScreenView extends StatelessWidget {
     // ignore: close_sinks
     log.d("Loading SplashScreen View");
 
-    CustomSnackBar customSnackBar = new CustomSnackBar(scaffoldKey: scaffoldKey);
-
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<SplashScreenBloc, SplashScreenState>(
-          listenWhen: (pre, current) => pre.error != current.error,
-          listener: (context, state) {
-            if (state.error?.isNotEmpty ?? false) {
-              customSnackBar?.showErrorSnackBar(state.error);
-            } else {
-              customSnackBar?.hideAll();
-            }
-          },
-        ),
-      ],
-      child: SplashScreenPage(key: scaffoldKey,),
+    return Scaffold(
+      key: _scaffoldKey,
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<SplashScreenBloc, SplashScreenState>(
+            listenWhen: (pre, current) => pre.error != current.error,
+            listener: (context, state) {
+              print(state.error);
+              if (state.error?.isNotEmpty ?? false) {
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    backgroundColor: Theme.of(context).errorColor,
+                    content: Text(state.error),
+                    duration: Duration(days: 1),
+                    action: SnackBarAction(
+                      label: 'CLEAR',
+                      onPressed: () {
+                        Scaffold.of(context).hideCurrentSnackBar();
+                      },
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+        child: SplashScreenPage(),
+      ),
     );
   }
 }

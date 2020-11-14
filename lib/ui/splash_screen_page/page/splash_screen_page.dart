@@ -6,29 +6,26 @@ class SplashScreenPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              height: 216,
-              child: Image(
-                image: AssetImage('graphics/logo.png'),
-              ),
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: 216,
+            child: Image(
+              image: AssetImage('graphics/logo.png'),
             ),
-            SizedBox(height: 100),
-            Container(
-              height: 216,
-              child: SvgPicture.asset(
-                'graphics/cap.svg',
-              ),
+          ),
+          SizedBox(height: 100),
+          Container(
+            height: 216,
+            child: SvgPicture.asset(
+              'graphics/cap.svg',
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
