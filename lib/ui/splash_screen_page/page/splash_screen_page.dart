@@ -12,10 +12,13 @@ class SplashScreenPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            height: 216,
-            child: Image(
-              image: AssetImage('graphics/logo.png'),
+          Hero(
+            tag: 'HeroLogo',
+            child: Container(
+              height: 216,
+              child: Image(
+                image: AssetImage('graphics/logo.png'),
+              ),
             ),
           ),
           SizedBox(height: 100),

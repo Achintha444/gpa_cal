@@ -34,7 +34,6 @@ class SplashScreenView extends StatelessWidget {
                   SnackBar(
                     backgroundColor: Theme.of(context).errorColor,
                     content: Text(state.error),
-                    duration: Duration(days: 1),
                     action: SnackBarAction(
                       label: 'CLEAR',
                       onPressed: () {
