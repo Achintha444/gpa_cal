@@ -1,6 +1,7 @@
 import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gpa_cal/ui/splash_form_page/splash_form_exports.dart';
 import 'package:gpa_cal/ui/splash_screen_page/page/splash_screen_page.dart';
 
 import 'splash_screen_bloc.dart';
@@ -46,7 +47,15 @@ class SplashScreenView extends StatelessWidget {
             },
           ),
         ],
-        child: SplashScreenPage(),
+        child: BlocBuilder<SplashScreenBloc, SplashScreenState>(
+          builder: (context, state) {
+            if (state.loading){
+              return SplashScreenPage();
+            } else if (state.cacheNotPresent){
+              return SplashFormProvider();
+            } 
+          },
+        ),
       ),
     );
   }

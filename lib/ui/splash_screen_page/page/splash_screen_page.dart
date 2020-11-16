@@ -21,13 +21,16 @@ class SplashScreenPage extends StatelessWidget {
               ),
             ),
           ),
+
           SizedBox(height: 100),
+
           Container(
             height: 216,
             child: SvgPicture.asset(
               'graphics/cap.svg',
             ),
           ),
+          
         ],
       ),
     );

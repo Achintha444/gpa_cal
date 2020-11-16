@@ -15,13 +15,16 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
 
   SplashScreenBloc(BuildContext context)
       : super(SplashScreenState.initialState) {
-     this._initialize();
+    this._initialize();
   }
 
   Future<void> _initialize() async {
     try {
       await this._splashScreenRepo.autoChange();
-    } on CacheNotPresentError {} on CacheError {
+    } on CacheNotPresentError {
+      await Future.delayed(Duration(seconds: 2));
+      add(SplashFormEvent(true));
+    } on CacheError {
       add(ErrorEvent('Stroage Limit Exceed!'));
     } catch (e) {}
   }
@@ -33,6 +36,11 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
         final error = (event as ErrorEvent).error;
         log.e('Error: $error');
         yield state.clone(error: error);
+        break;
+      case SplashFormEvent:
+        final cacheNotPresent = (event as SplashFormEvent).cacheNotPresent;
+        log.e('Cache Not Present: $cacheNotPresent');
+        yield state.clone(cacheNotPrsent: cacheNotPresent, loading: false);
         break;
     }
   }

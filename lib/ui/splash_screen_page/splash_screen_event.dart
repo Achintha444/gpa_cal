@@ -8,3 +8,9 @@ class ErrorEvent extends SplashScreenEvent {
 
   ErrorEvent(this.error);
 }
+
+class SplashFormEvent extends SplashScreenEvent {
+  final bool cacheNotPresent;
+
+  SplashFormEvent(this.cacheNotPresent);
+}
