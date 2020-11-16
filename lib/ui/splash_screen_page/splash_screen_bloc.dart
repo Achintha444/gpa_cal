@@ -40,7 +40,7 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
       case SplashFormEvent:
         final cacheNotPresent = (event as SplashFormEvent).cacheNotPresent;
         log.e('Cache Not Present: $cacheNotPresent');
-        yield state.clone(cacheNotPrsent: cacheNotPresent, loading: false);
+        yield state.clone(cacheNotPresent:  cacheNotPresent, loading: false);
         break;
     }
   }

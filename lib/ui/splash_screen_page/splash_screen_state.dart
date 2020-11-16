@@ -14,13 +14,13 @@ class SplashScreenState {
 
   static SplashScreenState get initialState => SplashScreenState(
     error: '',
-    cacheNotPresent: true,
+    cacheNotPresent: false,
     loading: true,
   );
 
   SplashScreenState clone({
     String error,
-    bool cacheNotPrsent,
+    bool cacheNotPresent,
     bool loading
   }) {
     return SplashScreenState(

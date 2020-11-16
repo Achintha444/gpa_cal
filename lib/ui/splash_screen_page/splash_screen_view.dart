@@ -1,5 +1,6 @@
 import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gpa_cal/ui/splash_form_page/splash_form_exports.dart';
 import 'package:gpa_cal/ui/splash_screen_page/page/splash_screen_page.dart';
@@ -29,7 +30,7 @@ class SplashScreenView extends StatelessWidget {
           BlocListener<SplashScreenBloc, SplashScreenState>(
             listenWhen: (pre, current) => pre.error != current.error,
             listener: (context, state) {
-              print(state.error);
+              print(state.cacheNotPresent);
               if (state.error?.isNotEmpty ?? false) {
                 Scaffold.of(context).showSnackBar(
                   SnackBar(
@@ -43,19 +44,18 @@ class SplashScreenView extends StatelessWidget {
                     ),
                   ),
                 );
-              }
+              } 
+            },
+          ),
+          BlocListener<SplashScreenBloc, SplashScreenState>(
+            listenWhen: (pre, current) => current.cacheNotPresent == true,
+            listener: (context, state) {
+              print('check');
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> SplashFormProvider()));
             },
           ),
         ],
-        child: BlocBuilder<SplashScreenBloc, SplashScreenState>(
-          builder: (context, state) {
-            if (state.loading){
-              return SplashScreenPage();
-            } else if (state.cacheNotPresent){
-              return SplashFormProvider();
-            } 
-          },
-        ),
+        child: SplashScreenPage(),
       ),
     );
   }

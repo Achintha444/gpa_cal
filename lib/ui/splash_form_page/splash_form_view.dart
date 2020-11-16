@@ -2,6 +2,7 @@ import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'page/splash_screen_form_page.dart';
 import 'splash_form_bloc.dart';
 import 'splash_form_state.dart';
 
@@ -37,7 +38,7 @@ class SplashFormView extends StatelessWidget {
             },
           ),
         ],
-        child: Container(),
+        child: SplashScreenFormPage(),
       ),
     );
   }
