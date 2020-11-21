@@ -18,6 +18,7 @@ class SplashFormView extends StatelessWidget {
       key: _scaffoldKey,
       body: MultiBlocListener(
         listeners: [
+          /// Error Bloc Listner
           BlocListener<SplashFormBloc, SplashFormState>(
             listenWhen: (pre, current) => pre.error != current.error,
             listener: (context, state) {
@@ -35,6 +36,31 @@ class SplashFormView extends StatelessWidget {
                   ),
                 );
               }
+            },
+          ),
+
+          /// Bloc listner that will load loading screen
+          BlocListener<SplashFormBloc, SplashFormState>(
+            listenWhen: (pre, current) =>
+                pre.formLoading != current.formLoading,
+            listener: (context, state) {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Your Details are Saving...'),
+                ),
+              );
+            },
+          ),
+
+          /// Bloc listner that will load the next screen
+          BlocListener<SplashFormBloc, SplashFormState>(
+            listenWhen: (pre, current) => pre.formLoaded != current.formLoaded,
+            listener: (context, state) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return Container(
+                  child: Text('HOME PAGE'),
+                );
+              }));
             },
           ),
         ],

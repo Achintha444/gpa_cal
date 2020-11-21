@@ -8,3 +8,11 @@ class ErrorEvent extends SplashFormEvent {
 
   ErrorEvent(this.error);
 }
+
+class UserDetailsAddEvent extends SplashFormEvent {
+  final String name;
+  final String uni;
+  final int gpaType;
+
+  UserDetailsAddEvent({this.name, this.uni, this.gpaType});
+}

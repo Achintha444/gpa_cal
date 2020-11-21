@@ -4,11 +4,15 @@ import 'package:bloc/bloc.dart';
 import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
 
+import '../../db/model/user_details_model.dart';
+import '../../db/repo/splash_form_repo.dart';
+import '../../util/errors.dart';
 import 'splash_form_event.dart';
 import 'splash_form_state.dart';
 
 class SplashFormBloc extends Bloc<SplashFormEvent, SplashFormState> {
   static final log = Log("SplashFormBloc");
+  final SplashFormRepo _splashFormRepo = new SplashFormRepo();
 
   SplashFormBloc(BuildContext context) : super(SplashFormState.initialState);
 
@@ -20,6 +24,24 @@ class SplashFormBloc extends Bloc<SplashFormEvent, SplashFormState> {
         log.e('Error: $error');
         yield state.clone(error: "");
         yield state.clone(error: error);
+        break;
+
+      case UserDetailsAddEvent:
+        yield state.clone(formLoaded: false, formLoading: true);
+        final UserDetailsModel _userDetailsModel = new UserDetailsModel(
+          name: (event as UserDetailsAddEvent).name,
+          uni: (event as UserDetailsAddEvent).uni,
+          gpaType: (event as UserDetailsAddEvent).gpaType,
+        );
+
+        try {
+          await this._splashFormRepo.insertUserDetails(_userDetailsModel);
+          yield state.clone(formLoaded: true, formLoading: false);
+        } on CacheError {
+          add(ErrorEvent('Stroage Limit Exceed!'));
+        } catch (e) {
+          add(ErrorEvent('UNEXPECTED FATAL ERROR!'));
+        }
         break;
     }
   }

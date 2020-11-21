@@ -16,7 +16,7 @@ class SplashFormTitleText extends StatelessWidget {
       this.title,
       style: TextStyle(
         color: ProjectColours.PRIMARY_COLOR,
-        fontWeight: FontWeight.w200,
+        fontWeight: FontWeight.w400,
         fontSize: 16,
         letterSpacing: 0.4,
       ),

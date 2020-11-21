@@ -26,7 +26,9 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
       add(SplashFormEvent(true));
     } on CacheError {
       add(ErrorEvent('Stroage Limit Exceed!'));
-    } catch (e) {}
+    } catch (e) {
+       add(ErrorEvent('UNEXPECTED FATAL ERROR!'));
+    }
   }
 
   @override
