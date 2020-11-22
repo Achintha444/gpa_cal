@@ -1,32 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:gpa_cal/db/model/user_details_model.dart';
 
 @immutable
 class SplashFormState {
   final String error;
   final bool formLoading;
-  final bool formLoaded;
+  final UserDetailsModel userDetailsModel;
 
   SplashFormState({
     @required this.error,
     @required this.formLoading,
-    @required this.formLoaded,
+    @required this.userDetailsModel,
   });
 
   static SplashFormState get initialState => SplashFormState(
         error: '',
-        formLoaded: false,
         formLoading: false,
+        userDetailsModel: null,
       );
 
   SplashFormState clone({
     String error,
     bool formLoading,
-    bool formLoaded,
+    UserDetailsModel userDetailsModel,
   }) {
     return SplashFormState(
       error: error ?? this.error,
       formLoading: formLoading ?? this.formLoading,
-      formLoaded: formLoaded ?? this.formLoaded,
+      userDetailsModel : userDetailsModel ?? this.userDetailsModel
     );
   }
 }

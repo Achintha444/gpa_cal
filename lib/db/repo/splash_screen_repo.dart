@@ -17,6 +17,7 @@ class SplashScreenRepo extends Repo {
         throw (CacheNotPresentError());
       } else {
         print('Cache Present');
+        //await _prefs.remove(USER_DETAILS);
         return UserDetailsModel.fromJson(
           json.decode(_userDetails),
         );

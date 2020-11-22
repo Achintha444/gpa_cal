@@ -27,7 +27,7 @@ class SplashFormBloc extends Bloc<SplashFormEvent, SplashFormState> {
         break;
 
       case UserDetailsAddEvent:
-        yield state.clone(formLoaded: false, formLoading: true);
+        yield state.clone(formLoading: true);
         final UserDetailsModel _userDetailsModel = new UserDetailsModel(
           name: (event as UserDetailsAddEvent).name,
           uni: (event as UserDetailsAddEvent).uni,
@@ -36,7 +36,7 @@ class SplashFormBloc extends Bloc<SplashFormEvent, SplashFormState> {
 
         try {
           await this._splashFormRepo.insertUserDetails(_userDetailsModel);
-          yield state.clone(formLoaded: true, formLoading: false);
+          yield state.clone(userDetailsModel: _userDetailsModel, formLoading: false);
         } on CacheError {
           add(ErrorEvent('Stroage Limit Exceed!'));
         } catch (e) {

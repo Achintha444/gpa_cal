@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
+import 'package:gpa_cal/db/model/user_details_model.dart';
 import 'package:gpa_cal/db/repo/splash_screen_repo.dart';
 import 'package:gpa_cal/util/errors.dart';
 
@@ -20,7 +21,8 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
 
   Future<void> _initialize() async {
     try {
-      await this._splashScreenRepo.autoChange();
+      UserDetailsModel _userDetailsModel = await this._splashScreenRepo.autoChange();
+
     } on CacheNotPresentError {
       await Future.delayed(Duration(seconds: 2));
       add(SplashFormEvent(true));
@@ -44,6 +46,11 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
         log.e('Cache Not Present: $cacheNotPresent');
         yield state.clone(cacheNotPresent:  cacheNotPresent, loading: false);
         break;
+      case LoadHomeScreenEvent:
+        yield(state.clone(loading: true));
+        final userDetailsModel = (event as LoadHomeScreenEvent).userDetailsModel;
+        log.e('Load Home Screen Event called');
+        yield state.clone(userDetailsModel: userDetailsModel);
     }
   }
 

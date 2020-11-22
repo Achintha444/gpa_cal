@@ -2,8 +2,10 @@ import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gpa_cal/ui/home_page/home_page.dart';
 import 'package:gpa_cal/ui/splash_form_page/splash_form_exports.dart';
 import 'package:gpa_cal/ui/splash_screen_page/page/splash_screen_page.dart';
+import 'package:gpa_cal/util/ui_util/custom_page_route.dart';
 
 import 'splash_screen_bloc.dart';
 import 'splash_screen_state.dart';
@@ -27,6 +29,8 @@ class SplashScreenView extends StatelessWidget {
       key: _scaffoldKey,
       body: MultiBlocListener(
         listeners: [
+
+          /// This listner called in case of an error
           BlocListener<SplashScreenBloc, SplashScreenState>(
             listenWhen: (pre, current) => pre.error != current.error,
             listener: (context, state) {
@@ -44,14 +48,36 @@ class SplashScreenView extends StatelessWidget {
                     ),
                   ),
                 );
-              } 
+              }
             },
           ),
+
+          /// This is called for the very first time app opens
           BlocListener<SplashScreenBloc, SplashScreenState>(
             listenWhen: (pre, current) => current.cacheNotPresent == true,
             listener: (context, state) {
-              print('check');
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> SplashFormProvider()));
+              Navigator.push(
+                context,
+                CustomPageRoute(
+                  builder: (context) => SplashFormProvider(),
+                ),
+              );
+            },
+          ),
+
+          /// Auto moving to the home screen
+          BlocListener<SplashScreenBloc, SplashScreenState>(
+            listenWhen: (pre, current) =>
+                pre.userDetailsModel != current.userDetailsModel,
+            listener: (context, state) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomeProvider(
+                    userDetailsModel: state.userDetailsModel,
+                  ),
+                ),
+              );
             },
           ),
         ],

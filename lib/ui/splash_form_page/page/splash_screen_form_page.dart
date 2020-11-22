@@ -47,6 +47,7 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
                 SizedBox(height: 16),
                 TextFormField(
                   decoration: this._inputDecoration('Name'),
+                  textCapitalization: TextCapitalization.words,
                   style: this._inputTextStyle(),
                   validator: (value) {
                     return this._emptyValidator(value, 'Name');
@@ -62,6 +63,7 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
                 SizedBox(height: 16),
                 TextFormField(
                   decoration: this._inputDecoration('University/School'),
+                  textCapitalization: TextCapitalization.words,
                   style: this._inputTextStyle(),
                   validator: (value) {
                     return this._emptyValidator(value, 'University');
@@ -129,8 +131,8 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
 
                       BlocProvider.of<SplashFormBloc>(context).add(
                         UserDetailsAddEvent(
-                          name: _name,
-                          uni: _uni,
+                          name: _name.trim(),
+                          uni: _uni.trim(),
                           gpaType: _gpaType,
                         ),
                       );

@@ -2,6 +2,7 @@ import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../home_page/home_provider.dart';
 import 'page/splash_screen_form_page.dart';
 import 'splash_form_bloc.dart';
 import 'splash_form_state.dart';
@@ -54,13 +55,17 @@ class SplashFormView extends StatelessWidget {
 
           /// Bloc listner that will load the next screen
           BlocListener<SplashFormBloc, SplashFormState>(
-            listenWhen: (pre, current) => pre.formLoaded != current.formLoaded,
+            listenWhen: (pre, current) =>
+                pre.userDetailsModel != current.userDetailsModel,
             listener: (context, state) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return Container(
-                  child: Text('HOME PAGE'),
-                );
-              }));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomeProvider(
+                    userDetailsModel: state.userDetailsModel,
+                  ),
+                ),
+              );
             },
           ),
         ],
