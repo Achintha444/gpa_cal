@@ -24,7 +24,10 @@ class GpaCalMainButton extends StatelessWidget {
         child: Text(
           text.toUpperCase(),
           style: TextStyle(
-              fontSize: 14, letterSpacing: 1.25, fontWeight: FontWeight.w600),
+            fontSize: 14,
+            letterSpacing: 1.25,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

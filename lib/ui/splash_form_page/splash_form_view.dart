@@ -15,62 +15,63 @@ class SplashFormView extends StatelessWidget {
   Widget build(BuildContext context) {
     log.d("Loading SplashForm View");
 
-    return Scaffold(
-      key: _scaffoldKey,
-      body: MultiBlocListener(
-        listeners: [
-          /// Error Bloc Listner
-          BlocListener<SplashFormBloc, SplashFormState>(
-            listenWhen: (pre, current) => pre.error != current.error,
-            listener: (context, state) {
-              if (state.error?.isNotEmpty ?? false) {
+    return SafeArea(
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: MultiBlocListener(
+          listeners: [
+            /// Error Bloc Listner
+            BlocListener<SplashFormBloc, SplashFormState>(
+              listenWhen: (pre, current) => pre.error != current.error,
+              listener: (context, state) {
+                if (state.error?.isNotEmpty ?? false) {
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Theme.of(context).errorColor,
+                      content: Text(state.error),
+                      action: SnackBarAction(
+                        label: 'CLEAR',
+                        onPressed: () {
+                          Scaffold.of(context).hideCurrentSnackBar();
+                        },
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
+
+            /// Bloc listner that will load loading screen
+            BlocListener<SplashFormBloc, SplashFormState>(
+              listenWhen: (pre, current) =>
+                  pre.formLoading != current.formLoading,
+              listener: (context, state) {
                 Scaffold.of(context).showSnackBar(
                   SnackBar(
-                    backgroundColor: Theme.of(context).errorColor,
-                    content: Text(state.error),
-                    action: SnackBarAction(
-                      label: 'CLEAR',
-                      onPressed: () {
-                        Scaffold.of(context).hideCurrentSnackBar();
-                      },
-                    ),
+                    content: Text('Your Details are Saving...'),
                   ),
                 );
-              }
-            },
-          ),
+              },
+            ),
 
-          /// Bloc listner that will load loading screen
-          BlocListener<SplashFormBloc, SplashFormState>(
-            listenWhen: (pre, current) =>
-                pre.formLoading != current.formLoading,
-            listener: (context, state) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Your Details are Saving...'),
-                ),
-              );
-            },
-          ),
-
-          /// Bloc listner that will load the next screen
-          BlocListener<SplashFormBloc, SplashFormState>(
-            listenWhen: (pre, current) =>
-                pre.userDetailsModel != current.userDetailsModel,
-            listener: (context, state) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomeProvider(
-                    userDetailsModel: state.userDetailsModel,
-                  ),
-                ),
-                (Route<dynamic> route) => false
-              );
-            },
-          ),
-        ],
-        child: SplashScreenFormPage(),
+            /// Bloc listner that will load the next screen
+            BlocListener<SplashFormBloc, SplashFormState>(
+              listenWhen: (pre, current) =>
+                  pre.userDetailsModel != current.userDetailsModel,
+              listener: (context, state) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeProvider(
+                        userDetailsModel: state.userDetailsModel,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
+              },
+            ),
+          ],
+          child: SplashScreenFormPage(),
+        ),
       ),
     );
   }

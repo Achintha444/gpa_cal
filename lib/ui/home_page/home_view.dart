@@ -2,6 +2,7 @@ import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gpa_cal/db/model/user_details_model.dart';
+import 'package:gpa_cal/ui/home_page/widgets/home_first_interface.dart';
 import 'package:gpa_cal/util/ui_util/custom_app_bar.dart';
 
 import 'home_bloc.dart';
@@ -44,17 +45,16 @@ class HomeView extends StatelessWidget {
           },
         ),
       ],
-      child: Scaffold(
-        appBar: CustomAppBar(name: userDetailsModel.name),
-        body: BlocBuilder<HomeBloc, HomeState>(
-          buildWhen: (pre, current) =>
-              pre.cacheNotPresent != current.cacheNotPresent,
-          builder: (context, state) {
-            return Container(
-              padding: EdgeInsets.only(left: 24),
-              child: Text("HI..."),
-            );
-          },
+      child: SafeArea(
+        child: Scaffold(
+          appBar: CustomAppBar(name: userDetailsModel.name),
+          body: BlocBuilder<HomeBloc, HomeState>(
+            buildWhen: (pre, current) =>
+                pre.cacheNotPresent != current.cacheNotPresent,
+            builder: (context, state) {
+              return HomeFirstInterface(userDetailsModel:userDetailsModel);
+            },
+          ),
         ),
       ),
     );

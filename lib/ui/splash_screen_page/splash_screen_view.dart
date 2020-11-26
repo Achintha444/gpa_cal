@@ -24,65 +24,64 @@ class SplashScreenView extends StatelessWidget {
     // ignore: close_sinks
     log.d("Loading SplashScreen View");
 
-    return Scaffold(
-      key: _scaffoldKey,
-      body: MultiBlocListener(
-        listeners: [
-
-          /// This listner called in case of an error
-          BlocListener<SplashScreenBloc, SplashScreenState>(
-            listenWhen: (pre, current) => pre.error != current.error,
-            listener: (context, state) {
-              print(state.cacheNotPresent);
-              if (state.error?.isNotEmpty ?? false) {
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: Theme.of(context).errorColor,
-                    content: Text(state.error),
-                    action: SnackBarAction(
-                      label: 'CLEAR',
-                      onPressed: () {
-                        Scaffold.of(context).hideCurrentSnackBar();
-                      },
+    return SafeArea(
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: MultiBlocListener(
+          listeners: [
+            /// This listner called in case of an error
+            BlocListener<SplashScreenBloc, SplashScreenState>(
+              listenWhen: (pre, current) => pre.error != current.error,
+              listener: (context, state) {
+                print(state.cacheNotPresent);
+                if (state.error?.isNotEmpty ?? false) {
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Theme.of(context).errorColor,
+                      content: Text(state.error),
+                      action: SnackBarAction(
+                        label: 'CLEAR',
+                        onPressed: () {
+                          Scaffold.of(context).hideCurrentSnackBar();
+                        },
+                      ),
                     ),
-                  ),
-                );
-              }
-            },
-          ),
+                  );
+                }
+              },
+            ),
 
-          /// This is called for the very first time app opens
-          BlocListener<SplashScreenBloc, SplashScreenState>(
-            listenWhen: (pre, current) => current.cacheNotPresent == true,
-            listener: (context, state) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                CustomPageRoute(
-                  builder: (context) => SplashFormProvider(),
-                ),
-                (Route<dynamic> route) => false
-              );
-            },
-          ),
+            /// This is called for the very first time app opens
+            BlocListener<SplashScreenBloc, SplashScreenState>(
+              listenWhen: (pre, current) => current.cacheNotPresent == true,
+              listener: (context, state) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    CustomPageRoute(
+                      builder: (context) => SplashFormProvider(),
+                    ),
+                    (Route<dynamic> route) => false);
+              },
+            ),
 
-          /// Auto moving to the home screen
-          BlocListener<SplashScreenBloc, SplashScreenState>(
-            listenWhen: (pre, current) =>
-                pre.userDetailsModel != current.userDetailsModel,
-            listener: (context, state) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomeProvider(
-                    userDetailsModel: state.userDetailsModel,
-                  ),
-                ),
-                (Route<dynamic> route) => false
-              );
-            },
-          ),
-        ],
-        child: SplashScreenPage(),
+            /// Auto moving to the home screen
+            BlocListener<SplashScreenBloc, SplashScreenState>(
+              listenWhen: (pre, current) =>
+                  pre.userDetailsModel != current.userDetailsModel,
+              listener: (context, state) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeProvider(
+                        userDetailsModel: state.userDetailsModel,
+                      ),
+                    ),
+                    (Route<dynamic> route) => false);
+              },
+            ),
+          ],
+          child: SplashScreenPage(),
+        ),
       ),
     );
   }

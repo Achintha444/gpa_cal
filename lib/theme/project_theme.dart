@@ -60,4 +60,7 @@ abstract class ProjectColours {
   static const Color ERROR_COLOR = Color(0xffFF006E);
   static const Color BUTTON_BG_COLOR = Color(0xffFFBE0B);
   static const Color SNACKBAR_BG_COLOR = Color(0xff8338EC);
+  static const Color HOME_PAGE_EMPTY_CARD_COLOR = Color(0xffF9FBFF);
+  static const Color HOME_PAGE_EMPTY_CARD_SHADOW_COLOR = Color(0xff3A86FF);
+
 }
