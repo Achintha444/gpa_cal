@@ -58,13 +58,14 @@ class SplashFormView extends StatelessWidget {
             listenWhen: (pre, current) =>
                 pre.userDetailsModel != current.userDetailsModel,
             listener: (context, state) {
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => HomeProvider(
                     userDetailsModel: state.userDetailsModel,
                   ),
                 ),
+                (Route<dynamic> route) => false
               );
             },
           ),

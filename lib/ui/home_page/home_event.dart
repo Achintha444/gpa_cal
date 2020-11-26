@@ -8,3 +8,9 @@ class ErrorEvent extends HomeEvent {
 
   ErrorEvent(this.error);
 }
+
+class FirstInterfaceEvent extends HomeEvent{
+  final bool cacheNotPresent;
+
+  FirstInterfaceEvent(this.cacheNotPresent);
+}

@@ -12,7 +12,7 @@ import 'splash_screen_state.dart';
 
 class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
   static final log = Log("SplashScreenBloc");
-  final SplashScreenRepo _splashScreenRepo = new SplashScreenRepo();
+  static final SplashScreenRepo _splashScreenRepo = new SplashScreenRepo();
 
   SplashScreenBloc(BuildContext context)
       : super(SplashScreenState.initialState) {
@@ -21,7 +21,9 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
 
   Future<void> _initialize() async {
     try {
-      UserDetailsModel _userDetailsModel = await this._splashScreenRepo.autoChange();
+      UserDetailsModel _userDetailsModel = await _splashScreenRepo.autoChange();
+      await Future.delayed(Duration(seconds: 2));
+      add(LoadHomeScreenEvent(_userDetailsModel));
 
     } on CacheNotPresentError {
       await Future.delayed(Duration(seconds: 2));

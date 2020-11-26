@@ -12,7 +12,7 @@ import 'splash_form_state.dart';
 
 class SplashFormBloc extends Bloc<SplashFormEvent, SplashFormState> {
   static final log = Log("SplashFormBloc");
-  final SplashFormRepo _splashFormRepo = new SplashFormRepo();
+  static final SplashFormRepo _splashFormRepo = new SplashFormRepo();
 
   SplashFormBloc(BuildContext context) : super(SplashFormState.initialState);
 
@@ -35,7 +35,7 @@ class SplashFormBloc extends Bloc<SplashFormEvent, SplashFormState> {
         );
 
         try {
-          await this._splashFormRepo.insertUserDetails(_userDetailsModel);
+          await _splashFormRepo.insertUserDetails(_userDetailsModel);
           yield state.clone(userDetailsModel: _userDetailsModel, formLoading: false);
         } on CacheError {
           add(ErrorEvent('Stroage Limit Exceed!'));

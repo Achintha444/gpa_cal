@@ -1,12 +1,11 @@
 import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gpa_cal/ui/home_page/home_page.dart';
-import 'package:gpa_cal/ui/splash_form_page/splash_form_exports.dart';
-import 'package:gpa_cal/ui/splash_screen_page/page/splash_screen_page.dart';
-import 'package:gpa_cal/util/ui_util/custom_page_route.dart';
 
+import '../../util/ui_util/custom_page_route.dart';
+import '../home_page/home_exports.dart';
+import '../splash_form_page/splash_form_exports.dart';
+import 'page/splash_screen_page.dart';
 import 'splash_screen_bloc.dart';
 import 'splash_screen_state.dart';
 
@@ -21,7 +20,7 @@ class SplashScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ignore: close_sinks
-    final splash_screenBloc = BlocProvider.of<SplashScreenBloc>(context);
+    //final splash_screenBloc = BlocProvider.of<SplashScreenBloc>(context);
     // ignore: close_sinks
     log.d("Loading SplashScreen View");
 
@@ -56,11 +55,12 @@ class SplashScreenView extends StatelessWidget {
           BlocListener<SplashScreenBloc, SplashScreenState>(
             listenWhen: (pre, current) => current.cacheNotPresent == true,
             listener: (context, state) {
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
                 CustomPageRoute(
                   builder: (context) => SplashFormProvider(),
                 ),
+                (Route<dynamic> route) => false
               );
             },
           ),
@@ -70,13 +70,14 @@ class SplashScreenView extends StatelessWidget {
             listenWhen: (pre, current) =>
                 pre.userDetailsModel != current.userDetailsModel,
             listener: (context, state) {
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => HomeProvider(
                     userDetailsModel: state.userDetailsModel,
                   ),
                 ),
+                (Route<dynamic> route) => false
               );
             },
           ),
