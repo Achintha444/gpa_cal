@@ -20,7 +20,8 @@ class HomeFirstInterface extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('From ' + userDetailsModel.uni, style: _subtitleTextStyle(FontWeight.w400)),
+          Text('From ' + userDetailsModel.uni,
+              style: _subtitleTextStyle(FontWeight.w400)),
           SizedBox(height: 24),
           Expanded(
             child: Container(
@@ -44,8 +45,11 @@ class HomeFirstInterface extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SvgPicture.asset(
-                    'graphics/cap.svg',
+                  Hero(
+                    tag: 'Hero Tag 2',
+                    child: SvgPicture.asset(
+                      'graphics/person.svg',
+                    ),
                   ),
                   SizedBox(height: 32),
                   Text(
@@ -60,7 +64,7 @@ class HomeFirstInterface extends StatelessWidget {
                     style: _subtitleTextStyle(FontWeight.w600),
                   ),
                   SizedBox(height: 32),
-                  GpaCalMainButton(text: 'Add Semester', onClick: (){}),
+                  GpaCalMainButton(text: 'Add Semester', onClick: () {}),
                   SizedBox(height: 16),
                   Text(
                     'to Start 🤗',

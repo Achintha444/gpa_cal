@@ -7,9 +7,6 @@ import 'add_semester_state.dart';
 
 class AddSemesterView extends StatelessWidget {
   static final log = Log("AddSemesterView");
-  static final loadingWidget = Center(
-    child: CircularProgressIndicator(),
-  );
 
   @override
   Widget build(BuildContext context) {
