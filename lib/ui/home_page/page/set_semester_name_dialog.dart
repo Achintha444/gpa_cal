@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:gpa_cal/db/model/user_details_model.dart';
 import 'package:gpa_cal/theme/project_theme.dart';
+import 'package:gpa_cal/ui/add_semester_page/add_semester_exports.dart';
+import 'package:gpa_cal/ui/home_page/home_exports.dart';
 import 'package:gpa_cal/util/ui_util/error_animated_widget.dart';
 
 class SetSemesterNameDialog extends StatefulWidget {
+  final UserDetailsModel userDetailsModel;
+
   const SetSemesterNameDialog({
     Key key,
+    @required this.userDetailsModel,
   }) : super(key: key);
 
   @override
@@ -13,7 +19,7 @@ class SetSemesterNameDialog extends StatefulWidget {
 
 class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
   String _semester_name;
-  bool _error = true;
+  bool _error = false;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +52,9 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
             SizedBox(height: 8),
             TextFormField(
               autofocus: true,
-              decoration: _error==false ?  _inputDecoration('Name') : _inputErrorDecoration('Name'),
+              decoration: _error == false
+                  ? _inputDecoration('Name')
+                  : _inputErrorDecoration('Name'),
               style: _inputTextStyle(),
               textCapitalization: TextCapitalization.sentences,
               maxLength: 25,
@@ -55,13 +63,12 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
               textAlign: TextAlign.left,
               onChanged: (value) {
                 setState(() {
-                  if (value.isEmpty || value.trim().isEmpty){
+                  if (value.isEmpty || value.trim().isEmpty) {
                     _error = true;
-                  } else{
+                  } else {
                     _error = false;
                     _semester_name = value;
                   }
-                  
                 });
               },
             ),
@@ -82,8 +89,19 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
                 ),
                 FlatButton(
                   onPressed: () {
-                    if (_error==false){
-                      
+                    if (_error == false) {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return AddSemesterProvider(
+                              userDetailsModel: widget.userDetailsModel,
+                              semesterName: _semester_name,
+                            );
+                          },
+                        ),
+                      );
                     }
                   },
                   child: Text(
@@ -153,7 +171,7 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
     );
   }
 
-    InputDecoration _inputErrorDecoration(String labelText) {
+  InputDecoration _inputErrorDecoration(String labelText) {
     return InputDecoration(
       hintText: labelText,
       contentPadding:

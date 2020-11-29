@@ -4,8 +4,10 @@ import 'package:gpa_cal/theme/project_theme.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   static final AppBar appBar = new AppBar();
   final String name;
+  final Function onBack;
 
-  const CustomAppBar({Key key, @required this.name}) : super(key: key);
+  const CustomAppBar({Key key, @required this.name, this.onBack})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ],
             ),
           ),
+          leading: onBack == null
+              ? null
+              : IconButton(
+                  icon: Icon(Icons.keyboard_arrow_left),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
           actions: [
             IconButton(
               icon: Icon(Icons.more_vert),
@@ -45,7 +53,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
         ),
-        SizedBox(height: 16)
+        SizedBox(height: 16),
       ],
     );
   }
