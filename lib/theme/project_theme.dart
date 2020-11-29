@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-var projectTheme = ThemeData(
+final projectTheme = ThemeData(
   primaryColor: ProjectColours.PRIMARY_COLOR,
   unselectedWidgetColor: ProjectColours.PRIMARY_COLOR,
   scaffoldBackgroundColor: ProjectColours.SCAFFOLD_BACKGROUND,
@@ -62,5 +62,25 @@ abstract class ProjectColours {
   static const Color SNACKBAR_BG_COLOR = Color(0xff8338EC);
   static const Color HOME_PAGE_EMPTY_CARD_COLOR = Color(0xffF9FBFF);
   static const Color HOME_PAGE_EMPTY_CARD_SHADOW_COLOR = Color(0xff3A86FF);
+  static const Color SET_NAME_COLOUR = Color(0xffFB5607);
+}
 
+abstract class ProjectThemes {
+  static BoxDecoration containerDecoration() {
+    return BoxDecoration(
+      color: ProjectColours.HOME_PAGE_EMPTY_CARD_COLOR,
+      boxShadow: [
+        BoxShadow(
+          color: ProjectColours.HOME_PAGE_EMPTY_CARD_SHADOW_COLOR
+              .withOpacity(0.25),
+          spreadRadius: 0,
+          blurRadius: 10,
+          offset: Offset(0, 4), // changes position of shadow
+        ),
+      ],
+      shape: BoxShape.rectangle,
+      border: Border.all(color: ProjectColours.PRIMARY_COLOR, width: 5),
+      borderRadius: BorderRadius.circular(20),
+    );
+  }
 }

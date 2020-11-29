@@ -19,14 +19,14 @@ class GpaCalMainButton extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       child: RaisedButton(
         onPressed: () => this.onClick(),
-        color: ProjectColours.BUTTON_BG_COLOR,
-        textColor: ProjectColours.SCAFFOLD_BACKGROUND,
+        color: ProjectColours.PRIMARY_COLOR,
+        textColor: ProjectColours.BUTTON_BG_COLOR,
         child: Text(
           text.toUpperCase(),
           style: TextStyle(
             fontSize: 14,
             letterSpacing: 1.25,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
