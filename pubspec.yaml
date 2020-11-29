@@ -60,6 +60,7 @@ flutter:
         - asset: font/Montserrat-Regular.ttf
         - asset: font/Montserrat-Bold.ttf
         - asset: font/Montserrat.ttf
+        - asset: font/Montserrat-Medium.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

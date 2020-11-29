@@ -51,7 +51,7 @@ class AddSemesterView extends StatelessWidget {
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: AddSemesterPage(),
+            child: AddSemesterPage(semesterName: semesterName),
           ),
         ),
       ),

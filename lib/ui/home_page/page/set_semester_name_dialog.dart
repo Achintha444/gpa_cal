@@ -84,7 +84,9 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
                     'CANCEL',
                     textAlign: TextAlign.end,
                     style: _buttonTextStyle(
-                        ProjectColours.PRIMARY_COLOR, FontWeight.w500),
+                      ProjectColours.PRIMARY_COLOR,
+                      FontWeight.w500,
+                    ),
                   ),
                 ),
                 FlatButton(
@@ -108,7 +110,9 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
                     'SET NAME',
                     textAlign: TextAlign.end,
                     style: _buttonTextStyle(
-                        ProjectColours.SET_NAME_COLOUR, FontWeight.w600),
+                      ProjectColours.SET_NAME_COLOUR,
+                      FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
