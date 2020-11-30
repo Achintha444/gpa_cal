@@ -26,7 +26,7 @@ class GpaCalMainButton extends StatelessWidget {
           style: TextStyle(
             fontSize: 14,
             letterSpacing: 1.25,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),

@@ -18,7 +18,7 @@ class SetSemesterNameDialog extends StatefulWidget {
 }
 
 class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
-  String _semester_name;
+  String _semester_name = '';
   bool _error = false;
 
   @override
@@ -91,19 +91,25 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
                 ),
                 FlatButton(
                   onPressed: () {
-                    if (_error == false) {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return AddSemesterProvider(
-                              userDetailsModel: widget.userDetailsModel,
-                              semesterName: _semester_name,
-                            );
-                          },
-                        ),
-                      );
+                    if (_semester_name.isEmpty) {
+                      setState(() {
+                        _error = true;
+                      });
+                    } else {
+                      if (_error == false) {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return AddSemesterProvider(
+                                userDetailsModel: widget.userDetailsModel,
+                                semesterName: _semester_name,
+                              );
+                            },
+                          ),
+                        );
+                      }
                     }
                   },
                   child: Text(
