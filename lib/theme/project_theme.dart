@@ -18,7 +18,7 @@ final projectTheme = ThemeData(
     shape: RoundedRectangleBorder(
       borderRadius: new BorderRadius.circular(20),
     ),
-    splashColor: Colors.black12
+    splashColor: ProjectColours.PRIMARY_COLOR.withOpacity(0.01)
   ),
   appBarTheme: AppBarTheme(
     color: ProjectColours.SCAFFOLD_BACKGROUND,

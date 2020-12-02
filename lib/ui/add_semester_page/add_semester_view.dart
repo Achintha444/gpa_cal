@@ -13,6 +13,7 @@ class AddSemesterView extends StatelessWidget {
 
   final UserDetailsModel userDetailsModel;
   final String semesterName;
+  static final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   const AddSemesterView({Key key, @required this.userDetailsModel, @required this.semesterName})
       : super(key: key);
@@ -25,14 +26,14 @@ class AddSemesterView extends StatelessWidget {
           listenWhen: (pre, current) => pre.error != current.error,
           listener: (context, state) {
             if (state.error?.isNotEmpty ?? false) {
-              Scaffold.of(context).showSnackBar(
+              _scaffoldKey.currentState.showSnackBar(
                 SnackBar(
                   backgroundColor: Theme.of(context).errorColor,
                   content: Text(state.error),
                   action: SnackBarAction(
                     label: 'CLEAR',
                     onPressed: () {
-                      Scaffold.of(context).hideCurrentSnackBar();
+                       _scaffoldKey.currentState.hideCurrentSnackBar();
                     },
                   ),
                 ),
@@ -43,6 +44,7 @@ class AddSemesterView extends StatelessWidget {
       ],
       child: SafeArea(
         child: Scaffold(
+          key: _scaffoldKey,
           appBar: CustomAppBar(
             name: userDetailsModel.name,
             onBack: () {

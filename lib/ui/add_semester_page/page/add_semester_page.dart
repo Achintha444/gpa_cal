@@ -1,17 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gpa_cal/util/ui_util/gpa_cal_main_button.dart';
+import 'package:gpa_cal/ui/add_semester_page/add_semester_bloc.dart';
+import 'package:gpa_cal/ui/add_semester_page/add_semester_event.dart';
 
 import '../../../theme/project_theme.dart';
+import '../../../util/ui_util/gpa_cal_main_button.dart';
+import '../widgets/subject_card.dart';
 
-class AddSemesterPage extends StatelessWidget {
+class AddSemesterPage extends StatefulWidget {
   final String semesterName;
 
   const AddSemesterPage({Key key, @required this.semesterName})
       : super(key: key);
 
   @override
+  _AddSemesterPageState createState() => _AddSemesterPageState();
+}
+
+class _AddSemesterPageState extends State<AddSemesterPage> {
+  int _subjectCount;
+  int _lengthOfWidgets;
+  List<Widget> _widgetList;
+
+  @override
+  void initState() {
+    _subjectCount = 1;
+    _lengthOfWidgets = 1;
+    _widgetList = new List.generate(
+      1,
+      (index) => Column(
+        children: [
+          SizedBox(height: 8),
+          SubjectCard(
+            index: index,
+            onDelete: (int index) {
+              setState(() {
+                if (_subjectCount > 1) {
+                  print(index.toString() + ' sRemoved from task list');
+                  _subjectCount -= 1;
+                  _widgetList[index] = SizedBox(width: 0, height: 0);
+                } else {
+                  BlocProvider.of<AddSemesterBloc>(context).add(ErrorEvent(
+                    'Cannot delete since only one course left',
+                  ));
+                }
+              });
+            },
+          ),
+        ],
+      ),
+    );
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // ignore: close_sinks
+    final addSemesterBloc = BlocProvider.of<AddSemesterBloc>(context);
+
     return Column(
       children: [
         Expanded(
@@ -43,7 +91,7 @@ class AddSemesterPage extends StatelessWidget {
                       children: [
                         SizedBox(height: 4),
                         Text(
-                          semesterName,
+                          widget.semesterName,
                           style: TextStyle(
                             color: ProjectColours.PRIMARY_COLOR,
                             fontSize: 16,
@@ -91,204 +139,52 @@ class AddSemesterPage extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              SizedBox(height: 16),
-              Container(
-                height: MediaQuery.of(context).size.height / 6,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color: ProjectColours.HOME_PAGE_EMPTY_CARD_COLOR,
-                  boxShadow: [
-                    BoxShadow(
-                      color: ProjectColours.HOME_PAGE_EMPTY_CARD_SHADOW_COLOR
-                          .withOpacity(0.25),
-                      spreadRadius: 0,
-                      blurRadius: 5,
-                      offset: Offset(0, 4), // changes position of shadow
-                    ),
-                  ],
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(width: 24),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(child: SizedBox()),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              labelText: 'Subject',
-                              contentPadding: const EdgeInsets.only(
-                                left: 16.0,
-                                bottom: 8.0,
-                                top: 8.0,
-                                right: 8,
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ProjectColours.PRIMARY_COLOR,
-                                ),
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ProjectColours.PRIMARY_COLOR,
-                                ),
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              labelStyle: TextStyle(
-                                color: ProjectColours.PRIMARY_COLOR
-                                    .withOpacity(0.75),
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0.15,
-                                fontSize: 16,
-                              ),
-                              //floatingLabelBehavior: FloatingLabelBehavior.never,
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ProjectColours.ERROR_COLOR,
-                                ),
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ProjectColours.ERROR_COLOR,
-                                ),
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    labelText: 'Subject',
-                                    contentPadding: const EdgeInsets.only(
-                                      left: 16.0,
-                                      bottom: 8.0,
-                                      top: 8.0,
-                                      right: 8,
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: ProjectColours.PRIMARY_COLOR,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: ProjectColours.PRIMARY_COLOR,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    labelStyle: TextStyle(
-                                      color: ProjectColours.PRIMARY_COLOR
-                                          .withOpacity(0.75),
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 0.15,
-                                      fontSize: 16,
-                                    ),
-                                    //floatingLabelBehavior: FloatingLabelBehavior.never,
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: ProjectColours.ERROR_COLOR,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: ProjectColours.ERROR_COLOR,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 8),
-                              Expanded(
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    labelText: 'Subject',
-                                    contentPadding: const EdgeInsets.only(
-                                      left: 16.0,
-                                      bottom: 8.0,
-                                      top: 8.0,
-                                      right: 8,
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: ProjectColours.PRIMARY_COLOR,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: ProjectColours.PRIMARY_COLOR,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    labelStyle: TextStyle(
-                                      color: ProjectColours.PRIMARY_COLOR
-                                          .withOpacity(0.75),
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 0.15,
-                                      fontSize: 16,
-                                    ),
-                                    //floatingLabelBehavior: FloatingLabelBehavior.never,
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: ProjectColours.ERROR_COLOR,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: ProjectColours.ERROR_COLOR,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Expanded(child: SizedBox()),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 24),
-                    Container(
-                      width: 48,
-                      height: MediaQuery.of(context).size.height / 6,
-                      decoration: BoxDecoration(
-                        color: ProjectColours.PRIMARY_COLOR,
-                        shape: BoxShape.rectangle,
-                        border: Border.all(
-                            color: ProjectColours.PRIMARY_COLOR, width: 5),
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          bottomRight: Radius.circular(20),
-                        ),
-                      ),
-                      child: IconButton(
-                        icon: Icon(Icons.delete),
-                        color: ProjectColours.BUTTON_BG_COLOR,
-                        onPressed: () {},
-                      ),
-                    ),
-                  ],
-                ),
+              SizedBox(height: 8),
+              //SubjectCard(),
+              Column(
+                children: _widgetList,
               ),
               SizedBox(height: 16),
               Align(
                 alignment: Alignment.topRight,
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(
+                      () {
+                        _lengthOfWidgets += 1;
+                        _subjectCount += 1;
+                        _widgetList.add(
+                          Column(
+                            children: [
+                              SizedBox(height: 8),
+                              SubjectCard(
+                                index: _lengthOfWidgets - 1,
+                                onDelete: (int index) {
+                                  //_widgetList.
+
+                                  setState(
+                                    () {
+                                      if (_subjectCount > 1) {
+                                        print(index.toString() +
+                                            ' sRemoved from task list');
+                                        _subjectCount -= 1;
+                                        _widgetList[index] =
+                                            SizedBox(height: 0, width: 0);
+                                      } else {
+                                        addSemesterBloc.add(ErrorEvent(
+                                          'Cannot delete since only one course left',
+                                        ));
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
                   shape: RoundedRectangleBorder(
                     side: BorderSide(
                       color: ProjectColours.SET_NAME_COLOUR,
@@ -302,7 +198,7 @@ class AddSemesterPage extends StatelessWidget {
                     style: TextStyle(
                       color: ProjectColours.SET_NAME_COLOUR,
                       fontWeight: FontWeight.w700,
-                      fontSize: 11
+                      fontSize: 11,
                     ),
                   ),
                 ),
