@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:gpa_cal/db/model/user_details_model.dart';
+import 'package:gpa_cal/util/db_util/gpa_conversion.dart';
 import '../../../theme/project_theme.dart';
 
-class SubjectCard extends StatelessWidget {
-
+class SubjectCard extends StatefulWidget {
   final int index;
   final Function onDelete;
+  final UserDetailsModel userDetailsModel;
 
-  const SubjectCard({
-    Key key,
-    @required this.index,
-    @required this.onDelete
-  }) : super(key: key);
+  const SubjectCard(
+      {Key key,
+      @required this.index,
+      @required this.onDelete,
+      @required this.userDetailsModel})
+      : super(key: key);
+
+  @override
+  _SubjectCardState createState() => _SubjectCardState();
+}
+
+class _SubjectCardState extends State<SubjectCard> {
+  String value = 'A+';
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +45,7 @@ class SubjectCard extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(width: 24),
-          
+
           // TextBoxes
           Expanded(
             child: Column(
@@ -45,22 +56,65 @@ class SubjectCard extends StatelessWidget {
                 TextFormField(
                   keyboardType: TextInputType.name,
                   decoration: _inputDecortaiton('Course'),
-                  style: _inputTextStyle(),
+                  style: _inputTextStyle(FontWeight.w500),
                 ),
                 SizedBox(height: 8),
                 Row(
                   children: [
+                    // Result
                     Expanded(
-                      child: TextFormField(
+                      child: InputDecorator(
                         decoration: _inputDecortaiton('Result'),
-                        style: _inputTextStyle(),
+                        child: DropdownButton<String>(
+                          style: _inputTextStyle(FontWeight.w700),
+                          elevation: 4,
+                          underline: SizedBox(height: 0),
+                          isExpanded: true,
+                          isDense: true,
+                          iconEnabledColor: ProjectColours.PRIMARY_COLOR,
+                          value: value,
+                          iconSize: 24,
+                          onChanged: (String newValue) {
+                            setState(() {
+                              value = newValue;
+                            });
+                          },
+                          selectedItemBuilder: (BuildContext context) {
+                            return _selectResultType()
+                                .map((value) => Text(
+                                      value,
+                                      style: _inputTextStyle(FontWeight.w500),
+                                    ))
+                                .toList();
+                          },
+                          items:
+                              _selectResultType().map<DropdownMenuItem<String>>(
+                            (String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                  style: _inputTextStyle(FontWeight.w700),
+                                ),
+                              );
+                            },
+                          ).toList(),
+                        ),
                       ),
                     ),
+
                     SizedBox(width: 8),
+
+                    // Credit
                     Expanded(
                       child: TextFormField(
                         decoration: _inputDecortaiton('Credit'),
-                        style: _inputTextStyle(),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                          FilteringTextInputFormatter.singleLineFormatter
+                        ],
+                        style: _inputTextStyle(FontWeight.w500),
                       ),
                     ),
                   ],
@@ -69,9 +123,9 @@ class SubjectCard extends StatelessWidget {
               ],
             ),
           ),
-          
+
           SizedBox(width: 24),
-          
+
           // bin
           Container(
             width: 48,
@@ -88,7 +142,7 @@ class SubjectCard extends StatelessWidget {
             child: IconButton(
               icon: Icon(Icons.delete),
               color: ProjectColours.BUTTON_BG_COLOR,
-              onPressed: () => onDelete(index),
+              onPressed: () => widget.onDelete(widget.index),
             ),
           ),
         ],
@@ -96,12 +150,20 @@ class SubjectCard extends StatelessWidget {
     );
   }
 
-  TextStyle _inputTextStyle() {
+  List<String> _selectResultType() {
+    if (widget.userDetailsModel.gpaType == 0) {
+      return GpaConversion.resultList0;
+    }
+    return GpaConversion.resultList1;
+  }
+
+  TextStyle _inputTextStyle(FontWeight fontWeight) {
     return TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.w500,
-      letterSpacing: 0.15,
-    );
+        fontSize: 14,
+        fontWeight: fontWeight,
+        letterSpacing: 0.15,
+        color: Colors.black,
+        fontFamily: 'Montserrat');
   }
 
   InputDecoration _inputDecortaiton(String labelText) {

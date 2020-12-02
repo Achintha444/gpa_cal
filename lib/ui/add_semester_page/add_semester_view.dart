@@ -13,9 +13,11 @@ class AddSemesterView extends StatelessWidget {
 
   final UserDetailsModel userDetailsModel;
   final String semesterName;
-  static final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  static final GlobalKey<ScaffoldState> _scaffoldKey =
+      new GlobalKey<ScaffoldState>();
 
-  const AddSemesterView({Key key, @required this.userDetailsModel, @required this.semesterName})
+  const AddSemesterView(
+      {Key key, @required this.userDetailsModel, @required this.semesterName})
       : super(key: key);
 
   @override
@@ -33,7 +35,7 @@ class AddSemesterView extends StatelessWidget {
                   action: SnackBarAction(
                     label: 'CLEAR',
                     onPressed: () {
-                       _scaffoldKey.currentState.hideCurrentSnackBar();
+                      _scaffoldKey.currentState.hideCurrentSnackBar();
                     },
                   ),
                 ),
@@ -53,7 +55,10 @@ class AddSemesterView extends StatelessWidget {
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: AddSemesterPage(semesterName: semesterName),
+            child: AddSemesterPage(
+              semesterName: semesterName,
+              userDetailsModel: userDetailsModel,
+            ),
           ),
         ),
       ),

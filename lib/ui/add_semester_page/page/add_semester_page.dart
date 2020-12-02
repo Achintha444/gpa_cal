@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gpa_cal/db/model/user_details_model.dart';
 import 'package:gpa_cal/ui/add_semester_page/add_semester_bloc.dart';
 import 'package:gpa_cal/ui/add_semester_page/add_semester_event.dart';
 
@@ -10,8 +11,9 @@ import '../widgets/subject_card.dart';
 
 class AddSemesterPage extends StatefulWidget {
   final String semesterName;
+  final UserDetailsModel userDetailsModel;
 
-  const AddSemesterPage({Key key, @required this.semesterName})
+  const AddSemesterPage({Key key, @required this.semesterName, @required this.userDetailsModel})
       : super(key: key);
 
   @override
@@ -34,6 +36,7 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
           SizedBox(height: 8),
           SubjectCard(
             index: index,
+            userDetailsModel: widget.userDetailsModel,
             onDelete: (int index) {
               setState(() {
                 if (_subjectCount > 1) {
@@ -139,7 +142,7 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 2),
               //SubjectCard(),
               Column(
                 children: _widgetList,
@@ -158,6 +161,7 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                             children: [
                               SizedBox(height: 8),
                               SubjectCard(
+                                userDetailsModel: widget.userDetailsModel,
                                 index: _lengthOfWidgets - 1,
                                 onDelete: (int index) {
                                   //_widgetList.
