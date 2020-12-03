@@ -25,24 +25,37 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         final index = (event as AddSubjectsEvent).index;
         final singleSubject = (event as AddSubjectsEvent).subject;
         final subjects = state.subjects;
+        var totalError = false;
         subjects[index] = singleSubject;
 
         var emptySubjects = [];
 
         subjects.forEach((key, value) {
+          var _count = 0;
           value.forEach((key1, value1) {
+            _count += 1;
             if (value1 == '' || value1.trim().isEmpty) {
               emptySubjects.add(key);
+              totalError = true;
             }
           });
+          if (_count != 3) {
+            totalError = true;
+          }
+          print(_count);
+          print('=====');
         });
 
         log.e('Add Subjects Event Called Subjects: ');
         print(subjects);
         log.e('Empty Tasks :');
         print(emptySubjects);
+        print(totalError);
 
-        yield state.clone(subjects: subjects, emptySubjects: emptySubjects);
+        yield state.clone(
+            subjects: subjects,
+            emptySubjects: emptySubjects,
+            totalError: totalError);
         break;
       case DeleteSubjectEvent:
         final index = (event as DeleteSubjectEvent).index;
@@ -51,6 +64,31 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         subjects.remove(index);
         emptySubjects.remove(index);
         yield state.clone(subjects: subjects, emptySubjects: emptySubjects);
+        log.e('Delete Subject Event called');
+        this.add(TotalErrorEvent());
+        break;
+      case TotalErrorEvent:
+        final subjects = state.subjects;
+        final emptySubjects = state.emptySubjects;
+        var totalError = false;
+        if (emptySubjects.isNotEmpty) {
+          yield state.clone(totalError: true);
+        } else {
+          subjects.forEach((key, value) {
+            var _count = 0;
+            value.forEach((key1, value1) {
+              _count += 1;
+              if (value1 == '' || value1.trim().isEmpty) {
+                totalError = true;
+              }
+            });
+            if (_count != 3) {
+              totalError = true;
+            }
+          });
+          yield state.clone(totalError: totalError);
+        }
+        log.e('Total Error Event called');
         break;
     }
   }

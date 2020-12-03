@@ -177,8 +177,8 @@ class _SubjectCardState extends State<SubjectCard> {
                             decoration:
                                 (state.emptySubjects.indexOf(widget.index) ==
                                         -1)
-                                    ? _inputDecortaiton('Course')
-                                    : _inputErrorDecortaiton('Course'),
+                                    ? _inputDecortaiton('Credit')
+                                    : _inputErrorDecortaiton('Credit'),
                             keyboardType: TextInputType.number,
                             inputFormatters: <TextInputFormatter>[
                               FilteringTextInputFormatter.digitsOnly,

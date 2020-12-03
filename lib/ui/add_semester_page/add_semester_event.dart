@@ -16,9 +16,10 @@ class AddSubjectsEvent extends AddSemesterEvent {
   AddSubjectsEvent(this.subject, this.index);
 }
 
-class DeleteSubjectEvent extends AddSemesterEvent{
+class DeleteSubjectEvent extends AddSemesterEvent {
   final int index;
 
   DeleteSubjectEvent(this.index);
-
 }
+
+class TotalErrorEvent extends AddSemesterEvent {}

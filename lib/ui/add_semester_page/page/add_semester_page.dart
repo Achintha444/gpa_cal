@@ -104,6 +104,9 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                             Text(
                               widget.semesterName,
                               overflow: TextOverflow.clip,
+                              maxLines: 1,
+                              softWrap: false,
+                              textWidthBasis: TextWidthBasis.parent,
                               style: TextStyle(
                                 color: ProjectColours.PRIMARY_COLOR,
                                 fontSize: 16,
@@ -152,7 +155,7 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                 // SizedBox(height: 2),
+                  // SizedBox(height: 2),
 
                   Align(
                     alignment: Alignment.centerLeft,
@@ -179,46 +182,52 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                   Align(
                     alignment: Alignment.topRight,
                     child: FlatButton(
-                      onPressed: () {
-                        setState(
-                          () {
-                            _lengthOfWidgets += 1;
-                            _subjectCount += 1;
-                            _widgetList.add(
-                              Column(
-                                children: [
-                                  SizedBox(height: 8),
-                                  SubjectCard(
-                                    userDetailsModel: widget.userDetailsModel,
-                                    index: _lengthOfWidgets - 1,
-                                    onDelete: (int index) {
-                                      //_widgetList.
+                      onPressed: state.totalError == true
+                          ? null
+                          : () {
+                              print(state.totalError);
+                              setState(
+                                () {
+                                  _lengthOfWidgets += 1;
+                                  _subjectCount += 1;
+                                  _widgetList.add(
+                                    Column(
+                                      children: [
+                                        SizedBox(height: 8),
+                                        SubjectCard(
+                                          userDetailsModel:
+                                              widget.userDetailsModel,
+                                          index: _lengthOfWidgets - 1,
+                                          onDelete: (int index) {
+                                            //_widgetList.
 
-                                      setState(
-                                        () {
-                                          if (_subjectCount > 1) {
-                                            print(index.toString() +
-                                                ' sRemoved from task list');
-                                            _subjectCount -= 1;
-                                            _widgetList[index] =
-                                                SizedBox(height: 0, width: 0);
-                                            addSemesterBloc
-                                                .add(DeleteSubjectEvent(index));
-                                          } else {
-                                            addSemesterBloc.add(ErrorEvent(
-                                              'Cannot delete since only one course left',
-                                            ));
-                                          }
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      },
+                                            setState(
+                                              () {
+                                                if (_subjectCount > 1) {
+                                                  print(index.toString() +
+                                                      ' sRemoved from task list');
+                                                  _subjectCount -= 1;
+                                                  _widgetList[index] = SizedBox(
+                                                      height: 0, width: 0);
+                                                  addSemesterBloc.add(
+                                                      DeleteSubjectEvent(
+                                                          index));
+                                                } else {
+                                                  addSemesterBloc
+                                                      .add(ErrorEvent(
+                                                    'Cannot delete since only one course left',
+                                                  ));
+                                                }
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
                           color: ProjectColours.SET_NAME_COLOUR,
@@ -227,10 +236,12 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(50)),
                       ),
+                      disabledTextColor:
+                          ProjectColours.SET_NAME_COLOUR.withOpacity(0.2),
+                      textColor: ProjectColours.SET_NAME_COLOUR,
                       child: Text(
                         '+ Add New Course',
                         style: TextStyle(
-                          color: ProjectColours.SET_NAME_COLOUR,
                           fontWeight: FontWeight.w700,
                           fontSize: 11,
                         ),

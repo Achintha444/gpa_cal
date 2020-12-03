@@ -57,7 +57,7 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
                   : _inputErrorDecoration('Name'),
               style: _inputTextStyle(),
               textCapitalization: TextCapitalization.sentences,
-              maxLength: 25,
+              maxLength: 13,
               maxLengthEnforced: true,
               maxLines: 1,
               textAlign: TextAlign.left,
@@ -65,7 +65,7 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
                 setState(() {
                   if (value.isEmpty ||
                       value.trim().isEmpty ||
-                      value.length > 25) {
+                      value.length > 13) {
                     _error = true;
                   } else {
                     _error = false;

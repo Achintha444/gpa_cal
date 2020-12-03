@@ -19,8 +19,8 @@ class GpaCalMainButton extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       child: RaisedButton(
         onPressed: () => this.onClick(),
-        color: ProjectColours.PRIMARY_COLOR,
-        textColor: ProjectColours.BUTTON_BG_COLOR,
+        color: ProjectColours.BUTTON_BG_COLOR,
+        textColor: ProjectColours.PRIMARY_COLOR,
         child: Text(
           text.toUpperCase(),
           style: TextStyle(
