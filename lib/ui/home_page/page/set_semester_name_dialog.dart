@@ -63,7 +63,9 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
               textAlign: TextAlign.left,
               onChanged: (value) {
                 setState(() {
-                  if (value.isEmpty || value.trim().isEmpty) {
+                  if (value.isEmpty ||
+                      value.trim().isEmpty ||
+                      value.length > 25) {
                     _error = true;
                   } else {
                     _error = false;
@@ -168,6 +170,18 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
           color: ProjectColours.PRIMARY_COLOR,
+        ),
+        borderRadius: BorderRadius.circular(50.0),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: ProjectColours.ERROR_COLOR,
+        ),
+        borderRadius: BorderRadius.circular(50.0),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: ProjectColours.ERROR_COLOR,
         ),
         borderRadius: BorderRadius.circular(50.0),
       ),

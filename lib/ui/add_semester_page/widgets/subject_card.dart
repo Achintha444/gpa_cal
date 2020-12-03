@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gpa_cal/db/model/user_details_model.dart';
-import 'package:gpa_cal/util/db_util/gpa_conversion.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gpa_cal/ui/add_semester_page/add_semester_event.dart';
+import 'package:gpa_cal/ui/add_semester_page/add_semester_exports.dart';
+
+import '../../../db/model/user_details_model.dart';
 import '../../../theme/project_theme.dart';
+import '../../../util/db_util/gpa_conversion.dart';
+import '../add_semester_bloc.dart';
 
 class SubjectCard extends StatefulWidget {
   final int index;
@@ -21,10 +26,37 @@ class SubjectCard extends StatefulWidget {
 }
 
 class _SubjectCardState extends State<SubjectCard> {
-  String value = 'A+';
+  /*  {
+      'course': this.course,
+      'result': this.result,
+      'credit': this.result
+    }*/
+
+  String course = '';
+  String resultValue;
+  String credit;
+  Map subject;
+  @override
+  void initState() {
+    resultValue = _selectResultType()[0];
+    credit = '3';
+    subject = {
+      'result': resultValue,
+      'credit': credit,
+    };
+
+    BlocProvider.of<AddSemesterBloc>(context).add(
+      AddSubjectsEvent(subject, widget.index),
+    );
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // ignore: close_sinks
+    final _addSemesterBloc = BlocProvider.of<AddSemesterBloc>(context);
+
     return Container(
       height: MediaQuery.of(context).size.height / 6,
       width: MediaQuery.of(context).size.width,
@@ -42,110 +74,151 @@ class _SubjectCardState extends State<SubjectCard> {
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Row(
-        children: [
-          SizedBox(width: 24),
+      child: BlocBuilder<AddSemesterBloc, AddSemesterState>(
+        builder: (context, state) {
+          return Row(
+            children: [
+              SizedBox(width: 24),
 
-          // TextBoxes
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(child: SizedBox()),
-                TextFormField(
-                  keyboardType: TextInputType.name,
-                  decoration: _inputDecortaiton('Course'),
-                  style: _inputTextStyle(FontWeight.w500),
-                ),
-                SizedBox(height: 8),
-                Row(
+              // TextBoxes
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Result
-                    Expanded(
-                      child: InputDecorator(
-                        decoration: _inputDecortaiton('Result'),
-                        child: DropdownButton<String>(
-                          style: _inputTextStyle(FontWeight.w700),
-                          elevation: 4,
-                          underline: SizedBox(height: 0),
-                          isExpanded: true,
-                          isDense: true,
-                          iconEnabledColor: ProjectColours.PRIMARY_COLOR,
-                          value: value,
-                          iconSize: 24,
-                          onChanged: (String newValue) {
-                            setState(() {
-                              value = newValue;
-                            });
-                          },
-                          selectedItemBuilder: (BuildContext context) {
-                            return _selectResultType()
-                                .map((value) => Text(
+                    Expanded(child: SizedBox()),
+                    //Subject
+                    TextFormField(
+                      onChanged: (newValue) {
+                        setState(() {
+                          course = newValue;
+                          subject['course'] = course;
+                        });
+                        _addSemesterBloc.add(
+                          AddSubjectsEvent(subject, widget.index),
+                        );
+                      },
+                      keyboardType: TextInputType.name,
+                      decoration:
+                          (state.emptySubjects.indexOf(widget.index) == -1)
+                              ? _inputDecortaiton('Course')
+                              : _inputErrorDecortaiton('Course'),
+                      style: _inputTextStyle(FontWeight.w500),
+                    ),
+
+                    SizedBox(height: 8),
+
+                    // Result and Credit
+                    Row(
+                      children: [
+                        // Result
+                        Expanded(
+                          child: InputDecorator(
+                            decoration: _inputDecortaiton('Result'),
+                            child: DropdownButton<String>(
+                              style: _inputTextStyle(FontWeight.w700),
+                              elevation: 4,
+                              underline: SizedBox(height: 0),
+                              isExpanded: true,
+                              isDense: true,
+                              iconEnabledColor: ProjectColours.PRIMARY_COLOR,
+                              value: resultValue,
+                              iconSize: 24,
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  resultValue = newValue;
+                                  subject['result'] = resultValue;
+                                });
+                                _addSemesterBloc.add(
+                                  AddSubjectsEvent(subject, widget.index),
+                                );
+                              },
+                              selectedItemBuilder: (BuildContext context) {
+                                return _selectResultType()
+                                    .map((value) => Text(
+                                          value,
+                                          style:
+                                              _inputTextStyle(FontWeight.w500),
+                                        ))
+                                    .toList();
+                              },
+                              items: _selectResultType()
+                                  .map<DropdownMenuItem<String>>(
+                                (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(
                                       value,
-                                      style: _inputTextStyle(FontWeight.w500),
-                                    ))
-                                .toList();
-                          },
-                          items:
-                              _selectResultType().map<DropdownMenuItem<String>>(
-                            (String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                  style: _inputTextStyle(FontWeight.w700),
-                                ),
+                                      style: _inputTextStyle(FontWeight.w700),
+                                    ),
+                                  );
+                                },
+                              ).toList(),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(width: 8),
+
+                        // Credit
+                        Expanded(
+                          child: TextFormField(
+                            initialValue: credit,
+                            onChanged: (newValue) {
+                              print(newValue);
+                              setState(() {
+                                credit = newValue;
+                                subject['credit'] = credit;
+                              });
+                              _addSemesterBloc.add(
+                                AddSubjectsEvent(subject, widget.index),
                               );
                             },
-                          ).toList(),
+                            decoration:
+                                (state.emptySubjects.indexOf(widget.index) ==
+                                        -1)
+                                    ? _inputDecortaiton('Course')
+                                    : _inputErrorDecortaiton('Course'),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly,
+                              FilteringTextInputFormatter.singleLineFormatter
+                            ],
+                            style: _inputTextStyle(FontWeight.w500),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-
-                    SizedBox(width: 8),
-
-                    // Credit
-                    Expanded(
-                      child: TextFormField(
-                        decoration: _inputDecortaiton('Credit'),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly,
-                          FilteringTextInputFormatter.singleLineFormatter
-                        ],
-                        style: _inputTextStyle(FontWeight.w500),
-                      ),
-                    ),
+                    Expanded(child: SizedBox()),
                   ],
                 ),
-                Expanded(child: SizedBox()),
-              ],
-            ),
-          ),
-
-          SizedBox(width: 24),
-
-          // bin
-          Container(
-            width: 48,
-            height: MediaQuery.of(context).size.height / 6,
-            decoration: BoxDecoration(
-              color: ProjectColours.PRIMARY_COLOR,
-              shape: BoxShape.rectangle,
-              border: Border.all(color: ProjectColours.PRIMARY_COLOR, width: 5),
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(20),
-                bottomRight: Radius.circular(20),
               ),
-            ),
-            child: IconButton(
-              icon: Icon(Icons.delete),
-              color: ProjectColours.BUTTON_BG_COLOR,
-              onPressed: () => widget.onDelete(widget.index),
-            ),
-          ),
-        ],
+
+              SizedBox(width: 24),
+
+              // bin
+              Container(
+                width: 48,
+                height: MediaQuery.of(context).size.height / 6,
+                decoration: BoxDecoration(
+                  color: ProjectColours.PRIMARY_COLOR,
+                  shape: BoxShape.rectangle,
+                  border:
+                      Border.all(color: ProjectColours.PRIMARY_COLOR, width: 5),
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                ),
+                child: IconButton(
+                  icon: Icon(Icons.delete),
+                  color: ProjectColours.BUTTON_BG_COLOR,
+                  onPressed: () => widget.onDelete(widget.index),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -159,11 +232,12 @@ class _SubjectCardState extends State<SubjectCard> {
 
   TextStyle _inputTextStyle(FontWeight fontWeight) {
     return TextStyle(
-        fontSize: 14,
-        fontWeight: fontWeight,
-        letterSpacing: 0.15,
-        color: Colors.black,
-        fontFamily: 'Montserrat');
+      fontSize: 14,
+      fontWeight: fontWeight,
+      letterSpacing: 0.15,
+      color: Colors.black,
+      fontFamily: 'Montserrat',
+    );
   }
 
   InputDecoration _inputDecortaiton(String labelText) {
@@ -191,18 +265,33 @@ class _SubjectCardState extends State<SubjectCard> {
         letterSpacing: 0.15,
         fontSize: 14,
       ),
-      //floatingLabelBehavior: FloatingLabelBehavior.never,
-      errorBorder: OutlineInputBorder(
+    );
+  }
+
+  InputDecoration _inputErrorDecortaiton(String labelText) {
+    return InputDecoration(
+      labelText: labelText,
+      contentPadding: const EdgeInsets.only(
+        left: 16.0,
+        right: 8,
+      ),
+      focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(
           color: ProjectColours.ERROR_COLOR,
         ),
         borderRadius: BorderRadius.circular(10.0),
       ),
-      focusedErrorBorder: OutlineInputBorder(
+      enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
           color: ProjectColours.ERROR_COLOR,
         ),
         borderRadius: BorderRadius.circular(10.0),
+      ),
+      labelStyle: TextStyle(
+        color: ProjectColours.ERROR_COLOR.withOpacity(0.75),
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0.15,
+        fontSize: 14,
       ),
     );
   }

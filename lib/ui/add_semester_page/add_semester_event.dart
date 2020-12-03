@@ -8,3 +8,17 @@ class ErrorEvent extends AddSemesterEvent {
 
   ErrorEvent(this.error);
 }
+
+class AddSubjectsEvent extends AddSemesterEvent {
+  final Map subject;
+  final int index;
+
+  AddSubjectsEvent(this.subject, this.index);
+}
+
+class DeleteSubjectEvent extends AddSemesterEvent{
+  final int index;
+
+  DeleteSubjectEvent(this.index);
+
+}
