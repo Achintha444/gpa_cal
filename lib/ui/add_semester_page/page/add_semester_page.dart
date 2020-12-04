@@ -46,8 +46,9 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                   print(index.toString() + ' sRemoved from task list');
                   _subjectCount -= 1;
                   _widgetList[index] = SizedBox(width: 0, height: 0);
-                  BlocProvider.of<AddSemesterBloc>(context)
-                      .add(DeleteSubjectEvent(index));
+                  BlocProvider.of<AddSemesterBloc>(context).add(
+                      DeleteSubjectEvent(
+                          index, widget.userDetailsModel.gpaType));
                 } else {
                   BlocProvider.of<AddSemesterBloc>(context).add(ErrorEvent(
                     'Cannot delete since only one course left',
@@ -147,7 +148,7 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                   SizedBox(height: 16),
 
                   Text(
-                    'Courses',
+                    'Courses - '+_subjectCount.toString(),
                     style: TextStyle(
                       color: ProjectColours.PRIMARY_COLOR,
                       fontSize: 14,
@@ -210,8 +211,8 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                                                   _widgetList[index] = SizedBox(
                                                       height: 0, width: 0);
                                                   addSemesterBloc.add(
-                                                      DeleteSubjectEvent(
-                                                          index));
+                                                    DeleteSubjectEvent(index, widget.userDetailsModel.gpaType),
+                                                  );
                                                 } else {
                                                   addSemesterBloc
                                                       .add(ErrorEvent(

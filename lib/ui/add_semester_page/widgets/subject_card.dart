@@ -38,7 +38,7 @@ class _SubjectCardState extends State<SubjectCard> {
   Map subject;
   @override
   void initState() {
-    resultValue = _selectResultType()[0];
+    resultValue = _selectResultType()[1];
     credit = '3';
     subject = {
       'result': resultValue,
@@ -46,7 +46,7 @@ class _SubjectCardState extends State<SubjectCard> {
     };
 
     BlocProvider.of<AddSemesterBloc>(context).add(
-      AddSubjectsEvent(subject, widget.index),
+      AddSubjectsEvent(subject, widget.index,widget.userDetailsModel.gpaType),
     );
 
     super.initState();
@@ -95,7 +95,7 @@ class _SubjectCardState extends State<SubjectCard> {
                           subject['course'] = course;
                         });
                         _addSemesterBloc.add(
-                          AddSubjectsEvent(subject, widget.index),
+                          AddSubjectsEvent(subject, widget.index,widget.userDetailsModel.gpaType),
                         );
                       },
                       keyboardType: TextInputType.name,
@@ -130,7 +130,7 @@ class _SubjectCardState extends State<SubjectCard> {
                                   subject['result'] = resultValue;
                                 });
                                 _addSemesterBloc.add(
-                                  AddSubjectsEvent(subject, widget.index),
+                                  AddSubjectsEvent(subject, widget.index,widget.userDetailsModel.gpaType),
                                 );
                               },
                               selectedItemBuilder: (BuildContext context) {
@@ -171,7 +171,7 @@ class _SubjectCardState extends State<SubjectCard> {
                                 subject['credit'] = credit;
                               });
                               _addSemesterBloc.add(
-                                AddSubjectsEvent(subject, widget.index),
+                                AddSubjectsEvent(subject, widget.index,widget.userDetailsModel.gpaType),
                               );
                             },
                             decoration:

@@ -12,14 +12,14 @@ class ErrorEvent extends AddSemesterEvent {
 class AddSubjectsEvent extends AddSemesterEvent {
   final Map subject;
   final int index;
-
-  AddSubjectsEvent(this.subject, this.index);
+  final int gpaType;
+  AddSubjectsEvent(this.subject, this.index, this.gpaType);
 }
 
 class DeleteSubjectEvent extends AddSemesterEvent {
   final int index;
-
-  DeleteSubjectEvent(this.index);
+  final int gpaType;
+  DeleteSubjectEvent(this.index, this.gpaType);
 }
 
 class TotalErrorEvent extends AddSemesterEvent {}

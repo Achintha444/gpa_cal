@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
+import 'package:gpa_cal/util/db_util/gpa_conversion.dart';
 
 import 'add_semester_event.dart';
 import 'add_semester_state.dart';
@@ -21,6 +22,7 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         yield state.clone(error: "");
         yield state.clone(error: error);
         break;
+
       case AddSubjectsEvent:
         final index = (event as AddSubjectsEvent).index;
         final singleSubject = (event as AddSubjectsEvent).subject;
@@ -28,11 +30,24 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         var totalError = false;
         subjects[index] = singleSubject;
 
+        final totalResult = state.totalResult;
+        final totalCredit = state.totalCredit;
+
+        // [result , credit]
+        totalResult[index] = ['', ''];
+
         var emptySubjects = [];
 
         subjects.forEach((key, value) {
           var _count = 0;
           value.forEach((key1, value1) {
+            if (key1 == 'result') {
+              totalResult[index][0] = value1;
+            } else if (key1 == 'credit') {
+              totalResult[index][1] = value1;
+              totalCredit[index] = value1;
+            }
+
             _count += 1;
             if (value1 == '' || value1.trim().isEmpty) {
               emptySubjects.add(key);
@@ -42,9 +57,12 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
           if (_count != 3) {
             totalError = true;
           }
-          print(_count);
+          print(totalResult);
+          print (totalCredit);
           print('=====');
         });
+
+        log.e(GpaConversion.returnSgpa(totalResult, totalCredit, (event as AddSubjectsEvent).gpaType).toString());
 
         log.e('Add Subjects Event Called Subjects: ');
         print(subjects);
@@ -53,10 +71,12 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         print(totalError);
 
         yield state.clone(
-            subjects: subjects,
-            emptySubjects: emptySubjects,
-            totalError: totalError);
+          subjects: subjects,
+          emptySubjects: emptySubjects,
+          totalError: totalError,
+        );
         break;
+
       case DeleteSubjectEvent:
         final index = (event as DeleteSubjectEvent).index;
         final subjects = state.subjects;
@@ -64,9 +84,12 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         subjects.remove(index);
         emptySubjects.remove(index);
         yield state.clone(subjects: subjects, emptySubjects: emptySubjects);
+        print(subjects);
+        print(emptySubjects);
         log.e('Delete Subject Event called');
         this.add(TotalErrorEvent());
         break;
+
       case TotalErrorEvent:
         final subjects = state.subjects;
         final emptySubjects = state.emptySubjects;
@@ -92,6 +115,8 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         break;
     }
   }
+
+
 
   @override
   void onError(Object error, StackTrace stacktrace) {
