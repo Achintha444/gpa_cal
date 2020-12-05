@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../db/model/semester.dart';
 import '../../../theme/project_theme.dart';
+import '../../../util/ui_util/custom_alert_dialog.dart';
+import '../home_bloc.dart';
+import '../home_event.dart';
 
 class SemesterCard extends StatelessWidget {
+  final int index;
+  final Semester semester;
+  final HomeBloc homeBloc;
+
   const SemesterCard({
     Key key,
+    @required this.index,
+    @required this.semester,
+    @required this.homeBloc,
   }) : super(key: key);
 
   @override
@@ -32,8 +44,10 @@ class SemesterCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: SizedBox()),
+
+                /// Semester Name
                 Text(
-                  'Semester 1',
+                  semester.name,
                   style: TextStyle(
                     color: ProjectColours.PRIMARY_COLOR,
                     fontSize: 16,
@@ -42,8 +56,10 @@ class SemesterCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 8),
+
+                /// SGPA
                 Text(
-                  'SGPA 3.67',
+                  'SGPA ' + semester.sgpa.toString(),
                   style: TextStyle(
                     color: ProjectColours.PRIMARY_COLOR,
                     fontSize: 16,
@@ -57,14 +73,14 @@ class SemesterCard extends StatelessWidget {
           ),
 
           /// Semester Card Edit
-          SizedBox(width: 16),
+          /* SizedBox(width: 16),
           SemesterCardIconButton(
             icon: Icon(Icons.edit),
             iconColor: ProjectColours.PRIMARY_COLOR,
             color: ProjectColours.BUTTON_BG_COLOR,
             borderRadius: null,
             onPressed: () {},
-          ),
+          ), */
           SizedBox(width: 16),
           SemesterCardIconButton(
             icon: Icon(Icons.delete),
@@ -74,7 +90,20 @@ class SemesterCard extends StatelessWidget {
               topRight: Radius.circular(10),
               bottomRight: Radius.circular(10),
             ),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CustomAlertDialog(
+                      onCancel: () {
+                        Navigator.pop(context);
+                      },
+                      onConfirm: (){
+                        homeBloc.add(DeleteSemesterEvent(semester));
+                      },
+                    );
+                  });
+            },
           ),
         ],
       ),

@@ -30,11 +30,12 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
         ),
       ),
       child: Container(
-        height: 215,
+        height: 204,
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height:4),
             Text(
               'Set Semester Name',
               style: TextStyle(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gpa_cal/db/model/user_result.dart';
+
+import '../../db/model/semester.dart';
+import '../../db/model/user_result.dart';
 
 @immutable
 abstract class HomeEvent {}
@@ -20,4 +22,10 @@ class HomeInterfaceEvent extends HomeEvent {
   final UserResultModel userResultModel;
 
   HomeInterfaceEvent(this.userResultModel);
+}
+
+class DeleteSemesterEvent extends HomeEvent{
+  final Semester deleteSemester;
+
+  DeleteSemesterEvent(this.deleteSemester);
 }

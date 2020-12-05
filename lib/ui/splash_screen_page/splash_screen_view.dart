@@ -9,9 +9,10 @@ import 'page/splash_screen_page.dart';
 import 'splash_screen_bloc.dart';
 import 'splash_screen_state.dart';
 
+// ignore: must_be_immutable
 class SplashScreenView extends StatelessWidget {
   static final log = Log("SplashScreenView");
-  static final _scaffoldKey = GlobalKey<ScaffoldState>();
+  var _scaffoldKey = GlobalKey<ScaffoldState>();
 
   static final loadingWidget = Center(
     child: CircularProgressIndicator(),

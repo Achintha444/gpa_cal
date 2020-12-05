@@ -90,4 +90,8 @@ class GpaConversion {
       return (_totResult/_totCredit);
     }
   }
+
+  static double returnCgpa(double totalResult, double totalCredit){
+    return (totalResult/totalCredit);
+  }
 }

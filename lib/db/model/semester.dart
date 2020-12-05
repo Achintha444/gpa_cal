@@ -8,7 +8,7 @@ class Semester extends Model {
   double sgpa;
   double totalResult;
   double totalCredit;
-  List<Map> subjectList;
+  List subjectList;
 
   Semester({
     @required this.hash,

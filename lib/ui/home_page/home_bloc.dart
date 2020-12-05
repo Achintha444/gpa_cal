@@ -52,6 +52,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final userResultModel = (event as HomeInterfaceEvent).userResultModel;
         log.e('Home Interface Event');
         yield state.clone(userResultModel: userResultModel, loading: false);
+        break;
+      case DeleteSemesterEvent:
+        yield state.clone(loading: true);
+        final deleteSemester = (event as DeleteSemesterEvent).deleteSemester;
+        await _homeRepo.deleteSemester(deleteSemester);
+        log.e('Delete Semester Event called');
+        yield state.clone(deleteSemester: deleteSemester, loading: false);
     }
   }
 

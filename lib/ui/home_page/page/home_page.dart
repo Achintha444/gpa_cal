@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gpa_cal/ui/home_page/widgets/set_semester_name_dialog.dart';
-import 'package:gpa_cal/util/ui_util/loading_screen.dart';
+import 'package:gpa_cal/ui/home_page/home_bloc.dart';
 
+import '../../../db/model/semester.dart';
 import '../../../db/model/user_details_model.dart';
 import '../../../db/model/user_result.dart';
 import '../../../theme/project_theme.dart';
+import '../../../util/ui_util/loading_screen.dart';
 import '../widgets/semester_card.dart';
+import '../widgets/set_semester_name_dialog.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final UserResultModel userResultModel;
   final UserDetailsModel userDetailsModel;
 
@@ -17,6 +20,35 @@ class HomePage extends StatelessWidget {
       @required this.userResultModel,
       @required this.userDetailsModel})
       : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<Widget> _semesterCards;
+
+  @override
+  void initState() {
+    print(widget.userResultModel.semesters.length);
+    _semesterCards = List.generate(
+      widget.userResultModel.semesters.length,
+      (index) => Column(
+        children: [
+          SizedBox(height: 8),
+          SemesterCard(
+            index: index,
+            homeBloc: BlocProvider.of<HomeBloc>(context),
+            semester: Semester.fromJson(
+              widget.userResultModel.semesters[index] as Map<String, dynamic>,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +60,15 @@ class HomePage extends StatelessWidget {
           children: [
             /// CGPA CARD
             CgpaCard(
-              userDetailsModel: userDetailsModel,
-              userResultModel: userResultModel,
+              userDetailsModel: widget.userDetailsModel,
+              userResultModel: widget.userResultModel,
             ),
 
             /// Semester Count
             SizedBox(height: 16),
             Text(
-              'Semesters - ' + userResultModel.semesters.length.toString(),
+              'Semesters - ' +
+                  widget.userResultModel.semesters.length.toString(),
               style: TextStyle(
                 color: ProjectColours.PRIMARY_COLOR,
                 fontSize: 14,
@@ -43,15 +76,16 @@ class HomePage extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 8),
 
-            /// Semsters List
-            SemesterCard(),
+            Column(
+              children: _semesterCards,
+            ),
           ],
         ),
 
         /// Add semester FAB
-        FAB(userDetailsModel: userDetailsModel),
+        FAB(userDetailsModel: widget.userDetailsModel),
       ],
     );
   }
@@ -128,7 +162,7 @@ class CgpaCard extends StatelessWidget {
                     ),
                     SizedBox(width: 12),
                     Text(
-                      userResultModel.cgpa.toString(),
+                      userResultModel.cgpa.toStringAsPrecision(3),
                       style: TextStyle(
                         color: ProjectColours.SET_NAME_COLOUR,
                         fontSize: 24,
@@ -136,17 +170,15 @@ class CgpaCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    Expanded(
-                      child: Text(
-                        userDetailsModel.gpaType == 0 ? '/4.0' : '/4.2',
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.fade,
-                        style: TextStyle(
-                          color: ProjectColours.PRIMARY_COLOR,
-                          fontSize: 24,
-                          letterSpacing: 0.15,
-                          fontWeight: FontWeight.w700,
-                        ),
+                    Text(
+                      userDetailsModel.gpaType == 0 ? '/4.0' : '/4.2',
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(
+                        color: ProjectColours.PRIMARY_COLOR,
+                        fontSize: 24,
+                        letterSpacing: 0.15,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -176,29 +208,40 @@ class FAB extends StatelessWidget {
       alignment: Alignment.bottomRight,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 16.0, right: 16.0),
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return SetSemesterNameDialog(
-                  userDetailsModel: userDetailsModel,
-                );
-              },
-            );
-          },
-          backgroundColor: ProjectColours.BUTTON_BG_COLOR,
-          icon: Icon(
-            Icons.add,
-            color: ProjectColours.PRIMARY_COLOR,
-            size: 24,
-          ),
-          label: Text(
-            'Add Semester',
-            style: TextStyle(
-              color: ProjectColours.PRIMARY_COLOR,
-              fontWeight: FontWeight.w700,
+        child: Container(
+          height: 64,
+          width: 64,
+          child: FloatingActionButton(
+            mini: false,
+            tooltip: 'Add Semester',
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return SetSemesterNameDialog(
+                    userDetailsModel: userDetailsModel,
+                  );
+                },
+              );
+            },
+            backgroundColor: ProjectColours.SET_NAME_COLOUR,
+            child: Icon(
+              Icons.library_add_rounded,
+              color: ProjectColours.SCAFFOLD_BACKGROUND,
+              size: 28,
             ),
+            /*  icon: Icon(
+              Icons.add,
+              color: ProjectColours.PRIMARY_COLOR,
+              size: 24,
+            ),
+            label: Text(
+              'Add Semester',
+              style: TextStyle(
+                color: ProjectColours.PRIMARY_COLOR,
+                fontWeight: FontWeight.w700,
+              ),
+            ), */
           ),
         ),
       ),

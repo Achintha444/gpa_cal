@@ -7,9 +7,10 @@ import 'page/splash_screen_form_page.dart';
 import 'splash_form_bloc.dart';
 import 'splash_form_state.dart';
 
+// ignore: must_be_immutable
 class SplashFormView extends StatelessWidget {
   static final log = Log("SplashFormView");
-  static final _scaffoldKey = GlobalKey<ScaffoldState>();
+  var _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gpa_cal/ui/home_page/widgets/set_semester_name_dialog.dart';
-import 'package:gpa_cal/util/ui_util/gpa_cal_main_button.dart';
 
 import '../../../db/model/user_details_model.dart';
 import '../../../theme/project_theme.dart';
+import '../../../util/ui_util/gpa_cal_main_button.dart';
+import '../../../util/ui_util/loading_screen.dart';
+import 'set_semester_name_dialog.dart';
 
 class HomeFirstInterface extends StatelessWidget {
   final UserDetailsModel userDetailsModel;
@@ -55,6 +56,13 @@ class HomeFirstInterface extends StatelessWidget {
                         tag: 'Hero Tag 2',
                         child: SvgPicture.asset(
                           'graphics/person.svg',
+                          placeholderBuilder: (context) {
+                            return Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height / 2,
+                              child: LoadingScreen(),
+                            );
+                          },
                         ),
                       ),
                       SizedBox(height: 64),
