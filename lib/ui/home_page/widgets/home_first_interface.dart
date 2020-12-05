@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gpa_cal/ui/home_page/page/set_semester_name_dialog.dart';
+import 'package:gpa_cal/ui/home_page/widgets/set_semester_name_dialog.dart';
 import 'package:gpa_cal/util/ui_util/gpa_cal_main_button.dart';
 
 import '../../../db/model/user_details_model.dart';

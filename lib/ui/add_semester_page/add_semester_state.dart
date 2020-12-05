@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../db/model/semester.dart';
+
 @immutable
 class AddSemesterState {
   final String error;
@@ -11,6 +13,9 @@ class AddSemesterState {
   final Map totalResult;
   final Map totalCredit;
   final double sgpa;
+  
+  // final Semester object is saved here
+  final Semester semester;
 
   AddSemesterState({
     @required this.error,
@@ -20,6 +25,7 @@ class AddSemesterState {
     @required this.totalResult,
     @required this.totalCredit,
     @required this.sgpa,
+    @required this.semester,
   });
 
   static AddSemesterState get initialState => AddSemesterState(
@@ -30,6 +36,7 @@ class AddSemesterState {
         totalCredit: {},
         totalResult: {},
         sgpa: 0,
+        semester: null,
       );
 
   AddSemesterState clone({
@@ -39,7 +46,8 @@ class AddSemesterState {
     bool totalError,
     Map totalResult,
     Map totalCredit,
-    double sgpa
+    double sgpa,
+    Semester semester,
   }) {
     return AddSemesterState(
       error: error ?? this.error,
@@ -48,7 +56,8 @@ class AddSemesterState {
       totalError: totalError ?? this.totalError,
       sgpa: sgpa ?? this.sgpa,
       totalCredit: totalCredit ?? this.totalCredit,
-      totalResult: totalResult ?? this.totalResult
+      totalResult: totalResult ?? this.totalResult,
+      semester: semester ?? this.semester
     );
   }
 }

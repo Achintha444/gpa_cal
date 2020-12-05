@@ -2,6 +2,7 @@ import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gpa_cal/ui/add_semester_page/page/add_semester_page.dart';
+import 'package:gpa_cal/ui/home_page/home_exports.dart';
 import 'package:gpa_cal/util/ui_util/custom_app_bar.dart';
 
 import '../../db/model/user_details_model.dart';
@@ -41,6 +42,20 @@ class AddSemesterView extends StatelessWidget {
                 ),
               );
             }
+          },
+        ),
+        BlocListener<AddSemesterBloc, AddSemesterState>(
+          listenWhen: (pre, current) =>
+              pre.semester != current.semester,
+          listener: (context, state) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomeProvider(
+                    userDetailsModel: userDetailsModel,
+                  ),
+                ),
+                (Route<dynamic> route) => false);
           },
         ),
       ],

@@ -23,3 +23,9 @@ class DeleteSubjectEvent extends AddSemesterEvent {
 }
 
 class TotalErrorEvent extends AddSemesterEvent {}
+
+class ConfirmEvent extends AddSemesterEvent {
+  final String name;
+
+  ConfirmEvent(this.name);
+}

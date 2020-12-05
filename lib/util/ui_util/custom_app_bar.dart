@@ -33,13 +33,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   icon: Icon(Icons.keyboard_arrow_left),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
-          actions: [
+/*           actions: [
             IconButton(
               icon: Icon(Icons.more_vert),
               tooltip: 'More Options',
               onPressed: () {},
             ),
-          ],
+          ], */
         ),
         Padding(
           padding: const EdgeInsets.only(left: 24),

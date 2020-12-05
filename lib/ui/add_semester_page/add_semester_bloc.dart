@@ -3,13 +3,17 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
-import 'package:gpa_cal/util/db_util/gpa_conversion.dart';
+import 'package:gpa_cal/db/model/semester.dart';
+import 'package:gpa_cal/util/errors.dart';
 
+import '../../db/repo/add_semester_repo.dart';
+import '../../util/db_util/gpa_conversion.dart';
 import 'add_semester_event.dart';
 import 'add_semester_state.dart';
 
 class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
   static final log = Log("AddSemesterBloc");
+  static final AddSemesterRepo _addSemesterRepo = new AddSemesterRepo();
 
   AddSemesterBloc(BuildContext context) : super(AddSemesterState.initialState);
 
@@ -58,11 +62,14 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
             totalError = true;
           }
           print(totalResult);
-          print (totalCredit);
+          print(totalCredit);
           print('=====');
         });
 
-        log.e(GpaConversion.returnSgpa(totalResult, totalCredit, (event as AddSubjectsEvent).gpaType).toString());
+        final sgpa = GpaConversion.returnSgpa(
+            totalResult, totalCredit, (event as AddSubjectsEvent).gpaType);
+
+        log.e(sgpa.toString());
 
         log.e('Add Subjects Event Called Subjects: ');
         print(subjects);
@@ -74,6 +81,7 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
           subjects: subjects,
           emptySubjects: emptySubjects,
           totalError: totalError,
+          sgpa: sgpa,
         );
         break;
 
@@ -83,7 +91,20 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         final emptySubjects = state.emptySubjects;
         subjects.remove(index);
         emptySubjects.remove(index);
-        yield state.clone(subjects: subjects, emptySubjects: emptySubjects);
+
+        final totalResult = state.totalResult;
+        final totalCredit = state.totalCredit;
+
+        totalCredit.remove(index);
+        totalResult.remove(index);
+
+        final sgpa = GpaConversion.returnSgpa(
+            totalResult, totalCredit, (event as DeleteSubjectEvent).gpaType);
+
+        log.e(sgpa.toString());
+
+        yield state.clone(
+            subjects: subjects, emptySubjects: emptySubjects, sgpa: sgpa);
         print(subjects);
         print(emptySubjects);
         log.e('Delete Subject Event called');
@@ -113,10 +134,61 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         }
         log.e('Total Error Event called');
         break;
+
+      case ConfirmEvent:
+        final name = (event as ConfirmEvent).name;
+        final sgpa = state.sgpa;
+        final totalCreditMap = state.totalCredit;
+        final subjectsMap = state.subjects;
+
+        final totalCredit = _calculateTotalCredit(totalCreditMap);
+        final totalResult = sgpa * totalCredit;
+        final subjects = _returnSubjectList(subjectsMap);
+
+        final hash = (name +
+                sgpa.toString() +
+                totalCredit.toString() +
+                totalResult.toString() +
+                subjects.toString())
+            .hashCode;
+
+        final semester = new Semester(
+          hash: hash,
+          name: name,
+          sgpa: sgpa,
+          totalResult: totalResult,
+          totalCredit: totalCredit,
+          subjectList: subjects,
+        );
+
+        try {
+          await _addSemesterRepo.addSemesterLocally(semester);
+          yield state.clone(semester: semester);
+        } on CacheError {
+          add(ErrorEvent('Stroage Limit Exceed!'));
+        } catch (e) {
+          add(ErrorEvent('UNEXPECTED FATAL ERROR!'));
+        }
+
+        break;
     }
   }
 
+  double _calculateTotalCredit(Map totalCreditMap) {
+    var _totalCredit = 0.0;
+    totalCreditMap.forEach((key, credit) {
+      _totalCredit += double.parse(credit);
+    });
+    return _totalCredit;
+  }
 
+  List<Map> _returnSubjectList(Map<int, Map> subjectsMap) {
+    List<Map> _subjects = [];
+    subjectsMap.forEach((key, subject) {
+      _subjects.add(subject);
+    });
+    return _subjects;
+  }
 
   @override
   void onError(Object error, StackTrace stacktrace) {

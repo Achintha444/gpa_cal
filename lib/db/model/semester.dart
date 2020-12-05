@@ -1,33 +1,44 @@
 import 'package:flutter/material.dart';
 
 import '../../util/db_util/model.dart';
-import 'subject.dart';
 
 class Semester extends Model {
-  String semester;
+  int hash;
+  String name;
   double sgpa;
-  List<Subject> subjectList;
+  double totalResult;
+  double totalCredit;
+  List<Map> subjectList;
 
   Semester({
-    @required this.semester,
+    @required this.hash,
+    @required this.name,
     @required this.sgpa,
+    @required this.totalResult,
+    @required this.totalCredit,
     @required this.subjectList,
   });
 
   static Semester fromJson(Map<String, dynamic> json) {
     return Semester(
-      semester: json['semester'],
+      hash: json['hash'],
+      name: json['name'],
       sgpa: json['sgpa'],
       subjectList: json['subjectList'],
+      totalCredit: json['totalCredit'],
+      totalResult: json['totalResult'],
     );
   }
 
   @override
   Map<String, dynamic> toJson() {
     return {
-      'semester': this.semester,
+      'hash': this.hash,
+      'name': this.name,
       'sgpa': this.sgpa,
-      'subjectList': this.subjectList
+      'subjectList': this.subjectList,
+      'totalCredit' : this.totalCredit,
+      'totalResult': this.totalResult,
     };
   }
 }

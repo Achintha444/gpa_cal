@@ -39,7 +39,7 @@ class _SubjectCardState extends State<SubjectCard> {
   @override
   void initState() {
     resultValue = _selectResultType()[1];
-    credit = '3';
+    credit = '2';
     subject = {
       'result': resultValue,
       'credit': credit,

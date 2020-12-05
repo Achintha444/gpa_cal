@@ -24,14 +24,13 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
       UserDetailsModel _userDetailsModel = await _splashScreenRepo.autoChange();
       await Future.delayed(Duration(seconds: 2));
       add(LoadHomeScreenEvent(_userDetailsModel));
-
     } on CacheNotPresentError {
       await Future.delayed(Duration(seconds: 2));
       add(SplashFormEvent(true));
     } on CacheError {
       add(ErrorEvent('Stroage Limit Exceed!'));
     } catch (e) {
-       add(ErrorEvent('UNEXPECTED FATAL ERROR!'));
+      add(ErrorEvent('UNEXPECTED FATAL ERROR!'));
     }
   }
 
@@ -44,15 +43,17 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
         yield state.clone(error: error);
         break;
       case SplashFormEvent:
+        yield state.clone(loading: true);
         final cacheNotPresent = (event as SplashFormEvent).cacheNotPresent;
         log.e('Cache Not Present: $cacheNotPresent');
-        yield state.clone(cacheNotPresent:  cacheNotPresent, loading: false);
+        yield state.clone(cacheNotPresent: cacheNotPresent, loading: false);
         break;
       case LoadHomeScreenEvent:
-        yield(state.clone(loading: true));
-        final userDetailsModel = (event as LoadHomeScreenEvent).userDetailsModel;
+        yield (state.clone(loading: true));
+        final userDetailsModel =
+            (event as LoadHomeScreenEvent).userDetailsModel;
         log.e('Load Home Screen Event called');
-        yield state.clone(userDetailsModel: userDetailsModel);
+        yield state.clone(userDetailsModel: userDetailsModel, loading: false);
     }
   }
 

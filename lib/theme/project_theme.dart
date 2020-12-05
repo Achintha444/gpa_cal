@@ -85,4 +85,22 @@ abstract class ProjectThemes {
       borderRadius: BorderRadius.circular(20),
     );
   }
+
+  static BoxDecoration semesterContainerDecoration(){
+    return BoxDecoration(
+      color: ProjectColours.HOME_PAGE_EMPTY_CARD_COLOR,
+      boxShadow: [
+        BoxShadow(
+          color: ProjectColours.HOME_PAGE_EMPTY_CARD_SHADOW_COLOR
+              .withOpacity(0.25),
+          spreadRadius: 0,
+          blurRadius: 10,
+          offset: Offset(0, 4), // changes position of shadow
+        ),
+      ],
+      shape: BoxShape.rectangle,
+      //border: Border.all(color: ProjectColours.PRIMARY_COLOR, width: 5),
+      borderRadius: BorderRadius.circular(10),
+    );
+  }
 }

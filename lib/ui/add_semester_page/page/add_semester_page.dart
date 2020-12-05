@@ -80,7 +80,7 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                 children: [
                   Container(
                     height: MediaQuery.of(context).size.height * (123 / 823),
-                    width: MediaQuery.of(context).size.width,
+                    //width: MediaQuery.of(context).size.width,
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     decoration: ProjectThemes.containerDecoration(),
                     child: Row(
@@ -97,50 +97,52 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                           ),
                         ),
                         SizedBox(width: 24),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: 4),
-                            Text(
-                              widget.semesterName,
-                              overflow: TextOverflow.clip,
-                              maxLines: 1,
-                              softWrap: false,
-                              textWidthBasis: TextWidthBasis.parent,
-                              style: TextStyle(
-                                color: ProjectColours.PRIMARY_COLOR,
-                                fontSize: 16,
-                                letterSpacing: 0.5,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 4),
+                              Text(
+                                widget.semesterName,
+                                overflow: TextOverflow.fade,
+                                maxLines: 1,
+                                softWrap: false,
+                                textWidthBasis: TextWidthBasis.parent,
+                                style: TextStyle(
+                                  color: ProjectColours.PRIMARY_COLOR,
+                                  fontSize: 16,
+                                  letterSpacing: 0.5,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 4),
-                            //ErrorAnimatedWidget(child: null, direction: null)
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'SGPA',
-                                  style: TextStyle(
-                                    color: ProjectColours.SET_NAME_COLOUR,
-                                    fontSize: 16,
-                                    letterSpacing: 0.5,
-                                    fontWeight: FontWeight.w500,
+                              SizedBox(height: 4),
+                              //ErrorAnimatedWidget(child: null, direction: null)
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'SGPA',
+                                    style: TextStyle(
+                                      color: ProjectColours.SET_NAME_COLOUR,
+                                      fontSize: 16,
+                                      letterSpacing: 0.5,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 16),
-                                Text(
-                                  '4.0',
-                                  style: TextStyle(
-                                    color: ProjectColours.SET_NAME_COLOUR,
-                                    fontSize: 34,
-                                    letterSpacing: 0.5,
-                                    fontWeight: FontWeight.w700,
+                                  SizedBox(width: 16),
+                                  Text(
+                                    state.sgpa.toString(),
+                                    style: TextStyle(
+                                      color: ProjectColours.SET_NAME_COLOUR,
+                                      fontSize: 34,
+                                      letterSpacing: 0.5,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -148,7 +150,7 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                   SizedBox(height: 16),
 
                   Text(
-                    'Courses - '+_subjectCount.toString(),
+                    'Courses - ' + _subjectCount.toString(),
                     style: TextStyle(
                       color: ProjectColours.PRIMARY_COLOR,
                       fontSize: 14,
@@ -211,7 +213,10 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                                                   _widgetList[index] = SizedBox(
                                                       height: 0, width: 0);
                                                   addSemesterBloc.add(
-                                                    DeleteSubjectEvent(index, widget.userDetailsModel.gpaType),
+                                                    DeleteSubjectEvent(
+                                                        index,
+                                                        widget.userDetailsModel
+                                                            .gpaType),
                                                   );
                                                 } else {
                                                   addSemesterBloc
@@ -256,7 +261,16 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
             /// Confirm Button that will open a Confirm dialog
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              child: GpaCalMainButton(text: 'Confirm', onClick: () {}),
+              child: GpaCalMainButton(
+                  text: 'Confirm',
+                  onClick: () {
+                    if (state.totalError) {
+                      addSemesterBloc
+                          .add(ErrorEvent('Course fields are not complete!'));
+                    } else {
+                      addSemesterBloc.add(ConfirmEvent(widget.semesterName));
+                    }
+                  }),
             ),
           ],
         );
