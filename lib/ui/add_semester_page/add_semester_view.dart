@@ -2,24 +2,24 @@ import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gpa_cal/ui/add_semester_page/page/add_semester_page.dart';
-import 'package:gpa_cal/ui/home_page/home_exports.dart';
-import 'package:gpa_cal/util/ui_util/custom_alert_dialog.dart';
-import 'package:gpa_cal/util/ui_util/custom_app_bar.dart';
 
 import '../../db/model/user_details_model.dart';
+import '../../util/ui_util/custom_alert_dialog.dart';
+import '../../util/ui_util/custom_app_bar.dart';
+import '../home_page/home_exports.dart';
 import 'add_semester_bloc.dart';
 import 'add_semester_state.dart';
+import 'page/add_semester_page.dart';
 
+// ignore: must_be_immutable
 class AddSemesterView extends StatelessWidget {
   static final log = Log("AddSemesterView");
 
   final UserDetailsModel userDetailsModel;
   final String semesterName;
-  static final GlobalKey<ScaffoldState> _scaffoldKey =
-      new GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  const AddSemesterView(
+  AddSemesterView(
       {Key key, @required this.userDetailsModel, @required this.semesterName})
       : super(key: key);
 
