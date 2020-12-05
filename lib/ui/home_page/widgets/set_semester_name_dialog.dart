@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gpa_cal/db/model/user_details_model.dart';
-import 'package:gpa_cal/theme/project_theme.dart';
-import 'package:gpa_cal/ui/add_semester_page/add_semester_exports.dart';
-import 'package:gpa_cal/ui/home_page/home_exports.dart';
-import 'package:gpa_cal/util/ui_util/error_animated_widget.dart';
+
+import '../../../db/model/user_details_model.dart';
+import '../../../theme/project_theme.dart';
+import '../../../util/ui_util/error_animated_widget.dart';
+import '../../add_semester_page/add_semester_exports.dart';
 
 class SetSemesterNameDialog extends StatefulWidget {
   final UserDetailsModel userDetailsModel;
@@ -18,14 +18,19 @@ class SetSemesterNameDialog extends StatefulWidget {
 }
 
 class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
-  String _semester_name = '';
+  String _semesterName = '';
   bool _error = false;
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
+        ),
+      ),
       child: Container(
-        height: 220,
+        height: 215,
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +74,7 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
                     _error = true;
                   } else {
                     _error = false;
-                    _semester_name = value;
+                    _semesterName = value;
                   }
                 });
               },
@@ -93,7 +98,7 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
                 ),
                 FlatButton(
                   onPressed: () {
-                    if (_semester_name.isEmpty) {
+                    if (_semesterName.isEmpty) {
                       setState(() {
                         _error = true;
                       });
@@ -106,7 +111,7 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
                             builder: (context) {
                               return AddSemesterProvider(
                                 userDetailsModel: widget.userDetailsModel,
-                                semesterName: _semester_name,
+                                semesterName: _semesterName,
                               );
                             },
                           ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gpa_cal/ui/home_page/widgets/set_semester_name_dialog.dart';
+import 'package:gpa_cal/util/ui_util/loading_screen.dart';
 
 import '../../../db/model/user_details_model.dart';
 import '../../../db/model/user_result.dart';
@@ -42,14 +44,14 @@ class HomePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            
+
             /// Semsters List
             SemesterCard(),
           ],
         ),
 
         /// Add semester FAB
-        FAB(),
+        FAB(userDetailsModel: userDetailsModel),
       ],
     );
   }
@@ -82,6 +84,13 @@ class CgpaCard extends StatelessWidget {
               alignment: Alignment.centerLeft,
               width: MediaQuery.of(context).size.width * (96 / 411),
               height: MediaQuery.of(context).size.height / 8.5,
+              placeholderBuilder: (context) {
+                return Container(
+                  width: MediaQuery.of(context).size.width * (96 / 411),
+                  height: MediaQuery.of(context).size.height / 8.5,
+                  child: LoadingScreen(),
+                );
+              },
             ),
           ),
           SizedBox(width: 24),
@@ -154,8 +163,11 @@ class CgpaCard extends StatelessWidget {
 }
 
 class FAB extends StatelessWidget {
+  final UserDetailsModel userDetailsModel;
+
   const FAB({
     Key key,
+    @required this.userDetailsModel,
   }) : super(key: key);
 
   @override
@@ -165,7 +177,16 @@ class FAB extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 16.0, right: 16.0),
         child: FloatingActionButton.extended(
-          onPressed: () {},
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return SetSemesterNameDialog(
+                  userDetailsModel: userDetailsModel,
+                );
+              },
+            );
+          },
           backgroundColor: ProjectColours.BUTTON_BG_COLOR,
           icon: Icon(
             Icons.add,

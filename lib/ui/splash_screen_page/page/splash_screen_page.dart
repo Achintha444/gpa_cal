@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../util/ui_util/loading_screen.dart';
+
 class SplashScreenPage extends StatelessWidget {
   const SplashScreenPage({Key key}) : super(key: key);
 
@@ -28,6 +30,12 @@ class SplashScreenPage extends StatelessWidget {
               height: 216,
               child: SvgPicture.asset(
                 'graphics/cap.svg',
+                placeholderBuilder: (context) {
+                  return Container(
+                    height: 216,
+                    child: LoadingScreen(),
+                  );
+                },
               ),
             ),
           ),

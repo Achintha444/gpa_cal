@@ -1,8 +1,10 @@
 import 'package:fcode_common/fcode_common.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gpa_cal/ui/add_semester_page/page/add_semester_page.dart';
 import 'package:gpa_cal/ui/home_page/home_exports.dart';
+import 'package:gpa_cal/util/ui_util/custom_alert_dialog.dart';
 import 'package:gpa_cal/util/ui_util/custom_app_bar.dart';
 
 import '../../db/model/user_details_model.dart';
@@ -45,8 +47,7 @@ class AddSemesterView extends StatelessWidget {
           },
         ),
         BlocListener<AddSemesterBloc, AddSemesterState>(
-          listenWhen: (pre, current) =>
-              pre.semester != current.semester,
+          listenWhen: (pre, current) => pre.semester != current.semester,
           listener: (context, state) {
             Navigator.pushAndRemoveUntil(
                 context,
@@ -65,14 +66,43 @@ class AddSemesterView extends StatelessWidget {
           appBar: CustomAppBar(
             name: userDetailsModel.name,
             onBack: () {
-              Navigator.pop(context);
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return CustomAlertDialog(
+                    onCancel: () {
+                      Navigator.pop(context);
+                    },
+                    onConfirm: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              );
+              //Navigator.pop(context);
             },
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: AddSemesterPage(
-              semesterName: semesterName,
-              userDetailsModel: userDetailsModel,
+            child: WillPopScope(
+              onWillPop: () async => showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CustomAlertDialog(
+                      onCancel: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      onConfirm: () {
+                        Navigator.of(context).pop(true);
+                        Navigator.pop(context);
+                      },
+                    );
+                  }),
+              child: AddSemesterPage(
+                semesterName: semesterName,
+                userDetailsModel: userDetailsModel,
+              ),
             ),
           ),
         ),

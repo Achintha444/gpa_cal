@@ -31,7 +31,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ? null
               : IconButton(
                   icon: Icon(Icons.keyboard_arrow_left),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () => onBack(),
                 ),
 /*           actions: [
             IconButton(
@@ -53,7 +53,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
         ),
-        SizedBox(height: 16),
       ],
     );
   }

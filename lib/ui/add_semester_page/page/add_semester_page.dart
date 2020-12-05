@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gpa_cal/db/model/user_details_model.dart';
-import 'package:gpa_cal/ui/add_semester_page/add_semester_bloc.dart';
-import 'package:gpa_cal/ui/add_semester_page/add_semester_event.dart';
-import 'package:gpa_cal/ui/add_semester_page/add_semester_exports.dart';
-import 'package:gpa_cal/util/ui_util/error_animated_widget.dart';
 
+import '../../../db/model/user_details_model.dart';
 import '../../../theme/project_theme.dart';
+import '../../../util/ui_util/error_animated_widget.dart';
 import '../../../util/ui_util/gpa_cal_main_button.dart';
+import '../../../util/ui_util/loading_screen.dart';
+import '../add_semester_bloc.dart';
+import '../add_semester_event.dart';
+import '../add_semester_exports.dart';
 import '../widgets/subject_card.dart';
 
 class AddSemesterPage extends StatefulWidget {
@@ -94,6 +95,15 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                             width:
                                 MediaQuery.of(context).size.width * (96 / 411),
                             height: MediaQuery.of(context).size.height / 8.5,
+                            placeholderBuilder: (context) {
+                              return Container(
+                                width: MediaQuery.of(context).size.width *
+                                    (96 / 411),
+                                height:
+                                    MediaQuery.of(context).size.height / 8.5,
+                                child: LoadingScreen(),
+                              );
+                            },
                           ),
                         ),
                         SizedBox(width: 24),

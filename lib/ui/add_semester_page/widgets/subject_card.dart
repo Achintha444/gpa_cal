@@ -58,7 +58,7 @@ class _SubjectCardState extends State<SubjectCard> {
     final _addSemesterBloc = BlocProvider.of<AddSemesterBloc>(context);
 
     return Container(
-      height: MediaQuery.of(context).size.height / 6,
+      height: MediaQuery.of(context).size.height/5.5,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: ProjectColours.HOME_PAGE_EMPTY_CARD_COLOR,
@@ -106,7 +106,7 @@ class _SubjectCardState extends State<SubjectCard> {
                       style: _inputTextStyle(FontWeight.w500),
                     ),
 
-                    SizedBox(height: 8),
+                    SizedBox(height: 14),
 
                     // Result and Credit
                     Row(
@@ -199,7 +199,7 @@ class _SubjectCardState extends State<SubjectCard> {
               // bin
               Container(
                 width: 48,
-                height: MediaQuery.of(context).size.height / 6,
+                height: MediaQuery.of(context).size.height / 5.5,
                 decoration: BoxDecoration(
                   color: ProjectColours.PRIMARY_COLOR,
                   shape: BoxShape.rectangle,
