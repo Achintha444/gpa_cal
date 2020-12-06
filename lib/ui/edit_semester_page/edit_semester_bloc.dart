@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
 import 'package:gpa_cal/db/model/semester.dart';
+import 'package:gpa_cal/db/repo/edit_semester_repo.dart';
 import 'package:gpa_cal/db/repo/home_repo.dart';
 import 'package:gpa_cal/util/db_util/gpa_conversion.dart';
 import 'package:gpa_cal/util/errors.dart';
@@ -14,6 +15,7 @@ import 'edit_semester_state.dart';
 class EditSemesterBloc extends Bloc<EditSemesterEvent, EditSemesterState> {
   static final log = Log("EditSemesterBloc");
   static final _homeRepo = new HomeRepo();
+  static final _editSemesterRepo = new EditSemesterRepo();
   final Semester semester;
 
   EditSemesterBloc(BuildContext context, this.semester)
@@ -140,9 +142,10 @@ class EditSemesterBloc extends Bloc<EditSemesterEvent, EditSemesterState> {
         }
         log.e('Total Error Event called');
         break;
-      case DeleteEditeSemesterEvent :
+      case DeleteEditeSemesterEvent:
         yield state.clone(loading: true);
-        final deleteSemester = (event as DeleteEditeSemesterEvent).deleteSemester;
+        final deleteSemester =
+            (event as DeleteEditeSemesterEvent).deleteSemester;
         await _homeRepo.deleteSemester(deleteSemester);
         log.e('Delete Semester Event called');
         yield state.clone(deleteSemester: deleteSemester, loading: false);
@@ -158,12 +161,7 @@ class EditSemesterBloc extends Bloc<EditSemesterEvent, EditSemesterState> {
         final totalResult = sgpa * totalCredit;
         final subjects = _returnSubjectList(subjectsMap);
 
-        final hash = (name +
-                sgpa.toString() +
-                totalCredit.toString() +
-                totalResult.toString() +
-                subjects.toString())
-            .hashCode;
+        final hash = state.semester.hash;
 
         final semester = new Semester(
           hash: hash,
@@ -174,13 +172,17 @@ class EditSemesterBloc extends Bloc<EditSemesterEvent, EditSemesterState> {
           subjectList: subjects,
         );
 
-        try {
-          //await _addSemesterRepo.addSemesterLocally(semester);
-          yield state.clone(semester: semester, loading: false);
-        } on CacheError {
-          add(ErrorEvent('Stroage Limit Exceed!'));
-        } catch (e) {
-          add(ErrorEvent('UNEXPECTED FATAL ERROR!'));
+        if (semester == state.semester) {
+          yield state.clone(loaded: true, loading: false);
+        } else {
+          try {
+            await _editSemesterRepo.editSemester(semester);
+            yield state.clone(semester: semester, loading: false, loaded: true);
+          } on CacheError {
+            add(ErrorEvent('Stroage Limit Exceed!'));
+          } catch (e) {
+            add(ErrorEvent('UNEXPECTED FATAL ERROR!'));
+          }
         }
 
         break;

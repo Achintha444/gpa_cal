@@ -57,7 +57,7 @@ class EditSemesterView extends StatelessWidget {
           },
         ),
         BlocListener<EditSemesterBloc, EditSemesterState>(
-          listenWhen: (pre, current) => pre.semester != current.semester,
+          listenWhen: (pre, current) => current.loaded == true,
           listener: (context, state) {
             Navigator.pushAndRemoveUntil(
                 context,

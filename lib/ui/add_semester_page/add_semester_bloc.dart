@@ -43,9 +43,9 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
 
         var emptySubjects = [];
         print('Index is');
-        print (index);
-        print ('Single Subject is');
-        print (singleSubject);
+        print(index);
+        print('Single Subject is');
+        print(singleSubject);
 
         subjects.forEach((key, value) {
           var _count = 0;
@@ -166,7 +166,8 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
                 sgpa.toString() +
                 totalCredit.toString() +
                 totalResult.toString() +
-                subjects.toString())
+                subjects.toString() +
+                DateTime.now().toString())
             .hashCode;
 
         final semester = new Semester(
