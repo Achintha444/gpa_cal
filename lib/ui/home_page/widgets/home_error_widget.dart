@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../../db/model/user_details_model.dart';
+import '../home_exports.dart';
 
 class HomeErrorWidget extends StatelessWidget {
   final String error;
+  final UserDetailsModel userDetailsModel;
 
-  const HomeErrorWidget({Key key, @required this.error}) : super(key: key);
+  const HomeErrorWidget({Key key, @required this.error, @required this.userDetailsModel,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +73,11 @@ class HomeErrorWidget extends StatelessWidget {
                 size: 30,
               ),
               backgroundColor: Theme.of(context).primaryColor,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return HomeProvider(userDetailsModel: userDetailsModel);
+                }));
+              },
             ),
           ],
         ),

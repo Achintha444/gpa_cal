@@ -38,6 +38,7 @@ class _HomePageState extends State<HomePage> {
           SizedBox(height: 8),
           SemesterCard(
             index: index,
+            userDetailsModel: widget.userDetailsModel,
             homeBloc: BlocProvider.of<HomeBloc>(context),
             semester: Semester.fromJson(
               widget.userResultModel.semesters[index] as Map<String, dynamic>,

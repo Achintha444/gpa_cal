@@ -4,6 +4,7 @@ import '../../db/model/semester.dart';
 
 @immutable
 class AddSemesterState {
+  final bool loading;
   final String error;
   final Map<int, Map> subjects;
 
@@ -18,6 +19,7 @@ class AddSemesterState {
   final Semester semester;
 
   AddSemesterState({
+    @required this.loading,
     @required this.error,
     @required this.subjects,
     @required this.emptySubjects,
@@ -29,6 +31,7 @@ class AddSemesterState {
   });
 
   static AddSemesterState get initialState => AddSemesterState(
+        loading: false,
         error: '',
         subjects: {},
         emptySubjects: [],
@@ -40,6 +43,7 @@ class AddSemesterState {
       );
 
   AddSemesterState clone({
+    bool loading,
     String error,
     Map<int, Map> subjects,
     List emptySubjects,
@@ -50,6 +54,7 @@ class AddSemesterState {
     Semester semester,
   }) {
     return AddSemesterState(
+      loading: loading ?? this.loading,
       error: error ?? this.error,
       subjects: subjects ?? this.subjects,
       emptySubjects: emptySubjects ?? this.emptySubjects,

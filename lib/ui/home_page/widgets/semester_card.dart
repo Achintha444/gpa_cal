@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gpa_cal/db/model/user_details_model.dart';
+import 'package:gpa_cal/ui/edit_semester_page/edit_semester_exports.dart';
 
 import '../../../db/model/semester.dart';
 import '../../../theme/project_theme.dart';
@@ -9,12 +11,14 @@ import '../home_event.dart';
 
 class SemesterCard extends StatelessWidget {
   final int index;
+  final UserDetailsModel userDetailsModel;
   final Semester semester;
   final HomeBloc homeBloc;
 
   const SemesterCard({
     Key key,
     @required this.index,
+    @required this.userDetailsModel,
     @required this.semester,
     @required this.homeBloc,
   }) : super(key: key);
@@ -38,50 +42,53 @@ class SemesterCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 24),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: SizedBox()),
+            child: Material(
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return EditSemesterProvider(
+                      userDetailsModel: userDetailsModel,
+                      semester: semester,
+                    );
+                  }));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 24, right: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: SizedBox()),
 
-                /// Semester Name
-                Text(
-                  semester.name,
-                  style: TextStyle(
-                    color: ProjectColours.PRIMARY_COLOR,
-                    fontSize: 16,
-                    letterSpacing: 0.5,
-                    fontWeight: FontWeight.w400,
+                      /// Semester Name
+                      Text(
+                        semester.name,
+                        style: TextStyle(
+                          color: ProjectColours.PRIMARY_COLOR,
+                          fontSize: 16,
+                          letterSpacing: 0.5,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+
+                      /// SGPA
+                      Text(
+                        'SGPA ' + semester.sgpa.toString(),
+                        style: TextStyle(
+                          color: ProjectColours.PRIMARY_COLOR,
+                          fontSize: 16,
+                          letterSpacing: 0.5,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Expanded(child: SizedBox()),
+                    ],
                   ),
                 ),
-                SizedBox(height: 8),
-
-                /// SGPA
-                Text(
-                  'SGPA ' + semester.sgpa.toString(),
-                  style: TextStyle(
-                    color: ProjectColours.PRIMARY_COLOR,
-                    fontSize: 16,
-                    letterSpacing: 0.5,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Expanded(child: SizedBox()),
-              ],
+              ),
             ),
           ),
-
-          /// Semester Card Edit
-          /* SizedBox(width: 16),
-          SemesterCardIconButton(
-            icon: Icon(Icons.edit),
-            iconColor: ProjectColours.PRIMARY_COLOR,
-            color: ProjectColours.BUTTON_BG_COLOR,
-            borderRadius: null,
-            onPressed: () {},
-          ), */
-          SizedBox(width: 16),
           SemesterCardIconButton(
             icon: Icon(Icons.delete),
             iconColor: ProjectColours.BUTTON_BG_COLOR,
@@ -98,7 +105,7 @@ class SemesterCard extends StatelessWidget {
                       onCancel: () {
                         Navigator.pop(context);
                       },
-                      onConfirm: (){
+                      onConfirm: () {
                         homeBloc.add(DeleteSemesterEvent(semester));
                       },
                     );
@@ -142,6 +149,7 @@ class SemesterCardIconButton extends StatelessWidget {
         icon: icon,
         color: iconColor,
         onPressed: () => this.onPressed(),
+        tooltip: 'Delete Semester',
       ),
     );
   }

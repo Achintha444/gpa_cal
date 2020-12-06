@@ -28,6 +28,7 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         break;
 
       case AddSubjectsEvent:
+        yield state.clone(loading: true);
         final index = (event as AddSubjectsEvent).index;
         final singleSubject = (event as AddSubjectsEvent).subject;
         final subjects = state.subjects;
@@ -82,10 +83,12 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
           emptySubjects: emptySubjects,
           totalError: totalError,
           sgpa: sgpa,
+          loading: false,
         );
         break;
 
       case DeleteSubjectEvent:
+        yield state.clone(loading: true);
         final index = (event as DeleteSubjectEvent).index;
         final subjects = state.subjects;
         final emptySubjects = state.emptySubjects;
@@ -99,12 +102,19 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         totalResult.remove(index);
 
         final sgpa = GpaConversion.returnSgpa(
-            totalResult, totalCredit, (event as DeleteSubjectEvent).gpaType);
+          totalResult,
+          totalCredit,
+          (event as DeleteSubjectEvent).gpaType,
+        );
 
         log.e(sgpa.toString());
 
         yield state.clone(
-            subjects: subjects, emptySubjects: emptySubjects, sgpa: sgpa);
+          subjects: subjects,
+          emptySubjects: emptySubjects,
+          sgpa: sgpa,
+          loading: false,
+        );
         print(subjects);
         print(emptySubjects);
         log.e('Delete Subject Event called');
@@ -116,7 +126,7 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         final emptySubjects = state.emptySubjects;
         var totalError = false;
         if (emptySubjects.isNotEmpty) {
-          yield state.clone(totalError: true);
+          yield state.clone(totalError: true, loading: false);
         } else {
           subjects.forEach((key, value) {
             var _count = 0;
@@ -130,12 +140,13 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
               totalError = true;
             }
           });
-          yield state.clone(totalError: totalError);
+          yield state.clone(totalError: totalError, loading: false);
         }
         log.e('Total Error Event called');
         break;
 
       case ConfirmEvent:
+        yield state.clone(loading: true);
         final name = (event as ConfirmEvent).name;
         final sgpa = state.sgpa;
         final totalCreditMap = state.totalCredit;
@@ -163,7 +174,7 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
 
         try {
           await _addSemesterRepo.addSemesterLocally(semester);
-          yield state.clone(semester: semester);
+          yield state.clone(semester: semester, loading: false);
         } on CacheError {
           add(ErrorEvent('Stroage Limit Exceed!'));
         } catch (e) {

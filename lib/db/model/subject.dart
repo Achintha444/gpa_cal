@@ -4,7 +4,7 @@ import 'package:gpa_cal/util/db_util/model.dart';
 class Subject extends Model {
   String course;
   String result;
-  int credit;
+  double credit;
 
   Subject({
     @required this.course,
@@ -16,7 +16,7 @@ class Subject extends Model {
     return Subject(
       course: json['course'],
       result: json['result'],
-      credit: json['credit'],
+      credit: json['credit'].runtimeType==String ? double.parse(json['credit']) : json['credit'],
     );
   }
 
@@ -25,7 +25,7 @@ class Subject extends Model {
     return {
       'course': this.course,
       'result': this.result,
-      'credit': this.result
+      'credit': this.credit.toString()
     };
   }
 }

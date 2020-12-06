@@ -2,6 +2,7 @@ import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gpa_cal/util/ui_util/loading_screen.dart';
 
 import '../../db/model/user_details_model.dart';
 import '../../util/ui_util/custom_alert_dialog.dart';
@@ -19,9 +20,11 @@ class AddSemesterView extends StatelessWidget {
   final String semesterName;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  AddSemesterView(
-      {Key key, @required this.userDetailsModel, @required this.semesterName})
-      : super(key: key);
+  AddSemesterView({
+    Key key,
+    @required this.userDetailsModel,
+    @required this.semesterName,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -83,28 +86,35 @@ class AddSemesterView extends StatelessWidget {
               //Navigator.pop(context);
             },
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: WillPopScope(
-              onWillPop: () async => showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CustomAlertDialog(
-                      onCancel: () {
-                        Navigator.of(context).pop(false);
-                      },
-                      onConfirm: () {
-                        Navigator.of(context).pop(true);
-                        Navigator.pop(context);
-                      },
-                    );
-                  }),
-              child: AddSemesterPage(
-                semesterName: semesterName,
-                userDetailsModel: userDetailsModel,
-              ),
-            ),
-          ),
+          body: BlocBuilder<AddSemesterBloc, AddSemesterState>(
+              builder: (context, state) {
+            if (state.loading == true) {
+              return LoadingScreen();
+            } else {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: WillPopScope(
+                  onWillPop: () async => showDialog(
+                      context: context,
+                      builder: (context) {
+                        return CustomAlertDialog(
+                          onCancel: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          onConfirm: () {
+                            Navigator.of(context).pop(true);
+                            Navigator.pop(context);
+                          },
+                        );
+                      }),
+                  child: AddSemesterPage(
+                    semesterName: semesterName,
+                    userDetailsModel: userDetailsModel,
+                  ),
+                ),
+              );
+            }
+          }),
         ),
       ),
     );

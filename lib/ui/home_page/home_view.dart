@@ -73,6 +73,7 @@ class HomeView extends StatelessWidget {
               if (state.error.isNotEmpty) {
                 return HomeErrorWidget(
                   error: state.error,
+                  userDetailsModel: userDetailsModel,
                 );
               } else if (state.loading) {
                 return LoadingScreen();
