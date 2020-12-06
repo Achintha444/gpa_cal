@@ -10,6 +10,7 @@ import '../../../util/ui_util/gpa_cal_main_button.dart';
 import '../edit_semester_bloc.dart';
 import '../edit_semester_event.dart';
 import '../edit_semester_exports.dart';
+import '../widgets/edit_name_bottom_sheet.dart';
 import '../widgets/edit_semester_new_subject_card.dart';
 import '../widgets/edit_semester_subject_card.dart';
 
@@ -163,7 +164,15 @@ class _EditSemesterPageState extends State<EditSemesterPage> {
                     tooltip: 'Edit Name',
                     color: ProjectColours.PRIMARY_COLOR,
                     visualDensity: VisualDensity.compact,
-                    onPressed: () {},
+                    onPressed: () {
+                      showBottomSheet(context: context, builder: (context){
+                        return EditNameBottomSheet(name: _name, onConfirm: (newName){
+                          setState(() {
+                            _name = newName;
+                          });
+                        });
+                      });
+                    },
                   ),
                 ],
               ),
