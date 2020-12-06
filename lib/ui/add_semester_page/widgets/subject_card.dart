@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gpa_cal/ui/add_semester_page/add_semester_event.dart';
 import 'package:gpa_cal/ui/add_semester_page/add_semester_exports.dart';
+import 'package:gpa_cal/util/db_util/regex_input_formatter.dart';
 
 import '../../../db/model/user_details_model.dart';
 import '../../../theme/project_theme.dart';
@@ -46,7 +47,7 @@ class _SubjectCardState extends State<SubjectCard> {
     };
 
     BlocProvider.of<AddSemesterBloc>(context).add(
-      AddSubjectsEvent(subject, widget.index,widget.userDetailsModel.gpaType),
+      AddSubjectsEvent(subject, widget.index, widget.userDetailsModel.gpaType),
     );
 
     super.initState();
@@ -58,7 +59,7 @@ class _SubjectCardState extends State<SubjectCard> {
     final _addSemesterBloc = BlocProvider.of<AddSemesterBloc>(context);
 
     return Container(
-      height: MediaQuery.of(context).size.height/5.5,
+      height: MediaQuery.of(context).size.height / 5.5,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: ProjectColours.HOME_PAGE_EMPTY_CARD_COLOR,
@@ -95,7 +96,8 @@ class _SubjectCardState extends State<SubjectCard> {
                           subject['course'] = course;
                         });
                         _addSemesterBloc.add(
-                          AddSubjectsEvent(subject, widget.index,widget.userDetailsModel.gpaType),
+                          AddSubjectsEvent(subject, widget.index,
+                              widget.userDetailsModel.gpaType),
                         );
                       },
                       keyboardType: TextInputType.name,
@@ -130,7 +132,8 @@ class _SubjectCardState extends State<SubjectCard> {
                                   subject['result'] = resultValue;
                                 });
                                 _addSemesterBloc.add(
-                                  AddSubjectsEvent(subject, widget.index,widget.userDetailsModel.gpaType),
+                                  AddSubjectsEvent(subject, widget.index,
+                                      widget.userDetailsModel.gpaType),
                                 );
                               },
                               selectedItemBuilder: (BuildContext context) {
@@ -148,7 +151,7 @@ class _SubjectCardState extends State<SubjectCard> {
                                   return DropdownMenuItem<String>(
                                     value: value,
                                     child: Text(
-                                      value,
+                                      value+' : '+_selectResultMap()[value].toString(),
                                       style: _inputTextStyle(FontWeight.w700),
                                     ),
                                   );
@@ -164,6 +167,7 @@ class _SubjectCardState extends State<SubjectCard> {
                         Expanded(
                           child: TextFormField(
                             initialValue: credit,
+                            toolbarOptions: ToolbarOptions(paste: false),
                             onChanged: (newValue) {
                               print(newValue);
                               setState(() {
@@ -171,7 +175,8 @@ class _SubjectCardState extends State<SubjectCard> {
                                 subject['credit'] = credit;
                               });
                               _addSemesterBloc.add(
-                                AddSubjectsEvent(subject, widget.index,widget.userDetailsModel.gpaType),
+                                AddSubjectsEvent(subject, widget.index,
+                                    widget.userDetailsModel.gpaType),
                               );
                             },
                             decoration:
@@ -179,10 +184,12 @@ class _SubjectCardState extends State<SubjectCard> {
                                         -1)
                                     ? _inputDecortaiton('Credit')
                                     : _inputErrorDecortaiton('Credit'),
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.numberWithOptions(
+                              decimal: true,
+                              signed: false,
+                            ),
                             inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly,
-                              FilteringTextInputFormatter.singleLineFormatter
+                              Util.decimalFormatter,
                             ],
                             style: _inputTextStyle(FontWeight.w500),
                           ),
@@ -228,6 +235,13 @@ class _SubjectCardState extends State<SubjectCard> {
       return GpaConversion.resultList0;
     }
     return GpaConversion.resultList1;
+  }
+
+  Map _selectResultMap() {
+    if (widget.userDetailsModel.gpaType == 0) {
+      return GpaConversion.gpa0;
+    }
+    return GpaConversion.gpa1;
   }
 
   TextStyle _inputTextStyle(FontWeight fontWeight) {

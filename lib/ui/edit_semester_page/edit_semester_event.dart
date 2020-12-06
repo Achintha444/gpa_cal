@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../db/model/semester.dart';
+
 @immutable
 abstract class EditSemesterEvent {}
 
@@ -22,10 +24,16 @@ class DeleteEditSubjectEvent extends EditSemesterEvent {
   DeleteEditSubjectEvent(this.index, this.gpaType);
 }
 
-class TotalErrorEvent extends EditSemesterEvent{}
+class TotalErrorEvent extends EditSemesterEvent {}
 
-class ConfirmEvent extends EditSemesterEvent {
+class DeleteEditeSemesterEvent extends EditSemesterEvent {
+  final Semester deleteSemester;
+
+  DeleteEditeSemesterEvent(this.deleteSemester);
+}
+
+class EditConfirmEvent extends EditSemesterEvent {
   final String name;
 
-  ConfirmEvent(this.name);
+  EditConfirmEvent(this.name);
 }

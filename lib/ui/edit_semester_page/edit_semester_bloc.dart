@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
 import 'package:gpa_cal/db/model/semester.dart';
+import 'package:gpa_cal/db/repo/home_repo.dart';
 import 'package:gpa_cal/util/db_util/gpa_conversion.dart';
 import 'package:gpa_cal/util/errors.dart';
 
@@ -12,9 +13,11 @@ import 'edit_semester_state.dart';
 
 class EditSemesterBloc extends Bloc<EditSemesterEvent, EditSemesterState> {
   static final log = Log("EditSemesterBloc");
+  static final _homeRepo = new HomeRepo();
+  final Semester semester;
 
-  EditSemesterBloc(BuildContext context)
-      : super(EditSemesterState.initialState);
+  EditSemesterBloc(BuildContext context, this.semester)
+      : super(EditSemesterState.initialState(semester));
 
   @override
   Stream<EditSemesterState> mapEventToState(EditSemesterEvent event) async* {
@@ -45,10 +48,10 @@ class EditSemesterBloc extends Bloc<EditSemesterEvent, EditSemesterState> {
           var _count = 0;
           value.forEach((key1, value1) {
             if (key1 == 'result') {
-              totalResult[index][0] = value1;
+              totalResult[key][0] = value1;
             } else if (key1 == 'credit') {
-              totalResult[index][1] = value1;
-              totalCredit[index] = value1;
+              totalResult[key][1] = value1;
+              totalCredit[key] = value1;
             }
 
             _count += 1;
@@ -137,9 +140,16 @@ class EditSemesterBloc extends Bloc<EditSemesterEvent, EditSemesterState> {
         }
         log.e('Total Error Event called');
         break;
-      case ConfirmEvent:
+      case DeleteEditeSemesterEvent :
         yield state.clone(loading: true);
-        final name = (event as ConfirmEvent).name;
+        final deleteSemester = (event as DeleteEditeSemesterEvent).deleteSemester;
+        await _homeRepo.deleteSemester(deleteSemester);
+        log.e('Delete Semester Event called');
+        yield state.clone(deleteSemester: deleteSemester, loading: false);
+        break;
+      case EditConfirmEvent:
+        yield state.clone(loading: true);
+        final name = (event as EditConfirmEvent).name;
         final sgpa = state.sgpa;
         final totalCreditMap = state.totalCredit;
         final subjectsMap = state.subjects;
@@ -166,7 +176,7 @@ class EditSemesterBloc extends Bloc<EditSemesterEvent, EditSemesterState> {
 
         try {
           //await _addSemesterRepo.addSemesterLocally(semester);
-          yield state.clone(semester: semester,loading: false);
+          yield state.clone(semester: semester, loading: false);
         } on CacheError {
           add(ErrorEvent('Stroage Limit Exceed!'));
         } catch (e) {

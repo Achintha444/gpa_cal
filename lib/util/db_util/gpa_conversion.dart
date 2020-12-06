@@ -81,17 +81,17 @@ class GpaConversion {
       return 0.0;
     } else {
       var _totResult = 0.0;
-      totalResult.forEach((key, result) { 
+      totalResult.forEach((key, result) {
         var x = result[1].toString();
-        if(x.trim().isNotEmpty){
+        if (x.trim().isNotEmpty) {
           _totResult += (_gpa[result[0]] * double.parse(x));
         }
       });
-      return (_totResult/_totCredit);
+      return double.parse((_totResult / _totCredit).toStringAsPrecision(3));
     }
   }
 
-  static double returnCgpa(double totalResult, double totalCredit){
-    return (totalResult/totalCredit);
+  static double returnCgpa(double totalResult, double totalCredit) {
+    return  double.parse((totalResult / totalCredit).toStringAsPrecision(3));
   }
 }

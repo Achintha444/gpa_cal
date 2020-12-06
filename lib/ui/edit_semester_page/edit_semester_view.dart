@@ -1,10 +1,12 @@
 import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gpa_cal/util/ui_util/loading_screen.dart';
+import 'package:gpa_cal/ui/edit_semester_page/edit_semester_event.dart';
+import 'package:gpa_cal/util/ui_util/custom_alert_dialog.dart';
 
 import '../../db/model/semester.dart';
 import '../../db/model/user_details_model.dart';
+import '../../util/ui_util/loading_screen.dart';
 import '../home_page/home_exports.dart';
 import 'edit_semester_bloc.dart';
 import 'edit_semester_state.dart';
@@ -29,6 +31,9 @@ class EditSemesterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     log.d("Loading EditSemester View");
+
+    // ignore: close_sinks
+    final _editSemesterBloc = BlocProvider.of<EditSemesterBloc>(context);
 
     return MultiBlocListener(
       listeners: [
@@ -64,6 +69,20 @@ class EditSemesterView extends StatelessWidget {
                 (Route<dynamic> route) => false);
           },
         ),
+        BlocListener<EditSemesterBloc, EditSemesterState>(
+          listenWhen: (pre, current) =>
+              pre.deleteSemester != current.deleteSemester,
+          listener: (context, state) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomeProvider(
+                    userDetailsModel: userDetailsModel,
+                  ),
+                ),
+                (Route<dynamic> route) => false);
+          },
+        ),
       ],
       child: SafeArea(
         child: Scaffold(
@@ -87,7 +106,20 @@ class EditSemesterView extends StatelessWidget {
               );
               //Navigator.pop(context);
             },
-            onDelete: () {},
+            onDelete: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CustomAlertDialog(
+                      onCancel: () {
+                        Navigator.pop(context);
+                      },
+                      onConfirm: () {
+                        _editSemesterBloc.add(DeleteEditeSemesterEvent(semester));
+                      },
+                    );
+                  });
+            },
           ),
           body: BlocBuilder<EditSemesterBloc, EditSemesterState>(
             builder: (context, state) {

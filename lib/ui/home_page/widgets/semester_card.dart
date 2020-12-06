@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gpa_cal/db/model/user_details_model.dart';
-import 'package:gpa_cal/ui/edit_semester_page/edit_semester_exports.dart';
 
 import '../../../db/model/semester.dart';
+import '../../../db/model/user_details_model.dart';
 import '../../../theme/project_theme.dart';
 import '../../../util/ui_util/custom_alert_dialog.dart';
+import '../../edit_semester_page/edit_semester_exports.dart';
 import '../home_bloc.dart';
 import '../home_event.dart';
 

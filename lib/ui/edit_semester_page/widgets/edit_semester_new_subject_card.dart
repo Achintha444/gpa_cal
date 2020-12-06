@@ -1,59 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gpa_cal/util/db_util/regex_input_formatter.dart';
 
-import '../../../db/model/subject.dart';
 import '../../../db/model/user_details_model.dart';
 import '../../../theme/project_theme.dart';
 import '../../../util/db_util/gpa_conversion.dart';
+import '../../../util/db_util/regex_input_formatter.dart';
 import '../edit_semester_bloc.dart';
 import '../edit_semester_event.dart';
 import '../edit_semester_exports.dart';
 
-class EditSemesterSubjectCard extends StatefulWidget {
+class EditSmesterNewSubjectCard extends StatefulWidget {
   final int index;
   final Function onDelete;
   final UserDetailsModel userDetailsModel;
-  final Subject initSubject;
 
-  const EditSemesterSubjectCard({
-    Key key,
-    @required this.index,
-    @required this.onDelete,
-    @required this.userDetailsModel,
-    @required this.initSubject,
-  }) : super(key: key);
+  const EditSmesterNewSubjectCard(
+      {Key key,
+      @required this.index,
+      @required this.onDelete,
+      @required this.userDetailsModel})
+      : super(key: key);
 
   @override
-  _EditSemesterSubjectCardState createState() =>
-      _EditSemesterSubjectCardState();
+  _EditSmesterNewSubjectCardState createState() => _EditSmesterNewSubjectCardState();
 }
 
-class _EditSemesterSubjectCardState extends State<EditSemesterSubjectCard> {
+class _EditSmesterNewSubjectCardState extends State<EditSmesterNewSubjectCard> {
   /*  {
       'course': this.course,
       'result': this.result,
       'credit': this.result
     }*/
 
-  String course;
+  String course = '';
   String resultValue;
   String credit;
   Map subject;
   @override
   void initState() {
-    course = widget.initSubject.course;
-    resultValue = widget.initSubject.result;
-    credit = widget.initSubject.credit.toString();
-    subject = widget.initSubject.toJson();
+    resultValue = _selectResultType()[1];
+    credit = '2.0';
+    subject = {
+      'result': resultValue,
+      'credit': credit,
+    };
 
-    print(subject);
-
-/*     BlocProvider.of<EditSemesterBloc>(context).add(
+    BlocProvider.of<EditSemesterBloc>(context).add(
       EditSubjectsEvent(subject, widget.index, widget.userDetailsModel.gpaType),
     );
- */
+
     super.initState();
   }
 
@@ -94,7 +90,6 @@ class _EditSemesterSubjectCardState extends State<EditSemesterSubjectCard> {
                     Expanded(child: SizedBox()),
                     //Subject
                     TextFormField(
-                      initialValue: course,
                       onChanged: (newValue) {
                         setState(() {
                           course = newValue;
@@ -174,6 +169,7 @@ class _EditSemesterSubjectCardState extends State<EditSemesterSubjectCard> {
                         Expanded(
                           child: TextFormField(
                             initialValue: credit,
+                            toolbarOptions: ToolbarOptions(paste: false),
                             onChanged: (newValue) {
                               print(newValue);
                               setState(() {
@@ -191,10 +187,11 @@ class _EditSemesterSubjectCardState extends State<EditSemesterSubjectCard> {
                                     ? _inputDecortaiton('Credit')
                                     : _inputErrorDecortaiton('Credit'),
                             keyboardType: TextInputType.numberWithOptions(
-                                decimal: true, signed: false),
+                              decimal: true,
+                              signed: false,
+                            ),
                             inputFormatters: <TextInputFormatter>[
                               Util.decimalFormatter,
-                              FilteringTextInputFormatter.singleLineFormatter
                             ],
                             style: _inputTextStyle(FontWeight.w500),
                           ),

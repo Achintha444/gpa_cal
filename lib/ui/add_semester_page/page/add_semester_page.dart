@@ -73,103 +73,101 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
     return BlocBuilder<AddSemesterBloc, AddSemesterState>(
       builder: (context, state) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Container(
+              height: MediaQuery.of(context).size.height * (123 / 823),
+              //width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              decoration: ProjectThemes.containerDecoration(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Hero(
+                    tag: 'Hero Tag 2',
+                    child: SvgPicture.asset(
+                      'graphics/person.svg',
+                      alignment: Alignment.centerLeft,
+                      width: MediaQuery.of(context).size.width * (96 / 411),
+                      height: MediaQuery.of(context).size.height / 8.5,
+                      placeholderBuilder: (context) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width * (96 / 411),
+                          height: MediaQuery.of(context).size.height / 8.5,
+                          child: LoadingScreen(),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 24),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 4),
+                        Text(
+                          widget.semesterName,
+                          overflow: TextOverflow.fade,
+                          maxLines: 1,
+                          softWrap: false,
+                          textWidthBasis: TextWidthBasis.parent,
+                          style: TextStyle(
+                            color: ProjectColours.PRIMARY_COLOR,
+                            fontSize: 16,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        //ErrorAnimatedWidget(child: null, direction: null)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'SGPA',
+                              style: TextStyle(
+                                color: ProjectColours.SET_NAME_COLOUR,
+                                fontSize: 16,
+                                letterSpacing: 0.5,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            Text(
+                              state.sgpa.toString(),
+                              style: TextStyle(
+                                color: ProjectColours.SET_NAME_COLOUR,
+                                fontSize: 34,
+                                letterSpacing: 0.5,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 16),
+
+            Text(
+              'Courses - ' + _subjectCount.toString(),
+              style: TextStyle(
+                color: ProjectColours.PRIMARY_COLOR,
+                fontSize: 14,
+                letterSpacing: 0.1,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            // SizedBox(height: 2),
+
             Expanded(
               child: ListView(
                 //crossAxisAlignment: CrossAxisAlignment.start,
                 physics: BouncingScrollPhysics(),
                 children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height * (123 / 823),
-                    //width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    decoration: ProjectThemes.containerDecoration(),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Hero(
-                          tag: 'Hero Tag 2',
-                          child: SvgPicture.asset(
-                            'graphics/person.svg',
-                            alignment: Alignment.centerLeft,
-                            width:
-                                MediaQuery.of(context).size.width * (96 / 411),
-                            height: MediaQuery.of(context).size.height / 8.5,
-                            placeholderBuilder: (context) {
-                              return Container(
-                                width: MediaQuery.of(context).size.width *
-                                    (96 / 411),
-                                height:
-                                    MediaQuery.of(context).size.height / 8.5,
-                                child: LoadingScreen(),
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 24),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(height: 4),
-                              Text(
-                                widget.semesterName,
-                                overflow: TextOverflow.fade,
-                                maxLines: 1,
-                                softWrap: false,
-                                textWidthBasis: TextWidthBasis.parent,
-                                style: TextStyle(
-                                  color: ProjectColours.PRIMARY_COLOR,
-                                  fontSize: 16,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              //ErrorAnimatedWidget(child: null, direction: null)
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'SGPA',
-                                    style: TextStyle(
-                                      color: ProjectColours.SET_NAME_COLOUR,
-                                      fontSize: 16,
-                                      letterSpacing: 0.5,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  SizedBox(width: 16),
-                                  Text(
-                                    state.sgpa.toString(),
-                                    style: TextStyle(
-                                      color: ProjectColours.SET_NAME_COLOUR,
-                                      fontSize: 34,
-                                      letterSpacing: 0.5,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 16),
-
-                  Text(
-                    'Courses - ' + _subjectCount.toString(),
-                    style: TextStyle(
-                      color: ProjectColours.PRIMARY_COLOR,
-                      fontSize: 14,
-                      letterSpacing: 0.1,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  // SizedBox(height: 2),
-
                   Align(
                     alignment: Alignment.centerLeft,
                     child: ErrorAnimatedWidget(

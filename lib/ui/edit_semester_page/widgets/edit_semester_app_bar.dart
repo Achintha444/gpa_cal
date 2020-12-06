@@ -37,7 +37,7 @@ class EditSemesterAppBar extends StatelessWidget
             IconButton(
               icon: Icon(Icons.delete),
               tooltip: 'Delete Semester',
-              onPressed: () {},
+              onPressed: () => onDelete(),
             ),
           ],
         ),
@@ -59,5 +59,5 @@ class EditSemesterAppBar extends StatelessWidget
 
   @override
   Size get preferredSize =>
-      new Size.fromHeight(appBar.preferredSize.height + 8 + 14 + 19);
+      new Size.fromHeight(appBar.preferredSize.height + 8 + 14 + 8);
 }

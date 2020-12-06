@@ -16,7 +16,7 @@ class EditSemesterProvider extends BlocProvider<EditSemesterBloc> {
     @required this.semester,
   }) : super(
           key: key,
-          create: (context) => EditSemesterBloc(context),
+          create: (context) => EditSemesterBloc(context,semester),
           child: EditSemesterView(
             semester: semester,
             userDetailsModel: userDetailsModel,

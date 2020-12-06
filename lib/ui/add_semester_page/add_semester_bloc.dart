@@ -42,15 +42,21 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
         totalResult[index] = ['', ''];
 
         var emptySubjects = [];
+        print('Index is');
+        print (index);
+        print ('Single Subject is');
+        print (singleSubject);
 
         subjects.forEach((key, value) {
           var _count = 0;
+          print(value);
+          print('xxxxxxxxxx');
           value.forEach((key1, value1) {
             if (key1 == 'result') {
-              totalResult[index][0] = value1;
+              totalResult[key][0] = value1;
             } else if (key1 == 'credit') {
-              totalResult[index][1] = value1;
-              totalCredit[index] = value1;
+              totalResult[key][1] = value1;
+              totalCredit[key] = value1;
             }
 
             _count += 1;

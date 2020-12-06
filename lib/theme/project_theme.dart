@@ -6,6 +6,10 @@ final projectTheme = ThemeData(
   scaffoldBackgroundColor: ProjectColours.SCAFFOLD_BACKGROUND,
   errorColor: ProjectColours.ERROR_COLOR,
   fontFamily: 'Montserrat',
+  dividerTheme: DividerThemeData(
+    color: ProjectColours.PRIMARY_COLOR.withOpacity(0.15),
+    thickness: 2,
+  ),
   snackBarTheme: SnackBarThemeData(
     contentTextStyle: TextStyle(
       letterSpacing: 0.4,
