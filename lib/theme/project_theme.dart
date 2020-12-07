@@ -80,7 +80,7 @@ abstract class ProjectThemes {
           color: ProjectColours.HOME_PAGE_EMPTY_CARD_SHADOW_COLOR
               .withOpacity(0.25),
           spreadRadius: 0,
-          blurRadius: 10,
+          blurRadius: 4,
           offset: Offset(0, 4), // changes position of shadow
         ),
       ],

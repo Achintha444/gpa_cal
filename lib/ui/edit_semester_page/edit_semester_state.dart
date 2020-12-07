@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gpa_cal/db/model/semester.dart';
 
-//TODO Remove Loaded
 @immutable
 class EditSemesterState {
   final bool loading;

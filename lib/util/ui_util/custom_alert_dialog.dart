@@ -86,13 +86,6 @@ class CustomAlertDialog extends StatelessWidget {
     );
   }
 
-  TextStyle _inputTextStyle() {
-    return TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w500,
-      letterSpacing: 0.75,
-    );
-  }
 
   TextStyle _buttonTextStyle(Color color, FontWeight fontWeight) {
     return TextStyle(
