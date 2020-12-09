@@ -33,6 +33,12 @@ dependencies:
   flutter_bloc: 6.0.6
   shared_preferences: ^0.5.12+4
   flutter_svg: 0.19.0
+  flutter_launcher_icons: ^0.8.1
+
+flutter_icons:
+  image_path: "graphics/launcher_icon-2.png"
+  android: true
+  ios: true
 
 
 
@@ -61,6 +67,7 @@ flutter:
         - asset: font/Montserrat-Bold.ttf
         - asset: font/Montserrat.ttf
         - asset: font/Montserrat-Medium.ttf
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

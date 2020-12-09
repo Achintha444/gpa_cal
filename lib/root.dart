@@ -11,6 +11,7 @@ class GpaCal extends StatelessWidget {
       title: 'GPA CAL',
       theme: projectTheme,
       home: SplashScreenProvider(),
+      debugShowCheckedModeBanner: false,
       routes: {
         '/splashFormPage' : (context) => new SplashFormProvider(),
       },
