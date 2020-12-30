@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 final projectTheme = ThemeData(
   primaryColor: ProjectColours.PRIMARY_COLOR,
   unselectedWidgetColor: ProjectColours.PRIMARY_COLOR,
-  scaffoldBackgroundColor: ProjectColours.SCAFFOLD_BACKGROUND,
+  scaffoldBackgroundColor: Colors.transparent,
+  
   errorColor: ProjectColours.ERROR_COLOR,
   fontFamily: 'Montserrat',
   dividerTheme: DividerThemeData(

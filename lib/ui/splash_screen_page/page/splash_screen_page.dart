@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -18,8 +20,34 @@ class SplashScreenPage extends StatelessWidget {
             tag: 'HeroLogo',
             child: Container(
               height: 216,
-              child: Image(
-                image: AssetImage('graphics/logo.png'),
+              decoration: BoxDecoration(
+                  // color: Colors.transparent,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment
+                        .bottomRight, // 10% of the width, so there are ten blinds.
+                    colors: [
+                      const Color(0xffffffff),
+                      Colors.transparent
+                    ], // red to yellow
+                    tileMode: TileMode
+                        .repeated, // repeats the gradient over the canvas
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.02),
+                      spreadRadius: 0,
+                      blurRadius: 10,
+                      offset: Offset(5, 5), // changes position of shadow
+                    ),
+                  ],
+                  border: Border.all(color: Colors.red,width: 2),
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
+                child: Image(
+                  image: AssetImage('graphics/logo.png'),
+                ),
               ),
             ),
           ),

@@ -25,10 +25,10 @@ class SplashScreenView extends StatelessWidget {
     // ignore: close_sinks
     log.d("Loading SplashScreen View");
 
-    return SafeArea(
-      child: Scaffold(
-        key: _scaffoldKey,
-        body: MultiBlocListener(
+    return Scaffold(
+      key: _scaffoldKey,
+      body: SafeArea(
+        child: MultiBlocListener(
           listeners: [
             /// This listner called in case of an error
             BlocListener<SplashScreenBloc, SplashScreenState>(
@@ -53,17 +53,17 @@ class SplashScreenView extends StatelessWidget {
             ),
 
             /// This is called for the very first time app opens
-            BlocListener<SplashScreenBloc, SplashScreenState>(
-              listenWhen: (pre, current) => current.cacheNotPresent == true,
-              listener: (context, state) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    CustomPageRoute(
-                      builder: (context) => SplashFormProvider(),
-                    ),
-                    (Route<dynamic> route) => false);
-              },
-            ),
+            /* BlocListener<SplashScreenBloc, SplashScreenState>(
+                  listenWhen: (pre, current) => current.cacheNotPresent == true,
+                  listener: (context, state) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        CustomPageRoute(
+                          builder: (context) => SplashFormProvider(),
+                        ),
+                        (Route<dynamic> route) => false);
+                  },
+                ), */
 
             /// Auto moving to the home screen
             BlocListener<SplashScreenBloc, SplashScreenState>(
