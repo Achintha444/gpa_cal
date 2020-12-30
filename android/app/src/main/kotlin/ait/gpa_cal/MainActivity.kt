@@ -1,4 +1,4 @@
-package com.example.gpa_cal
+package ait.gpa_cal
 
 import io.flutter.embedding.android.FlutterActivity
 
