@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gpa_cal/theme/project_theme.dart';
-import 'package:gpa_cal/ui/splash_form_page/splash_form_bloc.dart';
-import 'package:gpa_cal/ui/splash_form_page/splash_form_event.dart';
+import 'package:gpa_cal/util/ui_util/glass_effect.dart';
 
+import '../../../theme/project_theme.dart';
 import '../../../util/ui_util/gpa_cal_main_button.dart';
+import '../splash_form_bloc.dart';
+import '../splash_form_event.dart';
 import '../widgets/splash_form_title_text.dart';
 
 class SplashScreenFormPage extends StatefulWidget {
@@ -30,8 +31,9 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
         children: [
           Hero(
             tag: 'HeroLogo',
-            child: Container(
+            child: GlassEffect(
               height: 216,
+              width: 216,
               child: Image(
                 image: AssetImage('graphics/logo.png'),
               ),
@@ -61,16 +63,19 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
                 //* University text form field
                 SplashFormTitleText(title: 'Enter Your University (or School)'),
                 SizedBox(height: 16),
-                TextFormField(
-                  decoration: this._inputDecoration('University/School'),
-                  textCapitalization: TextCapitalization.words,
-                  style: this._inputTextStyle(),
-                  validator: (value) {
-                    return this._emptyValidator(value, 'University');
-                  },
-                  onChanged: (value) {
-                    this._uni = value;
-                  },
+                Hero(
+                  tag: 'Uni',
+                  child: TextFormField(
+                    decoration: this._inputDecoration('University/School'),
+                    textCapitalization: TextCapitalization.words,
+                    style: this._inputTextStyle(),
+                    validator: (value) {
+                      return this._emptyValidator(value, 'University');
+                    },
+                    onChanged: (value) {
+                      this._uni = value;
+                    },
+                  ),
                 ),
                 SizedBox(height: 24),
 
@@ -90,6 +95,7 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
                         leading: Radio(
                           value: 1,
                           groupValue: _gpaType,
+                          activeColor: ProjectColours.BUTTON_BG_COLOR,
                           onChanged: (value) {
                             setState(() {
                               _gpaType = value;
@@ -107,6 +113,7 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
                         leading: Radio(
                           value: 0,
                           groupValue: _gpaType,
+                          activeColor: ProjectColours.BUTTON_BG_COLOR,
                           onChanged: (value) {
                             setState(() {
                               _gpaType = value;
@@ -158,7 +165,7 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
   }
 
   TextStyle _radioButtonTextStyle() {
-    return TextStyle(fontSize: 16, color: ProjectColours.PRIMARY_COLOR);
+    return TextStyle(fontSize: 16, color: ProjectColours.BUTTON_BG_COLOR);
   }
 
   TextStyle _inputTextStyle() {
@@ -171,22 +178,26 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
   InputDecoration _inputDecoration(String labelText) {
     return InputDecoration(
       labelText: labelText,
+      fillColor: Colors.white.withOpacity(0.1),
+      filled: true,
       contentPadding:
           const EdgeInsets.only(left: 16.0, bottom: 8.0, top: 8.0, right: 8),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: ProjectColours.PRIMARY_COLOR,
+          color: ProjectColours.BUTTON_BG_COLOR,
+          width: 4,
         ),
         borderRadius: BorderRadius.circular(50.0),
       ),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: ProjectColours.PRIMARY_COLOR,
+          color: ProjectColours.BUTTON_BG_COLOR,
+           width: 2,
         ),
         borderRadius: BorderRadius.circular(50.0),
       ),
       labelStyle: TextStyle(
-        color: ProjectColours.PRIMARY_COLOR.withOpacity(0.75),
+        color: ProjectColours.BUTTON_BG_COLOR,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.15,
         fontSize: 16,

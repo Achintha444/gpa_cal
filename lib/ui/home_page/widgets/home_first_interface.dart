@@ -23,10 +23,7 @@ class HomeFirstInterface extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'From ' + userDetailsModel.uni,
-              style: _subtitleTextStyle(FontWeight.w400),
-            ),
+            
             SizedBox(height: 24),
             Expanded(
               child: SingleChildScrollView(

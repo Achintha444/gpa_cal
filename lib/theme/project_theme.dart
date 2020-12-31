@@ -4,7 +4,7 @@ final projectTheme = ThemeData(
   primaryColor: ProjectColours.PRIMARY_COLOR,
   unselectedWidgetColor: ProjectColours.PRIMARY_COLOR,
   scaffoldBackgroundColor: Colors.transparent,
-  
+
   errorColor: ProjectColours.ERROR_COLOR,
   fontFamily: 'Montserrat',
   dividerTheme: DividerThemeData(
@@ -20,13 +20,12 @@ final projectTheme = ThemeData(
     actionTextColor: ProjectColours.SCAFFOLD_BACKGROUND,
   ),
   buttonTheme: ButtonThemeData(
-    shape: RoundedRectangleBorder(
-      borderRadius: new BorderRadius.circular(20),
-    ),
-    splashColor: ProjectColours.PRIMARY_COLOR.withOpacity(0.01)
-  ),
+      shape: RoundedRectangleBorder(
+        borderRadius: new BorderRadius.circular(20),
+      ),
+      splashColor: ProjectColours.PRIMARY_COLOR.withOpacity(0.01)),
   appBarTheme: AppBarTheme(
-    color: ProjectColours.SCAFFOLD_BACKGROUND,
+    color: Colors.transparent.withOpacity(0),
     actionsIconTheme: IconThemeData(
       color: ProjectColours.PRIMARY_COLOR,
       size: 24,
@@ -38,10 +37,11 @@ final projectTheme = ThemeData(
     elevation: 0,
     textTheme: TextTheme(
       headline6: TextStyle(
-          fontSize: 20,
-          fontFamily: 'Montserrat',
-          color: ProjectColours.PRIMARY_COLOR,
-          letterSpacing: 0.15),
+        fontSize: 20,
+        fontFamily: 'Montserrat',
+        color: ProjectColours.PRIMARY_COLOR,
+        letterSpacing: 0.15,
+      ),
     ),
   ),
   tooltipTheme: TooltipThemeData(
@@ -91,7 +91,7 @@ abstract class ProjectThemes {
     );
   }
 
-  static BoxDecoration semesterContainerDecoration(){
+  static BoxDecoration semesterContainerDecoration() {
     return BoxDecoration(
       color: ProjectColours.HOME_PAGE_EMPTY_CARD_COLOR,
       boxShadow: [

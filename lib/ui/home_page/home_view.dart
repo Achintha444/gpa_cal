@@ -51,7 +51,8 @@ class HomeView extends StatelessWidget {
           },
         ),
         BlocListener<HomeBloc, HomeState>(
-          listenWhen: (pre, current) => pre.deleteSemester != current.deleteSemester,
+          listenWhen: (pre, current) =>
+              pre.deleteSemester != current.deleteSemester,
           listener: (context, state) {
             Navigator.pushAndRemoveUntil(
                 context,
@@ -64,11 +65,14 @@ class HomeView extends StatelessWidget {
           },
         ),
       ],
-      child: SafeArea(
-        child: Scaffold(
-          key: _scaffoldKeyHome,
-          appBar: CustomAppBar(name: userDetailsModel.name),
-          body: BlocBuilder<HomeBloc, HomeState>(
+      child: Scaffold(
+        key: _scaffoldKeyHome,
+        appBar: CustomAppBar(
+          name: userDetailsModel.name,
+          university: userDetailsModel.uni,
+        ),
+        body: SafeArea(
+          child: BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
               if (state.error.isNotEmpty) {
                 return HomeErrorWidget(

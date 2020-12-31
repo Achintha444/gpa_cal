@@ -18,42 +18,47 @@ class GpaCal extends StatelessWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(
-            'graphics/background.jpg',
+            'graphics/image.png',
           ),
           fit: BoxFit.cover,
         ),
       ),
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment
-                .bottomRight, // 10% of the width, so there are ten blinds.
-            colors: [
-              const Color(0xffffffff),
-              Colors.transparent
-            ], // red to yellow
-            tileMode: TileMode.repeated, // repeats the gradient over the canvas
-          ),
-          /* boxShadow: [
+          boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.02),
+              color: Colors.black.withOpacity(0.05),
               spreadRadius: 0,
-              blurRadius: 10,
-              offset: Offset(5, 5), // changes position of shadow
+              blurRadius: 100,
+              offset: Offset(80, 100), // changes position of shadow
             ),
-          ], */
+          ],
         ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
-          child: MaterialApp(
-            title: 'GPA CAL',
-            theme: projectTheme,
-            home: SplashScreenProvider(),
-            debugShowCheckedModeBanner: false,
-            routes: {
-              '/splashFormPage': (context) => new SplashFormProvider(),
-            },
+        child: ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  tileMode: TileMode.clamp,
+                  colors: [
+                    Colors.white.withOpacity(0.1),
+                    Colors.white.withOpacity(0),
+                  ],
+                ),
+              ),
+              child: MaterialApp(
+                title: 'GPA CAL',
+                theme: projectTheme,
+                home: SplashScreenProvider(),
+                debugShowCheckedModeBanner: false,
+                routes: {
+                  '/splashFormPage': (context) => new SplashFormProvider(),
+                },
+              ),
+            ),
           ),
         ),
       ),

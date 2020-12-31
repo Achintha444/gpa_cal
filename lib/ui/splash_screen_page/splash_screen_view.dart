@@ -53,17 +53,17 @@ class SplashScreenView extends StatelessWidget {
             ),
 
             /// This is called for the very first time app opens
-            /* BlocListener<SplashScreenBloc, SplashScreenState>(
-                  listenWhen: (pre, current) => current.cacheNotPresent == true,
-                  listener: (context, state) {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        CustomPageRoute(
-                          builder: (context) => SplashFormProvider(),
-                        ),
-                        (Route<dynamic> route) => false);
-                  },
-                ), */
+            BlocListener<SplashScreenBloc, SplashScreenState>(
+              listenWhen: (pre, current) => current.cacheNotPresent == true,
+              listener: (context, state) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    CustomPageRoute(
+                      builder: (context) => SplashFormProvider(),
+                    ),
+                    (Route<dynamic> route) => false);
+              },
+            ),
 
             /// Auto moving to the home screen
             BlocListener<SplashScreenBloc, SplashScreenState>(
