@@ -63,6 +63,7 @@ final projectTheme = ThemeData(
 
 abstract class ProjectColours {
   static const Color PRIMARY_COLOR = Color(0xff3A86FF);
+  static const Color DARKER_COLOR = Color(0xff003c9c);
   static const Color SCAFFOLD_BACKGROUND = Color(0xffEEF5FF);
   static const Color ERROR_COLOR = Color(0xffFF006E);
   static const Color BUTTON_BG_COLOR = Color(0xffFFBE0B);

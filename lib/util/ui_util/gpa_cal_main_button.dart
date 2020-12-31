@@ -21,13 +21,13 @@ class GpaCalMainButton extends StatelessWidget {
       child: FlatButton(
         onPressed: () => this.onClick(),
         //color: ProjectColours.BUTTON_BG_COLOR,
-        textColor: ProjectColours.BUTTON_BG_COLOR,
+        textColor: ProjectColours.DARKER_COLOR,
         child: Text(
           text.toUpperCase(),
           style: TextStyle(
             fontSize: 14,
             letterSpacing: 1.25,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
