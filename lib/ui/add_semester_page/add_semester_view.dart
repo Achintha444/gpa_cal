@@ -2,15 +2,15 @@ import 'package:fcode_common/fcode_common.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gpa_cal/util/ui_util/loading_screen.dart';
 
 import '../../db/model/user_details_model.dart';
 import '../../util/ui_util/custom_alert_dialog.dart';
-import '../../util/ui_util/custom_app_bar.dart';
+import '../../util/ui_util/loading_screen.dart';
 import '../home_page/home_exports.dart';
 import 'add_semester_bloc.dart';
 import 'add_semester_state.dart';
 import 'page/add_semester_page.dart';
+import 'widgets/add_semester_appbar.dart';
 
 // ignore: must_be_immutable
 class AddSemesterView extends StatelessWidget {
@@ -63,30 +63,31 @@ class AddSemesterView extends StatelessWidget {
           },
         ),
       ],
-      child: SafeArea(
-        child: Scaffold(
-          key: _scaffoldKey,
-          appBar: CustomAppBar(
-            name: userDetailsModel.name,
-            onBack: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return CustomAlertDialog(
-                    onCancel: () {
-                      Navigator.pop(context);
-                    },
-                    onConfirm: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                  );
-                },
-              );
-              //Navigator.pop(context);
-            },
-          ),
-          body: BlocBuilder<AddSemesterBloc, AddSemesterState>(
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AddSemesterAppBar(
+          name: userDetailsModel.name,
+          university: userDetailsModel.uni,
+          onBack: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return CustomAlertDialog(
+                  onCancel: () {
+                    Navigator.pop(context);
+                  },
+                  onConfirm: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                );
+              },
+            );
+            //Navigator.pop(context);
+          },
+        ),
+        body: SafeArea(
+          child: BlocBuilder<AddSemesterBloc, AddSemesterState>(
               builder: (context, state) {
             if (state.loading == true) {
               return LoadingScreen();

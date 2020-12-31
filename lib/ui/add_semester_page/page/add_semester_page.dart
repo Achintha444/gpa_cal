@@ -75,7 +75,7 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            /* Container(
               height: MediaQuery.of(context).size.height * (123 / 823),
               //width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -118,6 +118,7 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                             letterSpacing: 0.5,
                           ),
                         ),
+
                         SizedBox(height: 4),
                         //ErrorAnimatedWidget(child: null, direction: null)
                         Row(
@@ -150,6 +151,8 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                 ],
               ),
             ),
+            
+             */
             SizedBox(height: 16),
 
             Text(

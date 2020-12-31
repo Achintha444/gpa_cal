@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gpa_cal/util/ui_util/glass_effect.dart';
 
 import '../../../db/model/user_details_model.dart';
 import '../../../theme/project_theme.dart';
@@ -29,109 +30,121 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
           Radius.circular(20),
         ),
       ),
-      child: Container(
+      elevation: 0,
+      backgroundColor: Colors.white.withOpacity(0),
+      child: GlassEffect(
         height: 204,
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height:4),
-            Text(
-              'Set Semester Name',
-              style: TextStyle(
-                color: ProjectColours.PRIMARY_COLOR,
-                fontSize: 16,
+        width: MediaQuery.of(context).size.width,
+        topColorOpacity: 0.4,
+        bottomColorOpacity: 0.075,
+        borderOpacity: 0.1,
+        borderWidth: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 4),
+              Text(
+                'Set Semester Name',
+                style: TextStyle(
+                  color: ProjectColours.DARKER_COLOR,
+                  fontSize: 16,
+                ),
               ),
-            ),
-            SizedBox(height: 8),
-            ErrorAnimatedWidget(
-              child: _error == true
-                  ? Text(
-                      'Semester cannot be empty right ? 😉',
-                      style: _erroTextStyle(),
-                    )
-                  : SizedBox(
-                      height: 13,
-                    ),
-              direction: -1.1,
-            ),
-            SizedBox(height: 8),
-            TextFormField(
-              autofocus: true,
-              decoration: _error == false
-                  ? _inputDecoration('Name')
-                  : _inputErrorDecoration('Name'),
-              style: _inputTextStyle(),
-              textCapitalization: TextCapitalization.sentences,
-              maxLength: 13,
-              maxLengthEnforced: true,
-              maxLines: 1,
-              textAlign: TextAlign.left,
-              onChanged: (value) {
-                setState(() {
-                  if (value.isEmpty ||
-                      value.trim().isEmpty ||
-                      value.length > 13) {
-                    _error = true;
-                  } else {
-                    _error = false;
-                    _semesterName = value;
-                  }
-                });
-              },
-            ),
-            Expanded(child: Container()),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'CANCEL',
-                    textAlign: TextAlign.end,
-                    style: _buttonTextStyle(
-                      ProjectColours.PRIMARY_COLOR,
-                      FontWeight.w500,
-                    ),
-                  ),
-                ),
-                FlatButton(
-                  onPressed: () {
-                    if (_semesterName.isEmpty) {
-                      setState(() {
+              SizedBox(height: 8),
+              ErrorAnimatedWidget(
+                child: _error == true
+                    ? Text(
+                        'Semester cannot be empty right ? 😉',
+                        style: _erroTextStyle(),
+                      )
+                    : SizedBox(
+                        height: 13,
+                      ),
+                direction: -1.1,
+              ),
+              SizedBox(height: 8),
+              Hero(
+                tag: '1',
+                child: TextFormField(
+                  autofocus: true,
+                  decoration: _error == false
+                      ? _inputDecoration('Name')
+                      : _inputErrorDecoration('Name'),
+                  style: _inputTextStyle(),
+                  textCapitalization: TextCapitalization.sentences,
+                  maxLength: 13,
+                  maxLengthEnforced: true,
+                  maxLines: 1,
+                  textAlign: TextAlign.left,
+                  onChanged: (value) {
+                    setState(() {
+                      if (value.isEmpty ||
+                          value.trim().isEmpty ||
+                          value.length > 13) {
                         _error = true;
-                      });
-                    } else {
-                      if (_error == false) {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return AddSemesterProvider(
-                                userDetailsModel: widget.userDetailsModel,
-                                semesterName: _semesterName,
-                              );
-                            },
-                          ),
-                        );
+                      } else {
+                        _error = false;
+                        _semesterName = value;
                       }
-                    }
+                    });
                   },
-                  child: Text(
-                    'SET NAME',
-                    textAlign: TextAlign.end,
-                    style: _buttonTextStyle(
-                      ProjectColours.SET_NAME_COLOUR,
-                      FontWeight.w500,
+                ),
+              ),
+              Expanded(child: Container()),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'CANCEL',
+                      textAlign: TextAlign.end,
+                      style: _buttonTextStyle(
+                        ProjectColours.DARKER_COLOR,
+                        FontWeight.w500,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  FlatButton(
+                    onPressed: () {
+                      if (_semesterName.isEmpty) {
+                        setState(() {
+                          _error = true;
+                        });
+                      } else {
+                        if (_error == false) {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return AddSemesterProvider(
+                                  userDetailsModel: widget.userDetailsModel,
+                                  semesterName: _semesterName,
+                                );
+                              },
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    child: Text(
+                      'SET NAME',
+                      textAlign: TextAlign.end,
+                      style: _buttonTextStyle(
+                        ProjectColours.SET_NAME_COLOUR,
+                        FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -169,13 +182,13 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
           const EdgeInsets.only(left: 16.0, bottom: 8.0, top: 8.0, right: 8),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: ProjectColours.PRIMARY_COLOR,
+          color: ProjectColours.DARKER_COLOR,
         ),
         borderRadius: BorderRadius.circular(50.0),
       ),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: ProjectColours.PRIMARY_COLOR,
+          color: ProjectColours.DARKER_COLOR,
         ),
         borderRadius: BorderRadius.circular(50.0),
       ),
@@ -192,7 +205,7 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
         borderRadius: BorderRadius.circular(50.0),
       ),
       hintStyle: TextStyle(
-        color: ProjectColours.PRIMARY_COLOR.withOpacity(0.75),
+        color: ProjectColours.DARKER_COLOR.withOpacity(0.75),
         fontWeight: FontWeight.w400,
         letterSpacing: 0.15,
         fontSize: 16,
