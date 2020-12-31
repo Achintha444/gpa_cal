@@ -36,7 +36,7 @@ class GpaCal extends StatelessWidget {
         ),
         child: ClipRRect(
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+            filter: ImageFilter.blur(sigmaX: 120, sigmaY: 120),
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -44,7 +44,7 @@ class GpaCal extends StatelessWidget {
                   end: Alignment.bottomRight,
                   tileMode: TileMode.clamp,
                   colors: [
-                    Colors.white.withOpacity(0.1),
+                    Colors.white.withOpacity(0.2),
                     Colors.white.withOpacity(0),
                   ],
                 ),

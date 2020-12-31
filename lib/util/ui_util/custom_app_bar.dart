@@ -33,7 +33,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           end: Alignment.bottomRight,
           tileMode: TileMode.clamp,
           colors: [
-            Colors.white,
+            Colors.white.withOpacity(0.5),
             Colors.white.withOpacity(0),
           ],
         ),
@@ -84,9 +84,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   ], */
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 56, top: 0),
+                padding: const EdgeInsets.only(left: 56, top: 0,right:8),
                 child: Text(
                   'Welcome ' + name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: ProjectColours.PRIMARY_COLOR,
                     fontSize: 13,
@@ -95,15 +97,19 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 56, top: 8),
-                child: Text(
-                  'From ' + university,
-                  style: TextStyle(
-                    color: ProjectColours.PRIMARY_COLOR,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 0.1,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 56, top: 8,right:8),
+                  child: Text(
+                    'From ' + university,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: ProjectColours.PRIMARY_COLOR,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 0.1,
+                    ),
                   ),
                 ),
               ),
@@ -117,5 +123,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize =>
-      new Size.fromHeight(appBar.preferredSize.height + 8 + 14 + 11 + 8 + 16);
+      new Size.fromHeight(appBar.preferredSize.height + 8 + 14 + 12 + 8 + 16);
 }

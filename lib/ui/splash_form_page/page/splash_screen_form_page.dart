@@ -95,7 +95,7 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
                         leading: Radio(
                           value: 1,
                           groupValue: _gpaType,
-                          activeColor: ProjectColours.BUTTON_BG_COLOR,
+                          activeColor: ProjectColours.DARKER_COLOR,
                           onChanged: (value) {
                             setState(() {
                               _gpaType = value;
@@ -113,7 +113,7 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
                         leading: Radio(
                           value: 0,
                           groupValue: _gpaType,
-                          activeColor: ProjectColours.BUTTON_BG_COLOR,
+                          activeColor: ProjectColours.DARKER_COLOR,
                           onChanged: (value) {
                             setState(() {
                               _gpaType = value;
@@ -165,7 +165,7 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
   }
 
   TextStyle _radioButtonTextStyle() {
-    return TextStyle(fontSize: 16, color: ProjectColours.BUTTON_BG_COLOR);
+    return TextStyle(fontSize: 16, color: ProjectColours.DARKER_COLOR);
   }
 
   TextStyle _inputTextStyle() {
@@ -184,20 +184,20 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
           const EdgeInsets.only(left: 16.0, bottom: 8.0, top: 8.0, right: 8),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: ProjectColours.BUTTON_BG_COLOR,
-          width: 4,
+          color: ProjectColours.DARKER_COLOR,
+          width: 2,
         ),
         borderRadius: BorderRadius.circular(50.0),
       ),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: ProjectColours.BUTTON_BG_COLOR,
-           width: 2,
+          color: ProjectColours.DARKER_COLOR,
+           width: 1,
         ),
         borderRadius: BorderRadius.circular(50.0),
       ),
       labelStyle: TextStyle(
-        color: ProjectColours.BUTTON_BG_COLOR,
+        color: ProjectColours.DARKER_COLOR,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.15,
         fontSize: 16,

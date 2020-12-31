@@ -19,7 +19,7 @@ class HomeFirstInterface extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            top: 100 * MediaQuery.of(context).size.height / 843,
+            top: 80 * MediaQuery.of(context).size.height / 843,
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
               child: Container(
@@ -65,8 +65,9 @@ class HomeFirstInterface extends StatelessWidget {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
+          Positioned(
+            bottom: 0,
+            right: -42 * MediaQuery.of(context).size.width / 411,
             child: SvgPicture.asset(
               'graphics/books.svg',
               height: 200 * MediaQuery.of(context).size.height / 823,
