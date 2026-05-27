@@ -13,16 +13,15 @@ class HomeRepo extends Repo {
   Future<UserResultModel> firstInterfaceCheck() async {
     try {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
-      String _userResults = _prefs.getString(USER_RESULTS);
+      String? _userResults = _prefs.getString(USER_RESULTS);
+      if (_userResults == null) {
+        throw CacheNotPresentError();
+      }
       print(_userResults);
 
-      if (_userResults == null) {
-        throw (CacheNotPresentError());
-      } else {
-        print('USER_RESULTS Cache Present');
-        return UserResultModel.fromJson(json.decode(_userResults));
-      }
-    } on CacheNotPresentError {
+      print('USER_RESULTS Cache Present');
+      return UserResultModel.fromJson(json.decode(_userResults));
+        } on CacheNotPresentError {
       throw (CacheNotPresentError());
     } catch (e) {
       print(e);
@@ -33,7 +32,10 @@ class HomeRepo extends Repo {
   Future<void> deleteSemester(Semester semester) async {
     try {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
-      String _userResults = _prefs.getString(USER_RESULTS);
+      String? _userResults = _prefs.getString(USER_RESULTS);
+      if (_userResults == null) {
+        throw CacheNotPresentError();
+      }
 
       print('USER_RESULTS Cache Present');
       print('Cache present ' + semester.hash.toString() + ' removed');

@@ -6,7 +6,7 @@ import 'splash_form_view.dart';
 
 class SplashFormProvider extends BlocProvider<SplashFormBloc> {
   SplashFormProvider({
-    Key key,
+    Key? key,
   }) : super(
           key: key,
           create: (context) => SplashFormBloc(context),

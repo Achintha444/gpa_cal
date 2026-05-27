@@ -10,13 +10,13 @@ class AddSemesterAppBar extends StatelessWidget implements PreferredSizeWidget {
   static final AppBar appBar = new AppBar();
   final String name;
   final String university;
-  final Function onBack;
+  final VoidCallback? onBack;
   final double borderRadius = 60;
 
   const AddSemesterAppBar({
-    Key key,
-    @required this.name,
-    @required this.university,
+    Key? key,
+    required this.name,
+    required this.university,
     this.onBack,
   }) : super(key: key);
 
@@ -124,9 +124,7 @@ class AddSemesterAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       ),
                       title: Padding(
-                        padding: onBack == null
-                            ? const EdgeInsets.only(left: 40.0)
-                            : const EdgeInsets.only(left: 0.0),
+                        padding: const EdgeInsets.only(left: 0.0),
                         child: Row(
                           children: [
                             Text(
@@ -137,11 +135,9 @@ class AddSemesterAppBar extends StatelessWidget implements PreferredSizeWidget {
                           ],
                         ),
                       ),
-                      leading: onBack == null
-                          ? null
-                          : IconButton(
+                      leading: IconButton(
                               icon: Icon(Icons.keyboard_arrow_left),
-                              onPressed: () => onBack(),
+                              onPressed: onBack,
                             ),
 /*           actions: [
                                           IconButton(

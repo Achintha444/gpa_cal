@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gpa_cal/ui/add_semester_page/add_semester_event.dart';
 import 'package:gpa_cal/ui/add_semester_page/add_semester_exports.dart';
 import 'package:gpa_cal/util/db_util/regex_input_formatter.dart';
 
 import '../../../db/model/user_details_model.dart';
 import '../../../theme/project_theme.dart';
 import '../../../util/db_util/gpa_conversion.dart';
-import '../add_semester_bloc.dart';
 
 class SubjectCard extends StatefulWidget {
   final int index;
-  final Function onDelete;
+  final void Function(int) onDelete;
   final UserDetailsModel userDetailsModel;
 
   const SubjectCard(
-      {Key key,
-      @required this.index,
-      @required this.onDelete,
-      @required this.userDetailsModel})
+      {Key? key,
+      required this.index,
+      required this.onDelete,
+      required this.userDetailsModel})
       : super(key: key);
 
   @override
@@ -34,9 +32,9 @@ class _SubjectCardState extends State<SubjectCard> {
     }*/
 
   String course = '';
-  String resultValue;
-  String credit;
-  Map subject;
+  late String resultValue;
+  late String credit;
+  late Map subject;
   @override
   void initState() {
     resultValue = _selectResultType()[1];
@@ -126,7 +124,8 @@ class _SubjectCardState extends State<SubjectCard> {
                               iconEnabledColor: ProjectColours.PRIMARY_COLOR,
                               value: resultValue,
                               iconSize: 24,
-                              onChanged: (String newValue) {
+                              onChanged: (String? newValue) {
+                                if (newValue == null) return;
                                 setState(() {
                                   resultValue = newValue;
                                   subject['result'] = resultValue;
@@ -167,7 +166,6 @@ class _SubjectCardState extends State<SubjectCard> {
                         Expanded(
                           child: TextFormField(
                             initialValue: credit,
-                            toolbarOptions: ToolbarOptions(paste: false),
                             onChanged: (newValue) {
                               print(newValue);
                               setState(() {

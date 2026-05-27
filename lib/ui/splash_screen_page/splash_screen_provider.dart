@@ -6,7 +6,7 @@ import 'splash_screen_view.dart';
 
 class SplashScreenProvider extends BlocProvider<SplashScreenBloc> {
   SplashScreenProvider({
-    Key key,
+    Key? key,
   }) : super(
           key: key,
           create: (context) => SplashScreenBloc(context),

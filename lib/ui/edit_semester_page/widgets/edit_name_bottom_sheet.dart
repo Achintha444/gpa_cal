@@ -5,12 +5,12 @@ import '../../../util/ui_util/error_animated_widget.dart';
 
 class EditNameBottomSheet extends StatefulWidget {
   final String name;
-  final Function onConfirm;
+  final void Function(String) onConfirm;
 
   const EditNameBottomSheet({
-    Key key,
-    @required this.name,
-    @required this.onConfirm,
+    Key? key,
+    required this.name,
+    required this.onConfirm,
   }) : super(key: key);
 
   @override
@@ -18,7 +18,7 @@ class EditNameBottomSheet extends StatefulWidget {
 }
 
 class _EditNameBottomSheetState extends State<EditNameBottomSheet> {
-  String _semesterName;
+  late String _semesterName;
   bool _error = false;
 
   @override
@@ -32,7 +32,7 @@ class _EditNameBottomSheetState extends State<EditNameBottomSheet> {
     return Container(
       height: 204,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
@@ -41,16 +41,16 @@ class _EditNameBottomSheetState extends State<EditNameBottomSheet> {
           BoxShadow(
             color: ProjectColours.HOME_PAGE_EMPTY_CARD_SHADOW_COLOR
                 .withOpacity(0.25),
-            offset: Offset(0.0, -1.0), //(x,y)
+            offset: const Offset(0.0, -1.0), //(x,y)
             blurRadius: 10.0,
           ),
         ],
       ),
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             'Edit Semester Name',
             style: TextStyle(
@@ -58,19 +58,19 @@ class _EditNameBottomSheetState extends State<EditNameBottomSheet> {
               fontSize: 16,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           ErrorAnimatedWidget(
             child: _error == true
                 ? Text(
                     'Semester cannot be empty right ? 😉',
                     style: _erroTextStyle(),
                   )
-                : SizedBox(
+                : const SizedBox(
                     height: 13,
                   ),
             direction: -1.1,
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           TextFormField(
             initialValue: _semesterName,
             autofocus: true,
@@ -80,7 +80,6 @@ class _EditNameBottomSheetState extends State<EditNameBottomSheet> {
             style: _inputTextStyle(),
             textCapitalization: TextCapitalization.sentences,
             maxLength: 13,
-            maxLengthEnforced: true,
             maxLines: 1,
             textAlign: TextAlign.left,
             onChanged: (value) {
@@ -100,7 +99,7 @@ class _EditNameBottomSheetState extends State<EditNameBottomSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -113,7 +112,7 @@ class _EditNameBottomSheetState extends State<EditNameBottomSheet> {
                   ),
                 ),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   if (_semesterName.isEmpty) {
                     setState(() {

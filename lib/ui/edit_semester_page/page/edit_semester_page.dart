@@ -7,8 +7,6 @@ import '../../../db/model/user_details_model.dart';
 import '../../../theme/project_theme.dart';
 import '../../../util/ui_util/error_animated_widget.dart';
 import '../../../util/ui_util/gpa_cal_main_button.dart';
-import '../edit_semester_bloc.dart';
-import '../edit_semester_event.dart';
 import '../edit_semester_exports.dart';
 import '../widgets/edit_name_bottom_sheet.dart';
 import '../widgets/edit_semester_new_subject_card.dart';
@@ -19,9 +17,9 @@ class EditSemesterPage extends StatefulWidget {
   final UserDetailsModel userDetailsModel;
 
   const EditSemesterPage({
-    Key key,
-    @required this.semesterName,
-    @required this.userDetailsModel,
+    Key? key,
+    required this.semesterName,
+    required this.userDetailsModel,
   }) : super(key: key);
 
   @override
@@ -29,10 +27,10 @@ class EditSemesterPage extends StatefulWidget {
 }
 
 class _EditSemesterPageState extends State<EditSemesterPage> {
-  String _name;
-  int _subjectCount;
-  int _lengthOfWidgets;
-  List<Widget> _widgetList;
+  late String _name;
+  late int _subjectCount;
+  late int _lengthOfWidgets;
+  late List<Widget> _widgetList;
 
   @override
   void initState() {
@@ -40,7 +38,7 @@ class _EditSemesterPageState extends State<EditSemesterPage> {
     _subjectCount = widget.semesterName.subjectList.length;
     _lengthOfWidgets = _subjectCount;
 
-    _widgetList = new List.generate(
+    _widgetList = List<Widget>.generate(
       _lengthOfWidgets,
       (index) => Column(
         children: [
@@ -212,79 +210,80 @@ class _EditSemesterPageState extends State<EditSemesterPage> {
                     SizedBox(height: 16),
                     Align(
                       alignment: Alignment.topRight,
-                      child: FlatButton(
-                        onPressed: state.totalError == true
-                            ? null
-                            : () {
-                                print(state.totalError);
-                                setState(
-                                  () {
-                                    _lengthOfWidgets += 1;
-                                    _subjectCount += 1;
-                                    _widgetList.add(
-                                      Column(
-                                        children: [
-                                          SizedBox(height: 8),
-                                          EditSmesterNewSubjectCard(
-                                            userDetailsModel:
-                                                widget.userDetailsModel,
-                                            index: _lengthOfWidgets - 1,
-                                            onDelete: (int index) {
-                                              //_widgetList.
+                    child: OutlinedButton(
+                      onPressed: state.totalError == true
+                          ? null
+                          : () {
+                              print(state.totalError);
+                              setState(
+                                () {
+                                  _lengthOfWidgets += 1;
+                                  _subjectCount += 1;
+                                  _widgetList.add(
+                                    Column(
+                                      children: [
+                                        const SizedBox(height: 8),
+                                        EditSmesterNewSubjectCard(
+                                          userDetailsModel:
+                                              widget.userDetailsModel,
+                                          index: _lengthOfWidgets - 1,
+                                          onDelete: (int index) {
+                                            //_widgetList.
 
-                                              setState(
-                                                () {
-                                                  if (_subjectCount > 1) {
-                                                    print(index.toString() +
-                                                        ' sRemoved from task list');
-                                                    _subjectCount -= 1;
-                                                    _widgetList[index] =
-                                                        SizedBox(
-                                                            height: 0,
-                                                            width: 0);
-                                                    editSemesterBloc.add(
-                                                      DeleteEditSubjectEvent(
-                                                          index,
-                                                          widget
-                                                              .userDetailsModel
-                                                              .gpaType),
-                                                    );
-                                                  } else {
-                                                    editSemesterBloc.add(
-                                                      ErrorEvent(
-                                                        'Cannot delete since only one course left',
-                                                      ),
-                                                    );
-                                                  }
-                                                },
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            color: ProjectColours.SET_NAME_COLOUR,
-                            width: 1,
-                            style: BorderStyle.solid,
-                          ),
+                                            setState(
+                                              () {
+                                                if (_subjectCount > 1) {
+                                                  print(index.toString() +
+                                                      ' sRemoved from task list');
+                                                  _subjectCount -= 1;
+                                                  _widgetList[index] =
+                                                      const SizedBox(
+                                                          height: 0,
+                                                          width: 0);
+                                                  editSemesterBloc.add(
+                                                    DeleteEditSubjectEvent(
+                                                        index,
+                                                        widget
+                                                            .userDetailsModel
+                                                            .gpaType),
+                                                  );
+                                                } else {
+                                                  editSemesterBloc.add(
+                                                    ErrorEvent(
+                                                      'Cannot delete since only one course left',
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: ProjectColours.SET_NAME_COLOUR,
+                          width: 1,
+                        ),
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                         ),
-                        disabledTextColor:
+                        foregroundColor: ProjectColours.SET_NAME_COLOUR,
+                        disabledForegroundColor:
                             ProjectColours.SET_NAME_COLOUR.withOpacity(0.2),
-                        textColor: ProjectColours.SET_NAME_COLOUR,
-                        child: Text(
-                          '+ Add New Course',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 11,
-                          ),
+                      ),
+                      child: const Text(
+                        '+ Add New Course',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 11,
                         ),
                       ),
+                    ),
                     ),
                   ],
                 ),

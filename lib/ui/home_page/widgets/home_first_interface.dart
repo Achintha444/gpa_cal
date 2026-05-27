@@ -9,7 +9,7 @@ import 'set_semester_name_dialog.dart';
 class HomeFirstInterface extends StatelessWidget {
   final UserDetailsModel userDetailsModel;
 
-  const HomeFirstInterface({Key key, @required this.userDetailsModel})
+  const HomeFirstInterface({Key? key, required this.userDetailsModel})
       : super(key: key);
 
   @override

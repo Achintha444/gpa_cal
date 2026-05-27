@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:fcode_common/fcode_common.dart';
+import 'package:gpa_cal/util/log.dart';
 import 'package:flutter/material.dart';
 import 'package:gpa_cal/db/model/user_result.dart';
 import 'package:gpa_cal/db/repo/home_repo.dart';
@@ -15,6 +15,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   static final HomeRepo _homeRepo = new HomeRepo();
 
   HomeBloc(BuildContext context) : super(HomeState.initialState) {
+    on<ErrorEvent>(_onErrorEvent);
+    on<FirstInterfaceEvent>(_onFirstInterfaceEvent);
+    on<HomeInterfaceEvent>(_onHomeInterfaceEvent);
+    on<DeleteSemesterEvent>(_onDeleteSemesterEvent);
     this._initialize();
   }
 
@@ -32,42 +36,37 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  @override
-  Stream<HomeState> mapEventToState(HomeEvent event) async* {
-    switch (event.runtimeType) {
-      case ErrorEvent:
-        final error = (event as ErrorEvent).error;
-        log.e('Error: $error');
-        yield state.clone(error: "");
-        yield state.clone(error: error, loading: false);
-        break;
-      case FirstInterfaceEvent:
-        yield state.clone(loading: true);
-        final cacheNotPresent = (event as FirstInterfaceEvent).cacheNotPresent;
-        log.e('First Interface Event');
-        yield state.clone(cacheNotPresent: cacheNotPresent, loading: false);
-        break;
-      case HomeInterfaceEvent:
-        yield state.clone(loading: true);
-        final userResultModel = (event as HomeInterfaceEvent).userResultModel;
-        log.e('Home Interface Event');
-        yield state.clone(userResultModel: userResultModel, loading: false);
-        break;
-      case DeleteSemesterEvent:
-        yield state.clone(loading: true);
-        final deleteSemester = (event as DeleteSemesterEvent).deleteSemester;
-        await _homeRepo.deleteSemester(deleteSemester);
-        log.e('Delete Semester Event called');
-        yield state.clone(deleteSemester: deleteSemester, loading: false);
-    }
+  void _onErrorEvent(ErrorEvent event, Emitter<HomeState> emit) {
+    log.e('Error: ${event.error}');
+    emit(state.clone(error: ""));
+    emit(state.clone(error: event.error, loading: false));
+  }
+
+  void _onFirstInterfaceEvent(FirstInterfaceEvent event, Emitter<HomeState> emit) {
+    emit(state.clone(loading: true));
+    log.e('First Interface Event');
+    emit(state.clone(cacheNotPresent: event.cacheNotPresent, loading: false));
+  }
+
+  void _onHomeInterfaceEvent(HomeInterfaceEvent event, Emitter<HomeState> emit) {
+    emit(state.clone(loading: true));
+    log.e('Home Interface Event');
+    emit(state.clone(userResultModel: event.userResultModel, loading: false));
+  }
+
+  Future<void> _onDeleteSemesterEvent(DeleteSemesterEvent event, Emitter<HomeState> emit) async {
+    emit(state.clone(loading: true));
+    await _homeRepo.deleteSemester(event.deleteSemester);
+    log.e('Delete Semester Event called');
+    emit(state.clone(deleteSemester: event.deleteSemester, loading: false));
   }
 
   @override
-  void onError(Object error, StackTrace stacktrace) {
-    log.e('$stacktrace');
+  void onError(Object error, StackTrace stackTrace) {
+    log.e('$stackTrace');
     log.e('$error');
     _addErr(error);
-    super.onError(error, stacktrace);
+    super.onError(error, stackTrace);
   }
 
   @override
@@ -75,17 +74,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     await super.close();
   }
 
-  void _addErr(e) {
+  void _addErr(dynamic e) {
     if (e is StateError) {
       return;
     }
     try {
-      add(ErrorEvent(
-        (e is String)
-            ? e
-            : (e.message ?? "Something went wrong. Please try again !"),
-      ));
-    } catch (e) {
+      String msg = "Something went wrong. Please try again !";
+      if (e is String) {
+        msg = e;
+      } else {
+        try {
+          msg = (e as dynamic).message ?? msg;
+        } catch (_) {}
+      }
+      add(ErrorEvent(msg));
+    } catch (err) {
       add(ErrorEvent("Something went wrong. Please try again !"));
     }
   }

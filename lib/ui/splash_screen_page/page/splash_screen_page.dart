@@ -1,11 +1,10 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
 import '../../../util/ui_util/glass_effect.dart';
 
 class SplashScreenPage extends StatelessWidget {
-  const SplashScreenPage({Key key}) : super(key: key);
+  const SplashScreenPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

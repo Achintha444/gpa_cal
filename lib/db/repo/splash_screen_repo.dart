@@ -11,18 +11,17 @@ class SplashScreenRepo extends Repo {
   Future<UserDetailsModel> autoChange() async {
     try {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
-      String _userDetails = _prefs.getString(USER_DETAILS);
-
+      String? _userDetails = _prefs.getString(USER_DETAILS);
       if (_userDetails == null) {
-        throw (CacheNotPresentError());
-      } else {
-        print('Cache Present');
-        //await _prefs.remove(USER_DETAILS);
-        return UserDetailsModel.fromJson(
-          json.decode(_userDetails),
-        );
+        throw CacheNotPresentError();
       }
-    } on CacheNotPresentError {
+
+      print('Cache Present');
+      //await _prefs.remove(USER_DETAILS);
+      return UserDetailsModel.fromJson(
+        json.decode(_userDetails),
+      );
+        } on CacheNotPresentError {
       throw (CacheNotPresentError());
     } catch (e) {
       print(e);

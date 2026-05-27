@@ -16,9 +16,9 @@ class HomePage extends StatefulWidget {
   final UserDetailsModel userDetailsModel;
 
   const HomePage(
-      {Key key,
-      @required this.userResultModel,
-      @required this.userDetailsModel})
+      {Key? key,
+      required this.userResultModel,
+      required this.userDetailsModel})
       : super(key: key);
 
   @override
@@ -26,7 +26,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Widget> _semesterCards;
+  late List<Widget> _semesterCards;
 
   @override
   void initState() {
@@ -94,9 +94,9 @@ class _HomePageState extends State<HomePage> {
 
 class CgpaCard extends StatelessWidget {
   const CgpaCard({
-    Key key,
-    @required this.userDetailsModel,
-    @required this.userResultModel,
+    Key? key,
+    required this.userDetailsModel,
+    required this.userResultModel,
   }) : super(key: key);
 
   final UserDetailsModel userDetailsModel;
@@ -199,8 +199,8 @@ class FAB extends StatelessWidget {
   final UserDetailsModel userDetailsModel;
 
   const FAB({
-    Key key,
-    @required this.userDetailsModel,
+    Key? key,
+    required this.userDetailsModel,
   }) : super(key: key);
 
   @override

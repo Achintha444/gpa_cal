@@ -1,4 +1,4 @@
-import 'package:fcode_common/fcode_common.dart';
+import 'package:gpa_cal/util/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gpa_cal/ui/edit_semester_page/edit_semester_event.dart';
@@ -23,9 +23,9 @@ class EditSemesterView extends StatelessWidget {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   EditSemesterView({
-    Key key,
-    @required this.userDetailsModel,
-    @required this.semester,
+    Key? key,
+    required this.userDetailsModel,
+    required this.semester,
   }) : super(key: key);
 
   @override
@@ -40,15 +40,15 @@ class EditSemesterView extends StatelessWidget {
         BlocListener<EditSemesterBloc, EditSemesterState>(
           listenWhen: (pre, current) => pre.error != current.error,
           listener: (context, state) {
-            if (state.error?.isNotEmpty ?? false) {
-              _scaffoldKey.currentState.showSnackBar(
+            if (state.error.isNotEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  backgroundColor: Theme.of(context).errorColor,
+                  backgroundColor: Theme.of(context).colorScheme.error,
                   content: Text(state.error),
                   action: SnackBarAction(
                     label: 'CLEAR',
                     onPressed: () {
-                      _scaffoldKey.currentState.hideCurrentSnackBar();
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     },
                   ),
                 ),
@@ -128,8 +128,11 @@ class EditSemesterView extends StatelessWidget {
               } else {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: WillPopScope(
-                    onWillPop: () async => showDialog(
+                  child: PopScope(
+                    canPop: false,
+                    onPopInvokedWithResult: (didPop, result) async {
+                      if (didPop) return;
+                      final bool? shouldPop = await showDialog<bool>(
                         context: context,
                         builder: (context) {
                           return EditSemesterCustomAlertDialog(
@@ -138,10 +141,16 @@ class EditSemesterView extends StatelessWidget {
                             },
                             onConfirm: () {
                               Navigator.of(context).pop(true);
-                              Navigator.pop(context);
                             },
                           );
-                        }),
+                        },
+                      );
+                      if (shouldPop ?? false) {
+                        if (context.mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      }
+                    },
                     child: EditSemesterPage(
                       semesterName: semester,
                       userDetailsModel: userDetailsModel,

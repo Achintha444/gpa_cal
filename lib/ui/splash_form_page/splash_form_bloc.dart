@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:fcode_common/fcode_common.dart';
+import 'package:gpa_cal/util/log.dart';
 import 'package:flutter/material.dart';
 
 import '../../db/model/user_details_model.dart';
@@ -14,44 +14,41 @@ class SplashFormBloc extends Bloc<SplashFormEvent, SplashFormState> {
   static final log = Log("SplashFormBloc");
   static final SplashFormRepo _splashFormRepo = new SplashFormRepo();
 
-  SplashFormBloc(BuildContext context) : super(SplashFormState.initialState);
+  SplashFormBloc(BuildContext context) : super(SplashFormState.initialState) {
+    on<ErrorEvent>(_onErrorEvent);
+    on<UserDetailsAddEvent>(_onUserDetailsAddEvent);
+  }
 
-  @override
-  Stream<SplashFormState> mapEventToState(SplashFormEvent event) async* {
-    switch (event.runtimeType) {
-      case ErrorEvent:
-        final error = (event as ErrorEvent).error;
-        log.e('Error: $error');
-        yield state.clone(error: "");
-        yield state.clone(error: error);
-        break;
+  void _onErrorEvent(ErrorEvent event, Emitter<SplashFormState> emit) {
+    log.e('Error: ${event.error}');
+    emit(state.clone(error: ""));
+    emit(state.clone(error: event.error));
+  }
 
-      case UserDetailsAddEvent:
-        yield state.clone(formLoading: true);
-        final UserDetailsModel _userDetailsModel = new UserDetailsModel(
-          name: (event as UserDetailsAddEvent).name,
-          uni: (event as UserDetailsAddEvent).uni,
-          gpaType: (event as UserDetailsAddEvent).gpaType,
-        );
+  Future<void> _onUserDetailsAddEvent(UserDetailsAddEvent event, Emitter<SplashFormState> emit) async {
+    emit(state.clone(formLoading: true));
+    final UserDetailsModel _userDetailsModel = new UserDetailsModel(
+      name: event.name,
+      uni: event.uni,
+      gpaType: event.gpaType,
+    );
 
-        try {
-          await _splashFormRepo.insertUserDetails(_userDetailsModel);
-          yield state.clone(userDetailsModel: _userDetailsModel, formLoading: false);
-        } on CacheError {
-          add(ErrorEvent('Stroage Limit Exceed!'));
-        } catch (e) {
-          add(ErrorEvent('UNEXPECTED FATAL ERROR!'));
-        }
-        break;
+    try {
+      await _splashFormRepo.insertUserDetails(_userDetailsModel);
+      emit(state.clone(userDetailsModel: _userDetailsModel, formLoading: false));
+    } on CacheError {
+      add(ErrorEvent('Stroage Limit Exceed!'));
+    } catch (e) {
+      add(ErrorEvent('UNEXPECTED FATAL ERROR!'));
     }
   }
 
   @override
-  void onError(Object error, StackTrace stacktrace) {
-    log.e('$stacktrace');
+  void onError(Object error, StackTrace stackTrace) {
+    log.e('$stackTrace');
     log.e('$error');
     _addErr(error);
-    super.onError(error, stacktrace);
+    super.onError(error, stackTrace);
   }
 
   @override
@@ -59,17 +56,21 @@ class SplashFormBloc extends Bloc<SplashFormEvent, SplashFormState> {
     await super.close();
   }
 
-  void _addErr(e) {
+  void _addErr(dynamic e) {
     if (e is StateError) {
       return;
     }
     try {
-      add(ErrorEvent(
-        (e is String)
-            ? e
-            : (e.message ?? "Something went wrong. Please try again !"),
-      ));
-    } catch (e) {
+      String msg = "Something went wrong. Please try again !";
+      if (e is String) {
+        msg = e;
+      } else {
+        try {
+          msg = (e as dynamic).message ?? msg;
+        } catch (_) {}
+      }
+      add(ErrorEvent(msg));
+    } catch (err) {
       add(ErrorEvent("Something went wrong. Please try again !"));
     }
   }

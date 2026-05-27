@@ -15,11 +15,11 @@ class SemesterCard extends StatelessWidget {
   final HomeBloc homeBloc;
 
   const SemesterCard({
-    Key key,
-    @required this.index,
-    @required this.userDetailsModel,
-    @required this.semester,
-    @required this.homeBloc,
+    Key? key,
+    required this.index,
+    required this.userDetailsModel,
+    required this.semester,
+    required this.homeBloc,
   }) : super(key: key);
 
   @override
@@ -122,15 +122,15 @@ class SemesterCardIconButton extends StatelessWidget {
   final Color iconColor;
   final Color color;
   final BorderRadius borderRadius;
-  final Function onPressed;
+  final VoidCallback onPressed;
 
   const SemesterCardIconButton({
-    Key key,
-    @required this.icon,
-    @required this.onPressed,
-    @required this.iconColor,
-    @required this.color,
-    @required this.borderRadius,
+    Key? key,
+    required this.icon,
+    required this.onPressed,
+    required this.iconColor,
+    required this.color,
+    required this.borderRadius,
   }) : super(key: key);
 
   @override
@@ -147,7 +147,7 @@ class SemesterCardIconButton extends StatelessWidget {
       child: IconButton(
         icon: icon,
         color: iconColor,
-        onPressed: () => this.onPressed(),
+        onPressed: onPressed,
         tooltip: 'Delete Semester',
       ),
     );

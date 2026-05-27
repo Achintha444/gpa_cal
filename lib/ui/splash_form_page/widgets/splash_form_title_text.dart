@@ -6,8 +6,8 @@ class SplashFormTitleText extends StatelessWidget {
   final String title;
 
   const SplashFormTitleText({
-    Key key,
-    @required this.title
+    Key? key,
+    required this.title
   }) : super(key: key);
 
   @override

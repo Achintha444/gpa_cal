@@ -9,7 +9,7 @@ class AddSemesterProvider extends BlocProvider<AddSemesterBloc> {
   final UserDetailsModel userDetailsModel;
   final String semesterName;
 
-  AddSemesterProvider({Key key, @required this.userDetailsModel, @required this.semesterName})
+  AddSemesterProvider({Key? key, required this.userDetailsModel, required this.semesterName})
       : super(
           key: key,
           create: (context) => AddSemesterBloc(context),

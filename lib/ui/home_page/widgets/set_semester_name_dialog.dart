@@ -10,8 +10,8 @@ class SetSemesterNameDialog extends StatefulWidget {
   final UserDetailsModel userDetailsModel;
 
   const SetSemesterNameDialog({
-    Key key,
-    @required this.userDetailsModel,
+    Key? key,
+    required this.userDetailsModel,
   }) : super(key: key);
 
   @override
@@ -25,7 +25,7 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(20),
         ),
@@ -44,7 +44,7 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 'Set Semester Name',
                 style: TextStyle(
@@ -52,19 +52,19 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
                   fontSize: 16,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               ErrorAnimatedWidget(
                 child: _error == true
                     ? Text(
                         'Semester cannot be empty right ? 😉',
                         style: _erroTextStyle(),
                       )
-                    : SizedBox(
+                    : const SizedBox(
                         height: 13,
                       ),
                 direction: -1.1,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Hero(
                 tag: '1',
                 child: TextFormField(
@@ -75,7 +75,6 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
                   style: _inputTextStyle(),
                   textCapitalization: TextCapitalization.sentences,
                   maxLength: 13,
-                  maxLengthEnforced: true,
                   maxLines: 1,
                   textAlign: TextAlign.left,
                   onChanged: (value) {
@@ -96,7 +95,7 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  FlatButton(
+                  TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -109,7 +108,7 @@ class _SetSemesterNameDialogState extends State<SetSemesterNameDialog> {
                       ),
                     ),
                   ),
-                  FlatButton(
+                  TextButton(
                     onPressed: () {
                       if (_semesterName.isEmpty) {
                         setState(() {

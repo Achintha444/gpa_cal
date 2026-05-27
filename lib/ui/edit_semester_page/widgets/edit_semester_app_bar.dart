@@ -5,10 +5,10 @@ class EditSemesterAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   static final AppBar appBar = new AppBar();
   final String name;
-  final Function onBack;
-  final Function onDelete;
+  final VoidCallback onBack;
+  final VoidCallback onDelete;
 
-  const EditSemesterAppBar({Key key, @required this.name, @required this.onBack, @required this.onDelete})
+  const EditSemesterAppBar({Key? key, required this.name, required this.onBack, required this.onDelete})
       : super(key: key);
 
   @override
@@ -31,13 +31,13 @@ class EditSemesterAppBar extends StatelessWidget
           ),
           leading: IconButton(
             icon: Icon(Icons.keyboard_arrow_left),
-            onPressed: () => onBack(),
+            onPressed: onBack,
           ),
           actions: [
             IconButton(
               icon: Icon(Icons.delete),
               tooltip: 'Delete Semester',
-              onPressed: () => onDelete(),
+              onPressed: onDelete,
             ),
           ],
         ),

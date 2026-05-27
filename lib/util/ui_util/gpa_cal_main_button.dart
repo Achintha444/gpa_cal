@@ -5,12 +5,12 @@ import '../../theme/project_theme.dart';
 
 class GpaCalMainButton extends StatelessWidget {
   final String text;
-  final Function onClick;
+  final VoidCallback onClick;
 
   const GpaCalMainButton({
-    Key key,
-    @required this.text,
-    @required this.onClick,
+    Key? key,
+    required this.text,
+    required this.onClick,
   }) : super(key: key);
 
   @override
@@ -18,13 +18,14 @@ class GpaCalMainButton extends StatelessWidget {
     return GlassEffect(
       height: 44,
       width: MediaQuery.of(context).size.width,
-      child: FlatButton(
-        onPressed: () => this.onClick(),
-        //color: ProjectColours.BUTTON_BG_COLOR,
-        textColor: ProjectColours.DARKER_COLOR,
+      child: TextButton(
+        onPressed: onClick,
+        style: TextButton.styleFrom(
+          foregroundColor: ProjectColours.DARKER_COLOR,
+        ),
         child: Text(
           text.toUpperCase(),
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
             letterSpacing: 1.25,
             fontWeight: FontWeight.w700,

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:fcode_common/fcode_common.dart';
+import 'package:gpa_cal/util/log.dart';
 import 'package:flutter/material.dart';
 import 'package:gpa_cal/db/model/user_details_model.dart';
 import 'package:gpa_cal/db/repo/splash_screen_repo.dart';
@@ -16,6 +16,9 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
 
   SplashScreenBloc(BuildContext context)
       : super(SplashScreenState.initialState) {
+    on<ErrorEvent>(_onErrorEvent);
+    on<SplashFormEvent>(_onSplashFormEvent);
+    on<LoadHomeScreenEvent>(_onLoadHomeScreenEvent);
     this._initialize();
   }
 
@@ -34,35 +37,29 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
     }
   }
 
-  @override
-  Stream<SplashScreenState> mapEventToState(SplashScreenEvent event) async* {
-    switch (event.runtimeType) {
-      case ErrorEvent:
-        final error = (event as ErrorEvent).error;
-        log.e('Error: $error');
-        yield state.clone(error: error);
-        break;
-      case SplashFormEvent:
-        yield state.clone(loading: true);
-        final cacheNotPresent = (event as SplashFormEvent).cacheNotPresent;
-        log.e('Cache Not Present: $cacheNotPresent');
-        yield state.clone(cacheNotPresent: cacheNotPresent, loading: false);
-        break;
-      case LoadHomeScreenEvent:
-        yield (state.clone(loading: true));
-        final userDetailsModel =
-            (event as LoadHomeScreenEvent).userDetailsModel;
-        log.e('Load Home Screen Event called');
-        yield state.clone(userDetailsModel: userDetailsModel, loading: false);
-    }
+  void _onErrorEvent(ErrorEvent event, Emitter<SplashScreenState> emit) {
+    log.e('Error: ${event.error}');
+    emit(state.clone(error: event.error));
+  }
+
+  void _onSplashFormEvent(SplashFormEvent event, Emitter<SplashScreenState> emit) {
+    emit(state.clone(loading: true));
+    log.e('Cache Not Present: ${event.cacheNotPresent}');
+    emit(state.clone(cacheNotPresent: event.cacheNotPresent, loading: false));
+  }
+
+  void _onLoadHomeScreenEvent(LoadHomeScreenEvent event, Emitter<SplashScreenState> emit) {
+    emit(state.clone(loading: true));
+    log.e('Load Home Screen Event called');
+    emit(state.clone(userDetailsModel: event.userDetailsModel, loading: false));
   }
 
   @override
-  void onError(Object error, StackTrace stacktrace) {
-    log.e('$stacktrace');
+  void onError(Object error, StackTrace stackTrace) {
+    log.e('$stackTrace');
     log.e('$error');
     _addErr(error);
-    super.onError(error, stacktrace);
+    super.onError(error, stackTrace);
   }
 
   @override
@@ -70,17 +67,21 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
     await super.close();
   }
 
-  void _addErr(e) {
+  void _addErr(dynamic e) {
     if (e is StateError) {
       return;
     }
     try {
-      add(ErrorEvent(
-        (e is String)
-            ? e
-            : (e.message ?? "Something went wrong. Please try again !"),
-      ));
-    } catch (e) {
+      String msg = "Something went wrong. Please try again !";
+      if (e is String) {
+        msg = e;
+      } else {
+        try {
+          msg = (e as dynamic).message ?? msg;
+        } catch (_) {}
+      }
+      add(ErrorEvent(msg));
+    } catch (err) {
       add(ErrorEvent("Something went wrong. Please try again !"));
     }
   }

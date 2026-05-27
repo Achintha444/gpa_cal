@@ -6,7 +6,7 @@ class HomeErrorWidget extends StatelessWidget {
   final String error;
   final UserDetailsModel userDetailsModel;
 
-  const HomeErrorWidget({Key key, @required this.error, @required this.userDetailsModel,}) : super(key: key);
+  const HomeErrorWidget({Key? key, required this.error, required this.userDetailsModel,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

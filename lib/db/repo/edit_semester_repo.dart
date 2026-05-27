@@ -13,7 +13,10 @@ class EditSemesterRepo extends Repo {
   Future<void> editSemester(Semester semester) async {
     try {
       SharedPreferences _prefs = await SharedPreferences.getInstance();
-      String _userResults = _prefs.getString(USER_RESULTS);
+      String? _userResults = _prefs.getString(USER_RESULTS);
+      if (_userResults == null) {
+        throw CacheNotPresentError();
+      }
 
       print('USER_RESULTS Cache Present');
       print('Cache present ' + semester.hash.toString() + ' edited');

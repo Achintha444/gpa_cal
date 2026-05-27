@@ -10,8 +10,8 @@ class HomeProvider extends BlocProvider<HomeBloc> {
   final UserDetailsModel userDetailsModel;
 
   HomeProvider({
-    Key key,
-    @required this.userDetailsModel
+    Key? key,
+    required this.userDetailsModel
   }) : super(
           key: key,
           create: (context) => HomeBloc(context),

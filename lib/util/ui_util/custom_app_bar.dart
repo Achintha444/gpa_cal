@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import '../../theme/project_theme.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  static final AppBar appBar = new AppBar();
+  static final AppBar appBar = AppBar();
   final String name;
   final String university;
-  final Function onBack;
+  final VoidCallback? onBack;
 
   const CustomAppBar({
-    Key key,
-    @required this.name,
-    @required this.university,
+    Key? key,
+    required this.name,
+    required this.university,
     this.onBack,
   }) : super(key: key);
 
@@ -69,12 +69,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ],
                   ),
                 ),
-                leading: onBack == null
-                    ? null
-                    : IconButton(
-                        icon: Icon(Icons.keyboard_arrow_left),
-                        onPressed: () => onBack(),
-                      ),
+                leading: onBack != null
+                    ? IconButton(
+                        icon: const Icon(Icons.keyboard_arrow_left),
+                        onPressed: onBack,
+                      )
+                    : null,
 /*           actions: [
                                     IconButton(
                                       icon: Icon(Icons.more_vert),

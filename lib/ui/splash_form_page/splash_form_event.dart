@@ -14,5 +14,5 @@ class UserDetailsAddEvent extends SplashFormEvent {
   final String uni;
   final int gpaType;
 
-  UserDetailsAddEvent({this.name, this.uni, this.gpaType});
+  UserDetailsAddEvent({required this.name, required this.uni, required this.gpaType});
 }

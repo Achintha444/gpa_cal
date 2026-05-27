@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../db/model/user_details_model.dart';
 import '../../../theme/project_theme.dart';
 import '../../../util/ui_util/error_animated_widget.dart';
 import '../../../util/ui_util/gpa_cal_main_button.dart';
-import '../../../util/ui_util/loading_screen.dart';
-import '../add_semester_bloc.dart';
-import '../add_semester_event.dart';
 import '../add_semester_exports.dart';
 import '../widgets/subject_card.dart';
 
@@ -17,7 +13,7 @@ class AddSemesterPage extends StatefulWidget {
   final UserDetailsModel userDetailsModel;
 
   const AddSemesterPage(
-      {Key key, @required this.semesterName, @required this.userDetailsModel})
+      {Key? key, required this.semesterName, required this.userDetailsModel})
       : super(key: key);
 
   @override
@@ -25,15 +21,15 @@ class AddSemesterPage extends StatefulWidget {
 }
 
 class _AddSemesterPageState extends State<AddSemesterPage> {
-  int _subjectCount;
-  int _lengthOfWidgets;
-  List<Widget> _widgetList;
+  late int _subjectCount;
+  late int _lengthOfWidgets;
+  late List<Widget> _widgetList;
 
   @override
   void initState() {
     _subjectCount = 1;
     _lengthOfWidgets = 1;
-    _widgetList = new List.generate(
+    _widgetList = List<Widget>.generate(
       1,
       (index) => Column(
         children: [
@@ -195,7 +191,7 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
 
                   Align(
                     alignment: Alignment.topRight,
-                    child: FlatButton(
+                    child: OutlinedButton(
                       onPressed: state.totalError == true
                           ? null
                           : () {
@@ -207,7 +203,7 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                                   _widgetList.add(
                                     Column(
                                       children: [
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         SubjectCard(
                                           userDetailsModel:
                                               widget.userDetailsModel,
@@ -221,7 +217,7 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                                                   print(index.toString() +
                                                       ' sRemoved from task list');
                                                   _subjectCount -= 1;
-                                                  _widgetList[index] = SizedBox(
+                                                  _widgetList[index] = const SizedBox(
                                                       height: 0, width: 0);
                                                   addSemesterBloc.add(
                                                     DeleteSubjectEvent(
@@ -245,18 +241,19 @@ class _AddSemesterPageState extends State<AddSemesterPage> {
                                 },
                               );
                             },
-                      shape: RoundedRectangleBorder(
+                      style: OutlinedButton.styleFrom(
                         side: BorderSide(
                           color: ProjectColours.SET_NAME_COLOUR,
                           width: 1,
-                          style: BorderStyle.solid,
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                        ),
+                        foregroundColor: ProjectColours.SET_NAME_COLOUR,
+                        disabledForegroundColor:
+                            ProjectColours.SET_NAME_COLOUR.withOpacity(0.2),
                       ),
-                      disabledTextColor:
-                          ProjectColours.SET_NAME_COLOUR.withOpacity(0.2),
-                      textColor: ProjectColours.SET_NAME_COLOUR,
-                      child: Text(
+                      child: const Text(
                         '+ Add New Course',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,

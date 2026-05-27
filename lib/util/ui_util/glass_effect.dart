@@ -16,13 +16,13 @@ class GlassEffect extends StatelessWidget {
   final double borderOpacity;
   final double borderWidth;
 
-  final BorderRadiusGeometry borderRadius;
+  final BorderRadius? borderRadius;
 
   const GlassEffect({
-    Key key,
-    @required this.child,
-    @required this.height,
-    @required this.width,
+    Key? key,
+    required this.child,
+    required this.height,
+    required this.width,
     this.topColorOpacity = 0.3,
     this.bottomColorOpacity = 0,
     this.borderOpacity = 0.3,
@@ -42,18 +42,10 @@ class GlassEffect extends StatelessWidget {
             offset: Offset(5, 5), // changes position of shadow
           ),
         ],
-        borderRadius: borderRadius == null
-            ? BorderRadius.all(
-                Radius.circular(20),
-              )
-            : borderRadius,
+        borderRadius: borderRadius,
       ),
       child: ClipRRect(
-        borderRadius: borderRadius == null
-            ? BorderRadius.all(
-                Radius.circular(20),
-              )
-            : borderRadius,
+        borderRadius: borderRadius ?? BorderRadius.zero,
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 200, sigmaY: 200),
           child: Container(
@@ -70,11 +62,7 @@ class GlassEffect extends StatelessWidget {
                   Colors.white.withOpacity(bottomColorOpacity),
                 ],
               ),
-              borderRadius: borderRadius == null
-                  ? BorderRadius.all(
-                      Radius.circular(20),
-                    )
-                  : borderRadius,
+              borderRadius: borderRadius,
               border: Border.all(
                 color: Colors.white.withOpacity(borderOpacity),
                 width: borderWidth,

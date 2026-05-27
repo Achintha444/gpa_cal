@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 final projectTheme = ThemeData(
   primaryColor: ProjectColours.DARKER_COLOR,
   unselectedWidgetColor: ProjectColours.DARKER_COLOR,
   scaffoldBackgroundColor: Colors.transparent,
-  errorColor: ProjectColours.ERROR_COLOR,
   fontFamily: 'Montserrat',
   dividerTheme: DividerThemeData(
     color: ProjectColours.PRIMARY_COLOR.withOpacity(0.15),
@@ -24,7 +24,7 @@ final projectTheme = ThemeData(
       ),
       splashColor: ProjectColours.PRIMARY_COLOR.withOpacity(0.01)),
   appBarTheme: AppBarTheme(
-    color: Colors.transparent.withOpacity(0),
+    backgroundColor: Colors.transparent.withOpacity(0),
     actionsIconTheme: IconThemeData(
       color: ProjectColours.PRIMARY_COLOR,
       size: 24,
@@ -33,18 +33,24 @@ final projectTheme = ThemeData(
       color: ProjectColours.PRIMARY_COLOR,
       size: 24,
     ),
-    elevation: 0,
-    textTheme: TextTheme(
-      headline6: TextStyle(
+    elevation: 0, toolbarTextStyle: TextTheme(
+      titleLarge: TextStyle(
         fontSize: 20,
         fontFamily: 'Montserrat',
         color: ProjectColours.PRIMARY_COLOR,
         letterSpacing: 0.15,
       ),
-    ),
+    ).bodyMedium, titleTextStyle: TextTheme(
+      titleLarge: TextStyle(
+        fontSize: 20,
+        fontFamily: 'Montserrat',
+        color: ProjectColours.PRIMARY_COLOR,
+        letterSpacing: 0.15,
+      ),
+    ).titleLarge,
   ),
   tooltipTheme: TooltipThemeData(
-    textStyle: TextStyle(
+    constraints: BoxConstraints(minHeight: 32), textStyle: TextStyle(
       fontWeight: FontWeight.w400,
       fontSize: 12,
       letterSpacing: 0.4,
@@ -54,9 +60,8 @@ final projectTheme = ThemeData(
       color: ProjectColours.SNACKBAR_BG_COLOR.withOpacity(0.9),
       borderRadius: BorderRadius.all(Radius.circular(50)),
     ),
-    height: 32,
     padding: EdgeInsets.only(left: 16, right: 16),
-  ),
+  ), colorScheme: ColorScheme.fromSeed(seedColor: ProjectColours.PRIMARY_COLOR, error: ProjectColours.ERROR_COLOR),
   //splashColor: Colors.blue,
 );
 

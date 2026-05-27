@@ -6,13 +6,13 @@ class SplashScreenState {
   final String error;
   final bool cacheNotPresent;
   final bool loading;
-  final UserDetailsModel userDetailsModel;
+  final UserDetailsModel? userDetailsModel;
 
   SplashScreenState({
-    @required this.error,
-    @required this.cacheNotPresent,
-    @required this.loading,
-    @required this.userDetailsModel,
+    required this.error,
+    required this.cacheNotPresent,
+    required this.loading,
+    required this.userDetailsModel,
   });
 
   static SplashScreenState get initialState => SplashScreenState(
@@ -23,10 +23,10 @@ class SplashScreenState {
   );
 
   SplashScreenState clone({
-    String error,
-    bool cacheNotPresent,
-    bool loading,
-    UserDetailsModel userDetailsModel,
+    String? error,
+    bool? cacheNotPresent,
+    bool? loading,
+    UserDetailsModel? userDetailsModel,
   }) {
     return SplashScreenState(
       error: error ?? this.error,

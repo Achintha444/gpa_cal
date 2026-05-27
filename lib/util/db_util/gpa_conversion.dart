@@ -84,7 +84,7 @@ class GpaConversion {
       totalResult.forEach((key, result) {
         var x = result[1].toString();
         if (x.trim().isNotEmpty) {
-          _totResult += (_gpa[result[0]] * double.parse(x));
+          _totResult += ((_gpa[result[0]] ?? 0.0) * double.parse(x));
         }
       });
       return double.parse((_totResult / _totCredit).toStringAsPrecision(3));

@@ -3,26 +3,26 @@ import 'package:flutter/material.dart';
 import '../../../theme/project_theme.dart';
 
 class EditSemesterCustomAlertDialog extends StatelessWidget {
-  final Function onCancel;
-  final Function onConfirm;
+  final VoidCallback onCancel;
+  final VoidCallback onConfirm;
 
   const EditSemesterCustomAlertDialog({
-    Key key,
-    @required this.onCancel,
-    @required this.onConfirm,
+    Key? key,
+    required this.onCancel,
+    required this.onConfirm,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(20),
         ),
       ),
       child: Container(
         height: 223,
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -31,7 +31,7 @@ class EditSemesterCustomAlertDialog extends StatelessWidget {
               color: ProjectColours.ERROR_COLOR,
               size: 40,
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               'IMPORTANT!',
               style: TextStyle(
@@ -39,25 +39,25 @@ class EditSemesterCustomAlertDialog extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.w500),
             ),
-            SizedBox(height: 8),
-            Text(
+            const SizedBox(height: 8),
+            const Text(
               'Changed details will not be saved!',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
             ),
-            SizedBox(height: 4),
-            Text(
+            const SizedBox(height: 4),
+            const Text(
               'Do you want to continue?',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(child: Container()),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                FlatButton(
-                  onPressed: () => this.onCancel(),
+                TextButton(
+                  onPressed: onCancel,
                   child: Text(
                     'CANCEL',
                     textAlign: TextAlign.end,
@@ -67,8 +67,8 @@ class EditSemesterCustomAlertDialog extends StatelessWidget {
                     ),
                   ),
                 ),
-                FlatButton(
-                  onPressed: () => this.onConfirm(),
+                TextButton(
+                  onPressed: onConfirm,
                   child: Text(
                     'OK',
                     textAlign: TextAlign.end,

@@ -1,15 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:gpa_cal/util/db_util/model.dart';
 
 class Subject extends Model {
-  String course;
-  String result;
-  double credit;
+  final String course;
+  final String result;
+  final double credit;
 
   Subject({
-    @required this.course,
-    @required this.result,
-    @required this.credit,
+    required this.course,
+    required this.result,
+    required this.credit,
   });
 
   static Subject fromJson(Map<String, dynamic> json) {

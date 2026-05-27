@@ -1,4 +1,4 @@
-import 'package:fcode_common/fcode_common.dart';
+import 'package:gpa_cal/util/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,15 +35,15 @@ class SplashScreenView extends StatelessWidget {
               listenWhen: (pre, current) => pre.error != current.error,
               listener: (context, state) {
                 print(state.cacheNotPresent);
-                if (state.error?.isNotEmpty ?? false) {
-                  Scaffold.of(context).showSnackBar(
+                if (state.error.isNotEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      backgroundColor: Theme.of(context).errorColor,
+                      backgroundColor: Theme.of(context).colorScheme.error,
                       content: Text(state.error),
                       action: SnackBarAction(
                         label: 'CLEAR',
                         onPressed: () {
-                          Scaffold.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
                         },
                       ),
                     ),
@@ -70,14 +70,16 @@ class SplashScreenView extends StatelessWidget {
               listenWhen: (pre, current) =>
                   pre.userDetailsModel != current.userDetailsModel,
               listener: (context, state) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomeProvider(
-                        userDetailsModel: state.userDetailsModel,
+                if (state.userDetailsModel != null) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomeProvider(
+                          userDetailsModel: state.userDetailsModel!,
+                        ),
                       ),
-                    ),
-                    (Route<dynamic> route) => false);
+                      (Route<dynamic> route) => false);
+                }
               },
             ),
           ],

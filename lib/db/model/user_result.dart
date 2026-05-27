@@ -1,18 +1,17 @@
-import 'package:flutter/material.dart';
 
 import '../../util/db_util/model.dart';
 
 class UserResultModel extends Model {
-  double cgpa;
-  double carrerResult;
-  double carrerCredit;
-  List semesters;
+  final double cgpa;
+  final double carrerResult;
+  final double carrerCredit;
+  final List<dynamic> semesters;
 
   UserResultModel({
-    @required this.cgpa,
-    @required this.carrerResult,
-    @required this.carrerCredit,
-    @required this.semesters,
+    required this.cgpa,
+    required this.carrerResult,
+    required this.carrerCredit,
+    required this.semesters,
   });
 
   static UserResultModel fromJson(Map<String, dynamic> json) {

@@ -7,17 +7,17 @@ class HomeState {
   final String error;
   final bool loading;
   final bool cacheNotPresent;
-  final Semester deleteSemester;
+  final Semester? deleteSemester;
 
   // UserResults are in here
-  final UserResultModel userResultModel;
+  final UserResultModel? userResultModel;
 
   HomeState({
-    @required this.error,
-    @required this.loading,
-    @required this.cacheNotPresent,
-    @required this.userResultModel,
-    @required this.deleteSemester,
+    required this.error,
+    required this.loading,
+    required this.cacheNotPresent,
+    required this.userResultModel,
+    required this.deleteSemester,
   });
 
   static HomeState get initialState => HomeState(
@@ -29,11 +29,11 @@ class HomeState {
       );
 
   HomeState clone({
-    String error,
-    bool loading,
-    bool cacheNotPresent,
-    UserResultModel userResultModel,
-    Semester deleteSemester,
+    String? error,
+    bool? loading,
+    bool? cacheNotPresent,
+    UserResultModel? userResultModel,
+    Semester? deleteSemester,
   }) {
     return HomeState(
       error: error ?? this.error,

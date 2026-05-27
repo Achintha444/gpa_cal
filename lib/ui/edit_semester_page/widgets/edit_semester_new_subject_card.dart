@@ -6,20 +6,18 @@ import '../../../db/model/user_details_model.dart';
 import '../../../theme/project_theme.dart';
 import '../../../util/db_util/gpa_conversion.dart';
 import '../../../util/db_util/regex_input_formatter.dart';
-import '../edit_semester_bloc.dart';
-import '../edit_semester_event.dart';
 import '../edit_semester_exports.dart';
 
 class EditSmesterNewSubjectCard extends StatefulWidget {
   final int index;
-  final Function onDelete;
+  final void Function(int) onDelete;
   final UserDetailsModel userDetailsModel;
 
   const EditSmesterNewSubjectCard(
-      {Key key,
-      @required this.index,
-      @required this.onDelete,
-      @required this.userDetailsModel})
+      {Key? key,
+      required this.index,
+      required this.onDelete,
+      required this.userDetailsModel})
       : super(key: key);
 
   @override
@@ -34,9 +32,9 @@ class _EditSmesterNewSubjectCardState extends State<EditSmesterNewSubjectCard> {
     }*/
 
   String course = '';
-  String resultValue;
-  String credit;
-  Map subject;
+  late String resultValue;
+  late String credit;
+  late Map subject;
   @override
   void initState() {
     resultValue = _selectResultType()[1];
@@ -126,7 +124,8 @@ class _EditSmesterNewSubjectCardState extends State<EditSmesterNewSubjectCard> {
                               iconEnabledColor: ProjectColours.PRIMARY_COLOR,
                               value: resultValue,
                               iconSize: 24,
-                              onChanged: (String newValue) {
+                              onChanged: (String? newValue) {
+                                if (newValue == null) return;
                                 setState(() {
                                   resultValue = newValue;
                                   subject['result'] = resultValue;
@@ -169,7 +168,6 @@ class _EditSmesterNewSubjectCardState extends State<EditSmesterNewSubjectCard> {
                         Expanded(
                           child: TextFormField(
                             initialValue: credit,
-                            toolbarOptions: ToolbarOptions(paste: false),
                             onChanged: (newValue) {
                               print(newValue);
                               setState(() {

@@ -15,8 +15,8 @@ class SplashScreenFormPage extends StatefulWidget {
 
 class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
   final _formKey = GlobalKey<FormState>();
-  String _name;
-  String _uni;
+  String _name = '';
+  String _uni = '';
 
   /// 0 -> 4.0 and 1 -> 4.2
   int _gpaType = 1;
@@ -92,13 +92,15 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
                           '4.2',
                           style: _radioButtonTextStyle(),
                         ),
-                        leading: Radio(
+                        leading: Radio<int>(
                           value: 1,
                           groupValue: _gpaType,
                           activeColor: ProjectColours.DARKER_COLOR,
                           onChanged: (value) {
                             setState(() {
-                              _gpaType = value;
+                              if (value != null) {
+                                _gpaType = value;
+                              }
                             });
                           },
                         ),
@@ -110,13 +112,15 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
                           '4.0',
                           style: _radioButtonTextStyle(),
                         ),
-                        leading: Radio(
+                        leading: Radio<int>(
                           value: 0,
                           groupValue: _gpaType,
                           activeColor: ProjectColours.DARKER_COLOR,
                           onChanged: (value) {
                             setState(() {
-                              _gpaType = value;
+                              if (value != null) {
+                                _gpaType = value;
+                              }
                             });
                           },
                         ),
@@ -125,12 +129,12 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
                   ],
                 ),
 
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
 
                 GpaCalMainButton(
                   text: 'Continue',
                   onClick: () {
-                    if (_formKey.currentState.validate()) {
+                    if (_formKey.currentState?.validate() ?? false) {
                       // If the form is valid, display a Snackbar.
                       print(_name);
                       print(_uni);
@@ -155,8 +159,8 @@ class _SplashScreenFormPageState extends State<SplashScreenFormPage> {
   }
 
   /// text -> onChanged value and type -> type of the text
-  String _emptyValidator(String text, String type) {
-    if (text.isEmpty) {
+  String? _emptyValidator(String? text, String type) {
+    if (text == null || text.isEmpty) {
       return type + ' Cannot be Empty!';
     } else if (text.trim().isEmpty) {
       return type + ' Cannot be Empty!';

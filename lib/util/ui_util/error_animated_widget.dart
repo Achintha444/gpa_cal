@@ -6,9 +6,9 @@ class ErrorAnimatedWidget extends StatelessWidget {
   /// direction = -1 -> downward animation
   final double direction;
   const ErrorAnimatedWidget({
-    Key key,
-    @required this.child,
-    @required this.direction,
+    Key? key,
+    required this.child,
+    required this.direction,
   }) : super(key: key);
 
   @override

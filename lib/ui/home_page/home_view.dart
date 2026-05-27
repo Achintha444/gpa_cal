@@ -1,4 +1,4 @@
-import 'package:fcode_common/fcode_common.dart';
+import 'package:gpa_cal/util/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,7 +19,7 @@ class HomeView extends StatelessWidget {
 
   final UserDetailsModel userDetailsModel;
 
-  HomeView({Key key, @required this.userDetailsModel}) : super(key: key);
+  HomeView({Key? key, required this.userDetailsModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,15 +34,15 @@ class HomeView extends StatelessWidget {
         BlocListener<HomeBloc, HomeState>(
           listenWhen: (pre, current) => pre.error != current.error,
           listener: (context, state) {
-            if (state.error?.isNotEmpty ?? false) {
-              _scaffoldKeyHome.currentState.showSnackBar(
+            if (state.error.isNotEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  backgroundColor: Theme.of(context).errorColor,
+                  backgroundColor: Theme.of(context).colorScheme.error,
                   content: Text(state.error),
                   action: SnackBarAction(
                     label: 'CLEAR',
                     onPressed: () {
-                      _scaffoldKeyHome.currentState.hideCurrentSnackBar();
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     },
                   ),
                 ),
@@ -85,10 +85,11 @@ class HomeView extends StatelessWidget {
                 return HomeFirstInterface(userDetailsModel: userDetailsModel);
               } else if (state.userResultModel != null) {
                 return HomePage(
-                  userResultModel: state.userResultModel,
+                  userResultModel: state.userResultModel!,
                   userDetailsModel: userDetailsModel,
                 );
               }
+              return const SizedBox();
             },
           ),
         ),

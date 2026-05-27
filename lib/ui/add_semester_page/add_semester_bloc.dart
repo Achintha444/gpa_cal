@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:fcode_common/fcode_common.dart';
+import 'package:gpa_cal/util/log.dart';
 import 'package:flutter/material.dart';
 import 'package:gpa_cal/db/model/semester.dart';
 import 'package:gpa_cal/util/errors.dart';
@@ -15,180 +15,179 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
   static final log = Log("AddSemesterBloc");
   static final AddSemesterRepo _addSemesterRepo = new AddSemesterRepo();
 
-  AddSemesterBloc(BuildContext context) : super(AddSemesterState.initialState);
+  AddSemesterBloc(BuildContext context) : super(AddSemesterState.initialState) {
+    on<ErrorEvent>(_onErrorEvent);
+    on<AddSubjectsEvent>(_onAddSubjectsEvent);
+    on<DeleteSubjectEvent>(_onDeleteSubjectEvent);
+    on<TotalErrorEvent>(_onTotalErrorEvent);
+    on<ConfirmEvent>(_onConfirmEvent);
+  }
 
-  @override
-  Stream<AddSemesterState> mapEventToState(AddSemesterEvent event) async* {
-    switch (event.runtimeType) {
-      case ErrorEvent:
-        final error = (event as ErrorEvent).error;
-        log.e('Error: $error');
-        yield state.clone(error: "");
-        yield state.clone(error: error);
-        break;
+  void _onErrorEvent(ErrorEvent event, Emitter<AddSemesterState> emit) {
+    log.e('Error: ${event.error}');
+    emit(state.clone(error: ""));
+    emit(state.clone(error: event.error));
+  }
 
-      case AddSubjectsEvent:
-        yield state.clone(loading: true);
-        final index = (event as AddSubjectsEvent).index;
-        final singleSubject = (event as AddSubjectsEvent).subject;
-        final subjects = state.subjects;
-        var totalError = false;
-        subjects[index] = singleSubject;
+  void _onAddSubjectsEvent(AddSubjectsEvent event, Emitter<AddSemesterState> emit) {
+    emit(state.clone(loading: true));
+    final index = event.index;
+    final singleSubject = event.subject;
+    final subjects = state.subjects;
+    var totalError = false;
+    subjects[index] = singleSubject;
 
-        final totalResult = state.totalResult;
-        final totalCredit = state.totalCredit;
+    final totalResult = state.totalResult;
+    final totalCredit = state.totalCredit;
 
-        // [result , credit]
-        totalResult[index] = ['', ''];
+    // [result , credit]
+    totalResult[index] = ['', ''];
 
-        var emptySubjects = [];
-        print('Index is');
-        print(index);
-        print('Single Subject is');
-        print(singleSubject);
+    var emptySubjects = [];
+    print('Index is');
+    print(index);
+    print('Single Subject is');
+    print(singleSubject);
 
-        subjects.forEach((key, value) {
-          var _count = 0;
-          print(value);
-          print('xxxxxxxxxx');
-          value.forEach((key1, value1) {
-            if (key1 == 'result') {
-              totalResult[key][0] = value1;
-            } else if (key1 == 'credit') {
-              totalResult[key][1] = value1;
-              totalCredit[key] = value1;
-            }
+    subjects.forEach((key, value) {
+      var _count = 0;
+      print(value);
+      print('xxxxxxxxxx');
+      value.forEach((key1, value1) {
+        if (key1 == 'result') {
+          totalResult[key][0] = value1;
+        } else if (key1 == 'credit') {
+          totalResult[key][1] = value1;
+          totalCredit[key] = value1;
+        }
 
-            _count += 1;
-            if (value1 == '' || value1.trim().isEmpty) {
-              emptySubjects.add(key);
-              totalError = true;
-            }
-          });
-          if (_count != 3) {
+        _count += 1;
+        if (value1 == '' || value1.trim().isEmpty) {
+          emptySubjects.add(key);
+          totalError = true;
+        }
+      });
+      if (_count != 3) {
+        totalError = true;
+      }
+      print(totalResult);
+      print(totalCredit);
+      print('=====');
+    });
+
+    final sgpa = GpaConversion.returnSgpa(
+        totalResult, totalCredit, event.gpaType);
+
+    log.e(sgpa.toString());
+
+    log.e('Add Subjects Event Called Subjects: ');
+    print(subjects);
+    log.e('Empty Tasks :');
+    print(emptySubjects);
+    print(totalError);
+
+    emit(state.clone(
+      subjects: subjects,
+      emptySubjects: emptySubjects,
+      totalError: totalError,
+      sgpa: sgpa,
+      loading: false,
+    ));
+  }
+
+  void _onDeleteSubjectEvent(DeleteSubjectEvent event, Emitter<AddSemesterState> emit) {
+    emit(state.clone(loading: true));
+    final index = event.index;
+    final subjects = state.subjects;
+    final emptySubjects = state.emptySubjects;
+    subjects.remove(index);
+    emptySubjects.remove(index);
+
+    final totalResult = state.totalResult;
+    final totalCredit = state.totalCredit;
+
+    totalCredit.remove(index);
+    totalResult.remove(index);
+
+    final sgpa = GpaConversion.returnSgpa(
+      totalResult,
+      totalCredit,
+      event.gpaType,
+    );
+
+    log.e(sgpa.toString());
+
+    emit(state.clone(
+      subjects: subjects,
+      emptySubjects: emptySubjects,
+      sgpa: sgpa,
+      loading: false,
+    ));
+    print(subjects);
+    print(emptySubjects);
+    log.e('Delete Subject Event called');
+    this.add(TotalErrorEvent());
+  }
+
+  void _onTotalErrorEvent(TotalErrorEvent event, Emitter<AddSemesterState> emit) {
+    final subjects = state.subjects;
+    final emptySubjects = state.emptySubjects;
+    var totalError = false;
+    if (emptySubjects.isNotEmpty) {
+      emit(state.clone(totalError: true, loading: false));
+    } else {
+      subjects.forEach((key, value) {
+        var _count = 0;
+        value.forEach((key1, value1) {
+          _count += 1;
+          if (value1 == '' || value1.trim().isEmpty) {
             totalError = true;
           }
-          print(totalResult);
-          print(totalCredit);
-          print('=====');
         });
-
-        final sgpa = GpaConversion.returnSgpa(
-            totalResult, totalCredit, (event as AddSubjectsEvent).gpaType);
-
-        log.e(sgpa.toString());
-
-        log.e('Add Subjects Event Called Subjects: ');
-        print(subjects);
-        log.e('Empty Tasks :');
-        print(emptySubjects);
-        print(totalError);
-
-        yield state.clone(
-          subjects: subjects,
-          emptySubjects: emptySubjects,
-          totalError: totalError,
-          sgpa: sgpa,
-          loading: false,
-        );
-        break;
-
-      case DeleteSubjectEvent:
-        yield state.clone(loading: true);
-        final index = (event as DeleteSubjectEvent).index;
-        final subjects = state.subjects;
-        final emptySubjects = state.emptySubjects;
-        subjects.remove(index);
-        emptySubjects.remove(index);
-
-        final totalResult = state.totalResult;
-        final totalCredit = state.totalCredit;
-
-        totalCredit.remove(index);
-        totalResult.remove(index);
-
-        final sgpa = GpaConversion.returnSgpa(
-          totalResult,
-          totalCredit,
-          (event as DeleteSubjectEvent).gpaType,
-        );
-
-        log.e(sgpa.toString());
-
-        yield state.clone(
-          subjects: subjects,
-          emptySubjects: emptySubjects,
-          sgpa: sgpa,
-          loading: false,
-        );
-        print(subjects);
-        print(emptySubjects);
-        log.e('Delete Subject Event called');
-        this.add(TotalErrorEvent());
-        break;
-
-      case TotalErrorEvent:
-        final subjects = state.subjects;
-        final emptySubjects = state.emptySubjects;
-        var totalError = false;
-        if (emptySubjects.isNotEmpty) {
-          yield state.clone(totalError: true, loading: false);
-        } else {
-          subjects.forEach((key, value) {
-            var _count = 0;
-            value.forEach((key1, value1) {
-              _count += 1;
-              if (value1 == '' || value1.trim().isEmpty) {
-                totalError = true;
-              }
-            });
-            if (_count != 3) {
-              totalError = true;
-            }
-          });
-          yield state.clone(totalError: totalError, loading: false);
+        if (_count != 3) {
+          totalError = true;
         }
-        log.e('Total Error Event called');
-        break;
+      });
+      emit(state.clone(totalError: totalError, loading: false));
+    }
+    log.e('Total Error Event called');
+  }
 
-      case ConfirmEvent:
-        yield state.clone(loading: true);
-        final name = (event as ConfirmEvent).name;
-        final sgpa = state.sgpa;
-        final totalCreditMap = state.totalCredit;
-        final subjectsMap = state.subjects;
+  Future<void> _onConfirmEvent(ConfirmEvent event, Emitter<AddSemesterState> emit) async {
+    emit(state.clone(loading: true));
+    final name = event.name;
+    final sgpa = state.sgpa;
+    final totalCreditMap = state.totalCredit;
+    final subjectsMap = state.subjects;
 
-        final totalCredit = _calculateTotalCredit(totalCreditMap);
-        final totalResult = sgpa * totalCredit;
-        final subjects = _returnSubjectList(subjectsMap);
+    final totalCredit = _calculateTotalCredit(totalCreditMap);
+    final totalResult = sgpa * totalCredit;
+    final subjects = _returnSubjectList(subjectsMap);
 
-        final hash = (name +
-                sgpa.toString() +
-                totalCredit.toString() +
-                totalResult.toString() +
-                subjects.toString() +
-                DateTime.now().toString())
-            .hashCode;
+    final hash = (name +
+            sgpa.toString() +
+            totalCredit.toString() +
+            totalResult.toString() +
+            subjects.toString() +
+            DateTime.now().toString())
+        .hashCode;
 
-        final semester = new Semester(
-          hash: hash,
-          name: name,
-          sgpa: sgpa,
-          totalResult: totalResult,
-          totalCredit: totalCredit,
-          subjectList: subjects,
-        );
+    final semester = new Semester(
+      hash: hash,
+      name: name,
+      sgpa: sgpa,
+      totalResult: totalResult,
+      totalCredit: totalCredit,
+      subjectList: subjects,
+    );
 
-        try {
-          await _addSemesterRepo.addSemesterLocally(semester);
-          yield state.clone(semester: semester, loading: false);
-        } on CacheError {
-          add(ErrorEvent('Stroage Limit Exceed!'));
-        } catch (e) {
-          add(ErrorEvent('UNEXPECTED FATAL ERROR!'));
-        }
-
-        break;
+    try {
+      await _addSemesterRepo.addSemesterLocally(semester);
+      emit(state.clone(semester: semester, loading: false));
+    } on CacheError {
+      add(ErrorEvent('Stroage Limit Exceed!'));
+    } catch (e) {
+      add(ErrorEvent('UNEXPECTED FATAL ERROR!'));
     }
   }
 
@@ -209,11 +208,11 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
   }
 
   @override
-  void onError(Object error, StackTrace stacktrace) {
-    log.e('$stacktrace');
+  void onError(Object error, StackTrace stackTrace) {
+    log.e('$stackTrace');
     log.e('$error');
     _addErr(error);
-    super.onError(error, stacktrace);
+    super.onError(error, stackTrace);
   }
 
   @override
@@ -221,17 +220,21 @@ class AddSemesterBloc extends Bloc<AddSemesterEvent, AddSemesterState> {
     await super.close();
   }
 
-  void _addErr(e) {
+  void _addErr(dynamic e) {
     if (e is StateError) {
       return;
     }
     try {
-      add(ErrorEvent(
-        (e is String)
-            ? e
-            : (e.message ?? "Something went wrong. Please try again !"),
-      ));
-    } catch (e) {
+      String msg = "Something went wrong. Please try again !";
+      if (e is String) {
+        msg = e;
+      } else {
+        try {
+          msg = (e as dynamic).message ?? msg;
+        } catch (_) {}
+      }
+      add(ErrorEvent(msg));
+    } catch (err) {
       add(ErrorEvent("Something went wrong. Please try again !"));
     }
   }

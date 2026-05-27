@@ -1,18 +1,17 @@
-import 'package:flutter/widgets.dart';
 
 import '../../util/db_util/model.dart';
 
 class UserDetailsModel extends Model<UserDetailsModel> {
-  String name;
-  String uni;
+  final String name;
+  final String uni;
 
   /// 0 -> 4.0 and 1 -> 4.2
-  int gpaType;
+  final int gpaType;
 
   UserDetailsModel({
-    @required this.name,
-    @required this.uni,
-    @required this.gpaType,
+    required this.name,
+    required this.uni,
+    required this.gpaType,
   });
 
   static UserDetailsModel fromJson(Map<String, dynamic> json) {
