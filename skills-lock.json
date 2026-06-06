@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "flutter-add-widget-test": {
+      "source": "flutter/skills",
+      "sourceType": "github",
+      "computedHash": "c4f263c59cfe331ef42dba2aa81e25142aa4f7284518907c6b847e04502676b0"
+    },
+    "flutter-bloc-forms": {
+      "source": "dhruvanbhalara/skills",
+      "sourceType": "github",
+      "computedHash": "68c0bf202fa9721b42958f73882093903ddd2ff76cafcbb831fff733cdc2e895"
+    },
+    "flutter-fix-layout-issues": {
+      "source": "flutter/skills",
+      "sourceType": "github",
+      "computedHash": "1aaba922c951159118f9b141788f7bb7b8167bdc0bd5c6f0738ebb90c29b9532"
+    }
+  }
+}
