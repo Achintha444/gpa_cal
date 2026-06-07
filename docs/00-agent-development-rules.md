@@ -129,6 +129,7 @@ If a user request is vague:
     - State Management: `flutter_bloc`, `bloc`
     - Database: `hive`, `hive_flutter`
     - Routing: `go_router`
+    - Fonts: `google_fonts` (Inter only)
     - SVG: `flutter_svg`
     - Icons: `cupertino_icons`
     - Code Gen: `build_runner`, `hive_generator`
@@ -160,9 +161,12 @@ If a user request is vague:
 - **DO NOT**: Use hardcoded colors like `Color(0xFF...)` — use `AppColors`
 - **DO NOT**: Create custom `TextStyle(...)` — use `AppTypography`
 - **DO NOT**: Hardcode spacing/padding values — use `AppSpacing`
-- **DO**: Use the app's defined color palette via token classes
+- **DO NOT**: Use Montserrat — Inter (via `google_fonts`) is the only approved font
+- **DO NOT**: Use glassmorphism / BackdropFilter — the design uses subtle borders and flat surfaces
+- **DO**: Use the app's defined color palette via token classes (`accent` #1E3A5F, `gpa` #E67E22)
 - **DO**: Follow the 8pt spacing grid
-- **DO**: Ensure consistent glassmorphism styling via shared decoration helpers
+- **DO**: Use filled input style (`#F3F4F6` bg, no border at rest, navy border when focused)
+- **DO**: Use color-coded grade chips (A=navy, B=orange, C=gray, D/F=red)
 
 ## 13. Git Rules for Agents
 

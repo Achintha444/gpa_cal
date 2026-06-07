@@ -27,7 +27,7 @@ GPA Cal is a Flutter mobile app that helps university and school students calcul
 - **State management**: BLoC / flutter_bloc (NOT Riverpod)
 - **Database**: Hive (local, offline-first)
 - **Routing**: GoRouter with named routes
-- **Theme**: Light glassmorphism with Montserrat font
+- **Theme**: Light Premium with Inter font (Google Fonts)
 
 ```
 lib/
@@ -53,7 +53,10 @@ lib/
 | --- | --- |
 | `docs/00-agent-development-rules.md` | Non-negotiable rules for all agents |
 | `docs/01-architecture-principles.md` | Authoritative architecture spec |
-| `docs/tasks.md` | Implementation tracker — 22 tasks across 7 phases |
+| `docs/02-design-system.md` | Authoritative design token reference (colors, type, spacing, components) |
+| `docs/03-ux-research-report.md` | UX research, competitive analysis, and design direction |
+| `docs/04-screen-plan.md` | Screen-by-screen redesign plan — 11 screens, 3 priorities |
+| `docs/tasks.md` | Full project tracker — 24 use cases, 17 designs, 52 dev tasks |
 
 ## GPA Domain Rules
 
@@ -96,7 +99,10 @@ lib/
 - Colors: `AppColors` — never `Color(0xFF...)`
 - Typography: `AppTypography` — never custom `TextStyle(...)`
 - Spacing: `AppSpacing` — never raw numbers
-- Font: Montserrat (bundled asset)
+- Font: Inter (via `google_fonts` package)
+- Accent: deep navy `#1E3A5F`, GPA numbers: warm orange `#E67E22`
+- Cards: subtle borders `rgba(0,0,0,0.06)`, no heavy shadows
+- Inputs: filled style (`#F3F4F6` bg, no border at rest)
 - 8pt spacing grid
 
 ## UI States
@@ -110,6 +116,7 @@ All screens must handle: **loading**, **error** (with retry), **empty**, **succe
 | State | `flutter_bloc`, `bloc` |
 | DB | `hive`, `hive_flutter` |
 | Router | `go_router` |
+| Fonts | `google_fonts` |
 | SVG | `flutter_svg` |
 | Icons | `cupertino_icons` |
 | Code Gen | `build_runner`, `hive_generator` |
@@ -118,6 +125,7 @@ All screens must handle: **loading**, **error** (with retry), **empty**, **succe
 ## Agents
 
 - **flutter-developer** (blue) — Flutter developer agent. Implements features following Clean Architecture with BLoC + Hive.
+- **ui-ux-design** (yellow) — Paper MCP designer. Creates screen mockups, reviews design system compliance, writes developer handoff specs.
 
 ## Git Rules
 

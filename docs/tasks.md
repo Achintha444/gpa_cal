@@ -1,6 +1,6 @@
 # GPA Cal — Task Tracker
 
-> Refactoring and modernization tasks identified from the initial codebase analysis.
+> Complete project tracker covering use cases, design, and development.
 
 ## Status Legend
 
@@ -10,197 +10,245 @@
 
 ---
 
-## Critical / High Priority
+## Part 1: Use Cases
 
-### T-01: Fix mutable state mutation in BLoC states
-- **Status**: `[ ]`
-- **Files**: `add_semester_state.dart`, `edit_semester_state.dart`, `home_state.dart`, `splash_screen_state.dart`, `splash_form_state.dart`
-- **Problem**: State classes are annotated `@immutable` but `clone()` passes Map/List references. BLoC handlers mutate `subjects`, `totalResult`, `totalCredit`, `emptySubjects` in-place, breaking equality checks and causing subtle bugs.
-- **Fix**: Replace `clone()` with `copyWith()` using `Equatable`. Deep-copy all mutable collections (`List.of()`, `Map.of()`). Use sealed event classes.
+### Core Use Cases (V1 — MVP)
 
-### T-02: Migrate data layer from SharedPreferences to Hive
-- **Status**: `[ ]`
-- **Files**: All repos (`home_repo.dart`, `splash_screen_repo.dart`, `splash_form_repo.dart`, `add_semester_repo.dart`, `edit_semester_repo.dart`), `cache_util.dart`
-- **Problem**: All data stored as a single JSON blob in SharedPreferences. No type safety, no migration strategy, corrupt data = total data loss.
-- **Fix**: Create Hive models with `@HiveType`/`@HiveField` annotations. Implement repository pattern with proper model ↔ entity mapping. Add one-time migration from SharedPreferences on first launch.
+| ID | Use Case | Description |
+|----|----------|-------------|
+| UC-01 | First Launch | New user opens app → splash → onboarding collects name, university, GPA type |
+| UC-02 | Return Launch | Returning user opens app → splash → dashboard with existing data |
+| UC-03 | Add Semester | User taps FAB → names semester via bottom sheet → enters courses with grades + credits → confirms → SGPA calculated, CGPA updated |
+| UC-04 | View Dashboard | User sees CGPA hero card, trend indicator, goal progress, and all semester cards |
+| UC-05 | View Semester Detail | User taps semester card → sees read-only course list, SGPA, credit summary |
+| UC-06 | Edit Semester | User enters edit mode → modifies course names, grades, credits → saves → SGPA/CGPA recalculated |
+| UC-07 | Rename Semester | User taps edit name → bottom sheet → new name saved |
+| UC-08 | Delete Semester | User triggers delete → confirmation dialog → semester removed → CGPA recalculated |
+| UC-09 | Add Course to Semester | User taps "+ Add Course" → new course card appears with default grade + credit |
+| UC-10 | Remove Course from Semester | User taps delete on course → course removed (min 1 course enforced) → SGPA recalculated |
+| UC-11 | Select Grade | User taps grade chip (replaces dropdown) → single-tap selection → SGPA recalculates live |
+| UC-12 | Adjust Credits | User taps +/- on credit stepper → value changes → SGPA recalculates live |
+| UC-13 | View Empty State | No semesters → illustrated empty state with "Add Your First Semester" CTA |
 
-### T-03: Type-safe semester list in UserResultModel
-- **Status**: `[ ]`
-- **Files**: `user_result.dart`, all repos that interact with `semesters`
-- **Problem**: `UserResultModel.semesters` is `List<dynamic>`, requiring runtime casts (`as Map<String, dynamic>`) everywhere. No compile-time safety.
-- **Fix**: Change to `List<Semester>` with proper serialization. Update all repos and BLoCs to work with typed Semester objects.
+### Enhancement Use Cases (V2)
 
-### T-04: Fix hardcoded CGPA in AddSemesterAppBar
-- **Status**: `[ ]`
-- **Files**: `add_semester_appbar.dart:108`
-- **Problem**: Displays static text `'4.00/4.20'` instead of actual CGPA data.
-- **Fix**: Pass actual CGPA value and gpaType to the app bar widget and display dynamically.
+| ID | Use Case | Description |
+|----|----------|-------------|
+| UC-14 | View GPA Trends | User switches to Analytics tab → sees CGPA trend line chart across semesters |
+| UC-15 | Compare Semesters | User sees best/worst semester cards, average SGPA, total credits summary |
+| UC-16 | What-If Calculator | User sets target CGPA → system calculates required average grade for next semester |
+| UC-17 | Set GPA Goal | User sets target CGPA (e.g., 3.50) → dashboard hero card shows progress bar toward goal |
+| UC-18 | Course Name Autocomplete | User starts typing course name → suggestions from previously entered courses appear |
+| UC-19 | Semester Template | User creates new semester → option to copy course structure from a previous semester |
 
-### T-05: Move SystemChrome out of build()
-- **Status**: `[ ]`
-- **Files**: `root.dart:13`
-- **Problem**: `SystemChrome.setPreferredOrientations()` called inside `build()` — this is a side-effect that runs on every rebuild.
-- **Fix**: Move to `main()` before `runApp()`, awaiting the Future.
+### Polish Use Cases (V3)
 
----
-
-## Medium Priority
-
-### T-06: Eliminate code duplication across subject cards
-- **Status**: `[ ]`
-- **Files**: `subject_card.dart`, `edit_semester_subject_card.dart`, `edit_semester_new_subject_card.dart`
-- **Problem**: Three widgets with ~90% identical code (~310 lines each). Same `_inputDecortaiton`, `_inputErrorDecortaiton`, `_selectResultType`, `_selectResultMap` methods duplicated.
-- **Fix**: Extract a single `SubjectCardWidget` with an optional `initialSubject` parameter. Share input decoration helpers via theme tokens or a shared widget.
-
-### T-07: Eliminate BLoC duplication between Add and Edit semester
-- **Status**: `[ ]`
-- **Files**: `add_semester_bloc.dart`, `edit_semester_bloc.dart`, their events and states
-- **Problem**: ~240 lines of near-identical logic in each BLoC (`_onAddSubjectsEvent` / `_onEditSubjectsEvent`, `_onDeleteSubjectEvent` / `_onDeleteEditSubjectEvent`, `_onTotalErrorEvent`, `_calculateTotalCredit`, `_returnSubjectList`, `_addErr`).
-- **Fix**: Extract shared semester management logic into a base class or shared mixin. Keep only the difference (add vs edit persistence) in feature-specific BLoCs.
-
-### T-08: Replace deprecated Color.withOpacity()
-- **Status**: `[ ]`
-- **Files**: ~30 occurrences across `root.dart`, `project_theme.dart`, `glass_effect.dart`, `custom_app_bar.dart`, `add_semester_appbar.dart`, `subject_card.dart`, `semester_card.dart`, `set_semester_name_dialog.dart`, `edit_name_bottom_sheet.dart`, `home_first_interface.dart`, and more
-- **Problem**: `Color.withOpacity()` is deprecated in latest Flutter. Should use `Color.withValues(alpha: ...)`.
-- **Fix**: Replace all `withOpacity(x)` calls with the modern API.
-
-### T-09: Remove unnecessary `new` keyword
-- **Status**: `[ ]`
-- **Files**: ~15 instances across `project_theme.dart`, `home_view.dart`, `add_semester_view.dart`, `edit_semester_view.dart`, `add_semester_page.dart`, repos, BLoCs
-- **Problem**: `new` keyword is unnecessary since Dart 2 and adds visual noise.
-- **Fix**: Remove all `new` keyword usages.
-
-### T-10: Implement dependency injection for repositories
-- **Status**: `[ ]`
-- **Files**: All BLoCs (`splash_screen_bloc.dart`, `splash_form_bloc.dart`, `home_bloc.dart`, `add_semester_bloc.dart`, `edit_semester_bloc.dart`)
-- **Problem**: Repos instantiated as `static final` inside BLoCs. Not injectable, not testable, singleton anti-pattern.
-- **Fix**: Pass repositories through BLoC constructors. Provide via `RepositoryProvider` / `MultiRepositoryProvider` at the widget tree level.
-
-### T-11: Fix navigation pattern (push-and-rebuild)
-- **Status**: `[ ]`
-- **Files**: `home_view.dart`, `add_semester_view.dart`, `edit_semester_view.dart`, `splash_screen_view.dart`, `splash_form_view.dart`
-- **Problem**: After add/edit/delete, the app does `Navigator.pushAndRemoveUntil` to rebuild `HomeProvider` from scratch, re-fetching all data. Wasteful and causes visual flicker.
-- **Fix**: Adopt GoRouter with named routes. Use `context.goNamed('home')` for replacement, `context.pushNamed()` for stack navigation. Pass data via route parameters.
-
-### T-12: Remove all debug print() statements
-- **Status**: `[ ]`
-- **Files**: ~40 occurrences across all repos and BLoCs
-- **Problem**: Production code littered with `print()` calls for debugging. Leaks internal state to console.
-- **Fix**: Remove all `print()` calls. Use the existing `Log` utility class where logging is genuinely needed, or remove entirely.
-
-### T-13: Add test suite
-- **Status**: `[ ]`
-- **Files**: `test/` directory (currently empty)
-- **Problem**: Zero tests. No confidence in correctness of GPA calculations, state transitions, or data persistence.
-- **Fix**: Add unit tests for `GpaConversion` (both scales), BLoC state transitions, repository CRUD operations. Add widget tests for key components.
-
-### T-14: Fix typos in error messages and model fields
-- **Status**: `[ ]`
-- **Files**: `user_result.dart` (`carrerResult`, `carrerCredit`), all BLoCs (`'Stroage Limit Exceed!'`)
-- **Problem**: "Stroage" should be "Storage", "carrer" should be "career" (or better: "cumulative"). Typos in field names affect serialized data — requires migration.
-- **Fix**: Rename fields to `cumulativeResult`/`cumulativeCredit`. Fix error message strings. Handle data migration for existing serialized data.
-
-### T-15: Remove BuildContext from BLoC constructors
-- **Status**: `[ ]`
-- **Files**: All BLoCs (`SplashScreenBloc`, `SplashFormBloc`, `HomeBloc`, `AddSemesterBloc`, `EditSemesterBloc`)
-- **Problem**: `BuildContext` accepted as constructor parameter but never used. Violates separation of concerns — BLoCs should not know about Flutter widgets.
-- **Fix**: Remove `BuildContext` parameter from all BLoC constructors. Update all `BlocProvider` create callbacks.
-
-### T-16: Fix `// ignore: must_be_immutable` in Views
-- **Status**: `[ ]`
-- **Files**: `home_view.dart`, `splash_screen_view.dart`, `splash_form_view.dart`, `add_semester_view.dart`, `edit_semester_view.dart`
-- **Problem**: Mutable `GlobalKey<ScaffoldState>` fields in StatelessWidgets, warning suppressed with ignore comment.
-- **Fix**: Either make the key `final` (it already is in most cases — remove the ignore), or convert to proper widget structure where keys are managed correctly.
+| ID | Use Case | Description |
+|----|----------|-------------|
+| UC-20 | Change GPA Scale | User changes between 4.0 and 4.2 in Settings → all calculations update |
+| UC-21 | Toggle Dark Mode | User selects Light/Dark/System theme in Settings → theme applies immediately |
+| UC-22 | Export as PDF | User taps export → PDF transcript generated with all semester data → share sheet |
+| UC-23 | Edit Profile | User edits name/university in Settings → saved immediately |
+| UC-24 | Clear All Data | User taps clear data → double confirmation → all data removed → redirected to onboarding |
 
 ---
 
-## Low Priority / Polish
+## Part 2: Design Tasks
 
-### T-17: Tighten SDK constraint
-- **Status**: `[ ]`
-- **Files**: `pubspec.yaml:21`
-- **Problem**: `">=3.0.0 <4.0.0"` is too loose. Running on Dart 3.11.4 but allowing any 3.x.
-- **Fix**: Update to `">=3.0.0 <4.0.0"` or `^3.0.0` — or tighten to `">=3.11.0 <4.0.0"` to match actual minimum.
+### Design System (Completed)
 
-### T-18: Remove unused import in project_theme.dart
-- **Status**: `[ ]`
-- **Files**: `project_theme.dart:2`
-- **Problem**: `import 'package:flutter/rendering.dart'` is unused.
-- **Fix**: Remove the import.
+| ID | Task | Status | Paper Artboard |
+|----|------|--------|----------------|
+| D-01 | Color Palette (light + dark + semantic) | `[x]` | `1-0` |
+| D-02 | Typography Scale (9 levels) | `[x]` | `2F-0` |
+| D-03 | Spacing & Grid (8 tokens + 5 radius) | `[x]` | `3U-0` |
+| D-04 | Component Library (11 components) | `[x]` | `5T-0` |
+| D-05 | Design System Documentation | `[x]` | `docs/02-design-system.md` |
 
-### T-19: Fix Semester equality (reference vs value)
-- **Status**: `[ ]`
-- **Files**: `edit_semester_bloc.dart:181`
-- **Problem**: `if (semester == state.semester)` compares by reference since `Semester` doesn't implement `Equatable` or override `==`. Will always be `false` for different instances with same data.
-- **Fix**: Implement `Equatable` on `Semester` (part of T-01 entity refactor), or compare by hash.
+### Screen Designs
 
-### T-20: Remove unused named route
-- **Status**: `[ ]`
-- **Files**: `root.dart:58`
-- **Problem**: `/splashFormPage` defined in `routes` map but never used — all navigation uses `MaterialPageRoute` push.
-- **Fix**: Remove the unused named route. Will be replaced entirely by GoRouter in T-11.
-
-### T-21: Fix widget list management (SizedBox placeholders)
-- **Status**: `[ ]`
-- **Files**: `add_semester_page.dart`, `edit_semester_page.dart`
-- **Problem**: Deleted subjects replaced with `SizedBox(height: 0, width: 0)` instead of being removed. List grows with phantom entries. Index-based tracking becomes fragile.
-- **Fix**: Use a proper list model in BLoC state. Rebuild widget list from state on every emission instead of manually mutating a widget list.
-
-### T-22: Pin `bloc: any` to a specific version
-- **Status**: `[ ]`
-- **Files**: `pubspec.yaml:37`
-- **Problem**: `bloc: any` could pull incompatible major versions on `pub get`.
-- **Fix**: Pin to a compatible version range (e.g., `bloc: ^8.1.0`) matching `flutter_bloc: ^8.1.3`.
+| ID | Screen | Use Cases | Status | Paper Artboard |
+|----|--------|-----------|--------|----------------|
+| D-06 | Splash Screen | UC-01, UC-02 | `[x]` | `146-0` |
+| D-07 | Onboarding Step 1: Welcome | UC-01 | `[x]` | `147-0` |
+| D-08 | Onboarding Step 2: Profile | UC-01 | `[x]` | `148-0` |
+| D-09 | Onboarding Step 3: First Semester | UC-01, UC-09, UC-11, UC-12 | `[x]` | `149-0` |
+| D-10 | Dashboard (with data) | UC-04, UC-17 | `[x]` | `D-10 v2` |
+| D-11 | Dashboard (empty state) | UC-13 | `[x]` | `D-11 v2` |
+| D-12 | Dashboard (loading state) | UC-04 | `[x]` | `D-12 v2` |
+| D-13 | Add Semester — Name Sheet | UC-03 | `[x]` | `D-13 v2` |
+| D-14 | Add Semester — Course Entry | UC-03, UC-09, UC-10, UC-11, UC-12 | `[x]` | `D-14 v2` |
+| D-15 | Semester Detail (read-only) | UC-05 | `[x]` | `16F-0` |
+| D-16 | Edit Semester | UC-06, UC-07, UC-09, UC-10, UC-11, UC-12 | `[x]` | `16G-0` |
+| D-17 | Delete Confirmation (Bottom Sheet) | UC-08 | `[x]` | `16H-0` |
+| D-18 | Analytics Tab | UC-14, UC-15 | `[x]` | `172-0` |
+| D-19 | What-If Calculator | UC-16 | `[x]` | `173-0` |
+| D-20 | Analytics (empty / insufficient data) | UC-14 | `[x]` | `174-0` |
+| D-21 | Settings | UC-20, UC-21, UC-23 | `[x]` | `179-0` |
+| D-22 | Export / Share | UC-22 | `[x]` | `17A-0` |
 
 ---
 
-## Execution Order (Recommended)
+## Part 3: Development Tasks — Architecture Refactor
 
-Grouped by dependency — later tasks depend on earlier ones being complete.
+### Phase 1: Quick Wins (no dependencies)
 
-### Phase 1: Foundation (do first — everything else builds on this)
-1. **T-05** — Move SystemChrome (quick win, no dependencies)
-2. **T-09** — Remove `new` keyword (quick win, no dependencies)
-3. **T-12** — Remove print() statements (quick win, no dependencies)
-4. **T-18** — Remove unused import (quick win)
-5. **T-22** — Pin `bloc: any` version (quick win)
-6. **T-17** — Tighten SDK constraint (quick win)
-7. **T-20** — Remove unused named route (quick win)
+| ID | Task | Use Cases | Status |
+|----|------|-----------|--------|
+| T-01 | Move SystemChrome.setPreferredOrientations to main() | All | `[ ]` |
+| T-02 | Remove all `new` keyword usage (~15 instances) | All | `[ ]` |
+| T-03 | Remove all debug `print()` statements (~40) | All | `[ ]` |
+| T-04 | Remove unused import `flutter/rendering.dart` | — | `[ ]` |
+| T-05 | Pin `bloc: any` to `bloc: ^8.1.0` | — | `[ ]` |
+| T-06 | Tighten SDK constraint in pubspec.yaml | — | `[ ]` |
+| T-07 | Remove unused named route `/splashFormPage` | — | `[ ]` |
 
-### Phase 2: Core Architecture (refactor entities and state)
-8. **T-01** — Fix mutable state / adopt Equatable + copyWith (foundational)
-9. **T-03** — Type-safe semester list (depends on T-01 entity refactor)
-10. **T-14** — Fix typos in fields (bundle with T-03 since field names change)
-11. **T-19** — Fix Semester equality (comes free with T-01)
-12. **T-15** — Remove BuildContext from BLoCs (part of BLoC cleanup)
+### Phase 2: Core Architecture (entities + state)
+
+| ID | Task | Use Cases | Status |
+|----|------|-----------|--------|
+| T-08 | Adopt Equatable + copyWith for all States (replace clone) | All | `[ ]` |
+| T-09 | Type-safe semester list (List\<Semester\> not List\<dynamic\>) | UC-03–UC-08 | `[ ]` |
+| T-10 | Fix typos (carrer→cumulative, Stroage→Storage) + data migration | All | `[ ]` |
+| T-11 | Fix Semester equality (Equatable, comes with T-08) | UC-06, UC-08 | `[ ]` |
+| T-12 | Remove BuildContext from all BLoC constructors | All | `[ ]` |
 
 ### Phase 3: Data Layer Migration
-13. **T-02** — Migrate SharedPreferences → Hive (depends on T-01/T-03 for clean entities)
+
+| ID | Task | Use Cases | Status |
+|----|------|-----------|--------|
+| T-13 | Set up Hive — models, adapters, init function | All | `[ ]` |
+| T-14 | Implement SemesterRepository (interface + impl) | UC-03–UC-08 | `[ ]` |
+| T-15 | Implement UserDetailsRepository (interface + impl) | UC-01, UC-02, UC-23 | `[ ]` |
+| T-16 | One-time migration from SharedPreferences → Hive | UC-02 | `[ ]` |
+| T-17 | Remove all SharedPreferences code and old repos | — | `[ ]` |
 
 ### Phase 4: Reduce Duplication
-14. **T-06** — Unify subject card widgets (depends on T-01 state fixes)
-15. **T-07** — Unify Add/Edit BLoC logic (depends on T-01, T-10)
-16. **T-16** — Fix must_be_immutable ignores (depends on T-11 removing custom Providers)
+
+| ID | Task | Use Cases | Status |
+|----|------|-----------|--------|
+| T-18 | Unify SubjectCard / EditSemesterSubjectCard / EditSmesterNewSubjectCard → single widget | UC-09–UC-12 | `[ ]` |
+| T-19 | Unify AddSemesterBloc / EditSemesterBloc shared logic | UC-03, UC-06 | `[ ]` |
+| T-20 | Fix `// ignore: must_be_immutable` — remove custom Provider wrappers | All | `[ ]` |
+| T-21 | Fix widget list SizedBox(0,0) hack → state-driven list | UC-09, UC-10 | `[ ]` |
 
 ### Phase 5: Navigation & DI
-17. **T-10** — Dependency injection for repositories (depends on T-02 for Hive repos)
-18. **T-11** — GoRouter navigation (depends on T-10 for proper DI at router level)
 
-### Phase 6: Modernize APIs
-19. **T-08** — Replace deprecated withOpacity() (can be done anytime, batched for efficiency)
-20. **T-04** — Fix hardcoded CGPA in app bar (depends on T-11 for data flow)
-21. **T-21** — Fix widget list management (depends on T-01 state-driven UI)
+| ID | Task | Use Cases | Status |
+|----|------|-----------|--------|
+| T-22 | Add `equatable` and `go_router` dependencies | All | `[ ]` |
+| T-23 | Implement GoRouter with named routes | All | `[ ]` |
+| T-24 | Set up RepositoryProvider / MultiRepositoryProvider DI | All | `[ ]` |
+| T-25 | Inject repositories via BLoC constructors | All | `[ ]` |
 
-### Phase 7: Quality
-22. **T-13** — Add tests (best done after architecture is stable from Phases 1-5)
+### Phase 6: Theme Tokens
+
+| ID | Task | Use Cases | Status |
+|----|------|-----------|--------|
+| T-26 | Create AppColors, AppTypography, AppSpacing, AppDecorations | All | `[ ]` |
+| T-27 | Create AppTheme (light + dark ThemeData) | UC-21 | `[ ]` |
+| T-28 | Replace all hardcoded Color(0xFF...) with AppColors | All | `[ ]` |
+| T-29 | Replace all custom TextStyle() with AppTypography | All | `[ ]` |
+| T-30 | Replace deprecated Color.withOpacity() (~30 instances) | All | `[ ]` |
+| T-31 | Fix hardcoded CGPA "4.00/4.20" in AddSemesterAppBar | UC-03 | `[ ]` |
+
+---
+
+## Part 4: Development Tasks — Screen Implementation
+
+### Phase 7: Foundation Screens
+
+| ID | Task | Use Cases | Design Dep | Status |
+|----|------|-----------|------------|--------|
+| T-32 | Implement Splash Screen + auto-detect logic | UC-01, UC-02 | D-06 | `[ ]` |
+| T-33 | Implement Onboarding Flow (3 steps) | UC-01 | D-07, D-08, D-09 | `[ ]` |
+| T-34 | Implement Dashboard with CGPA Hero Card | UC-04, UC-13, UC-17 | D-10, D-11, D-12 | `[ ]` |
+| T-35 | Implement GradeChipSelector widget | UC-11 | D-14 | `[ ]` |
+| T-36 | Implement CreditStepper widget | UC-12 | D-14 | `[ ]` |
+| T-37 | Implement Add Semester page | UC-03, UC-09, UC-10 | D-13, D-14 | `[ ]` |
+| T-38 | Implement Semester Detail page (read-only) | UC-05 | D-15 | `[ ]` |
+| T-39 | Implement Edit Semester page | UC-06, UC-07, UC-08 | D-16, D-17 | `[ ]` |
+| T-40 | Implement Bottom Navigation Bar | UC-04 | D-10 | `[ ]` |
+
+### Phase 8: Enhancement Screens
+
+| ID | Task | Use Cases | Design Dep | Status |
+|----|------|-----------|------------|--------|
+| T-41 | Implement Analytics Tab (trend chart + summary) | UC-14, UC-15 | D-18, D-20 | `[ ]` |
+| T-42 | Implement What-If Calculator | UC-16 | D-19 | `[ ]` |
+| T-43 | Implement GPA Goal setting + progress bar | UC-17 | D-10 | `[ ]` |
+| T-44 | Implement course name autocomplete | UC-18 | — | `[ ]` |
+
+### Phase 9: Polish Screens
+
+| ID | Task | Use Cases | Design Dep | Status |
+|----|------|-----------|------------|--------|
+| T-45 | Implement Settings page | UC-20, UC-21, UC-23, UC-24 | D-21 | `[ ]` |
+| T-46 | Implement PDF export + share | UC-22 | D-22 | `[ ]` |
+| T-47 | Implement semester template / copy structure | UC-19 | — | `[ ]` |
+
+### Phase 10: Testing
+
+| ID | Task | Use Cases | Status |
+|----|------|-----------|--------|
+| T-48 | Unit tests: GpaCalculator (both scales, edge cases) | UC-03, UC-06 | `[ ]` |
+| T-49 | Unit tests: BLoC state transitions (Home, AddSemester, EditSemester) | UC-03–UC-08 | `[ ]` |
+| T-50 | Unit tests: Repository CRUD operations | UC-03–UC-08 | `[ ]` |
+| T-51 | Widget tests: GradeChipSelector, CreditStepper, SemesterCard | UC-11, UC-12 | `[ ]` |
+| T-52 | Integration tests: full add semester → view dashboard flow | UC-03, UC-04 | `[ ]` |
 
 ---
 
 ## Progress Summary
 
-| Priority | Total | Done | Remaining |
-|----------|-------|------|-----------|
-| Critical | 5 | 0 | 5 |
-| Medium | 11 | 0 | 11 |
-| Low | 6 | 0 | 6 |
-| **Total** | **22** | **0** | **22** |
+| Section | Total | Done | Remaining |
+|---------|-------|------|-----------|
+| Design System | 5 | 5 | 0 |
+| Screen Designs | 17 | 17 | 0 |
+| Phase 1: Quick Wins | 7 | 0 | 7 |
+| Phase 2: Core Architecture | 5 | 0 | 5 |
+| Phase 3: Data Layer | 5 | 0 | 5 |
+| Phase 4: Duplication | 4 | 0 | 4 |
+| Phase 5: Navigation & DI | 4 | 0 | 4 |
+| Phase 6: Theme Tokens | 6 | 0 | 6 |
+| Phase 7: Foundation Screens | 9 | 0 | 9 |
+| Phase 8: Enhancement Screens | 4 | 0 | 4 |
+| Phase 9: Polish Screens | 3 | 0 | 3 |
+| Phase 10: Testing | 5 | 0 | 5 |
+| **Total** | **74** | **22** | **52** |
+
+---
+
+## Execution Strategy
+
+### Track 1: Design (UI/UX Design Agent)
+```
+D-06→D-07→D-08→D-09 (Splash + Onboarding)
+  ↓
+D-10→D-11→D-12→D-13→D-14 (Dashboard + Add Semester)
+  ↓
+D-15→D-16→D-17 (Detail + Edit + Dialog)
+  ↓
+D-18→D-19→D-20 (Analytics + What-If)
+  ↓
+D-21→D-22 (Settings + Export)
+```
+
+### Track 2: Development (Flutter Developer Agent)
+```
+Phase 1–2 (quick wins + architecture) — no design dependency
+  ↓
+Phase 3 (Hive migration) — no design dependency
+  ↓
+Phase 4–5 (dedup + navigation) — no design dependency
+  ↓
+Phase 6 (theme tokens) — depends on D-01→D-05 (done)
+  ↓
+Phase 7 (foundation screens) — depends on D-06→D-17
+  ↓
+Phase 8–9 (enhancement + polish) — depends on D-18→D-22
+  ↓
+Phase 10 (testing) — after architecture is stable
+```
+
+**Parallel execution:** Design and development Phases 1–6 can run in parallel. Screen implementation (Phase 7+) waits for corresponding designs.
