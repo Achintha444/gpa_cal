@@ -27,7 +27,7 @@ GPA Cal is a Flutter mobile app that helps university and school students calcul
 - **State management**: BLoC / flutter_bloc (NOT Riverpod)
 - **Database**: Hive (local, offline-first)
 - **Routing**: GoRouter with named routes
-- **Theme**: Light Premium with Inter font (Google Fonts)
+- **Theme**: Editorial with Inter Tight + Inter fonts (Google Fonts)
 
 ```
 lib/
@@ -99,10 +99,11 @@ lib/
 - Colors: `AppColors` — never `Color(0xFF...)`
 - Typography: `AppTypography` — never custom `TextStyle(...)`
 - Spacing: `AppSpacing` — never raw numbers
-- Font: Inter (via `google_fonts` package)
-- Accent: deep navy `#1E3A5F`, GPA numbers: warm orange `#E67E22`
-- Cards: subtle borders `rgba(0,0,0,0.06)`, no heavy shadows
-- Inputs: filled style (`#F3F4F6` bg, no border at rest)
+- Headings: Inter Tight (via `google_fonts` package)
+- Body: Inter (via `google_fonts` package)
+- Accent: vibrant blue `#2563EB`, GPA numbers: warm orange `#F97316`
+- Cards: solid borders `#E2E8F0`, no heavy shadows
+- Inputs: filled style (`#F1F5F9` bg, no border at rest)
 - 8pt spacing grid
 
 ## UI States
@@ -116,9 +117,9 @@ All screens must handle: **loading**, **error** (with retry), **empty**, **succe
 | State | `flutter_bloc`, `bloc` |
 | DB | `hive`, `hive_flutter` |
 | Router | `go_router` |
-| Fonts | `google_fonts` |
+| Fonts | `google_fonts` (Inter Tight + Inter) |
 | SVG | `flutter_svg` |
-| Icons | `cupertino_icons` |
+| Icons | `lucide_icons`, `cupertino_icons` |
 | Code Gen | `build_runner`, `hive_generator` |
 | Launcher | `flutter_launcher_icons` |
 

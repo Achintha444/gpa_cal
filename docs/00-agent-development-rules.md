@@ -131,7 +131,7 @@ If a user request is vague:
     - Routing: `go_router`
     - Fonts: `google_fonts` (Inter only)
     - SVG: `flutter_svg`
-    - Icons: `cupertino_icons`
+    - Icons: `lucide_icons` (primary), `cupertino_icons` (fallback)
     - Code Gen: `build_runner`, `hive_generator`
     - Launcher Icons: `flutter_launcher_icons`
     - Equality: `equatable`
@@ -161,12 +161,12 @@ If a user request is vague:
 - **DO NOT**: Use hardcoded colors like `Color(0xFF...)` — use `AppColors`
 - **DO NOT**: Create custom `TextStyle(...)` — use `AppTypography`
 - **DO NOT**: Hardcode spacing/padding values — use `AppSpacing`
-- **DO NOT**: Use Montserrat — Inter (via `google_fonts`) is the only approved font
-- **DO NOT**: Use glassmorphism / BackdropFilter — the design uses subtle borders and flat surfaces
-- **DO**: Use the app's defined color palette via token classes (`accent` #1E3A5F, `gpa` #E67E22)
+- **DO NOT**: Use Montserrat — Inter Tight (headings) + Inter (body) via `google_fonts` are the only approved fonts
+- **DO NOT**: Use glassmorphism / BackdropFilter — the Editorial design uses subtle borders and flat surfaces
+- **DO**: Use the app's defined color palette via token classes (`accent` #2563EB, `gpa` #F97316)
 - **DO**: Follow the 8pt spacing grid
-- **DO**: Use filled input style (`#F3F4F6` bg, no border at rest, navy border when focused)
-- **DO**: Use color-coded grade chips (A=navy, B=orange, C=gray, D/F=red)
+- **DO**: Use filled input style (`#F1F5F9` bg, no border at rest, blue border when focused)
+- **DO**: Use color-coded grade chips (A=blue, B=orange, C=gray, D/F=red)
 
 ## 13. Git Rules for Agents
 

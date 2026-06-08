@@ -47,8 +47,8 @@ If any of these files are missing or unreadable, notify the user before proceedi
 - Use `new` keyword — unnecessary in Dart 2+
 - Leave `print()` statements in code — use `Log` utility or remove
 - Use `// ignore: must_be_immutable` — fix the root cause
-- Use Montserrat font — Inter (via `google_fonts`) is the only approved font
-- Use glassmorphism or heavy BackdropFilter — Light Premium uses subtle borders, not blur
+- Use Montserrat font — Inter Tight + Inter (via `google_fonts`) are the only approved fonts
+- Use glassmorphism or heavy BackdropFilter — Editorial design uses subtle borders, not blur
 - **Run `git commit`** — the user owns commit authorship
 - **Run `git push`** under any circumstances
 - **Run destructive git operations** (`git reset --hard`, `git checkout -- <file>`, `git clean -f`)
@@ -78,7 +78,7 @@ If any of these files are missing or unreadable, notify the user before proceedi
 | Routing | `go_router` |
 | Fonts | `google_fonts` (Inter) |
 | SVG | `flutter_svg` |
-| Icons | `cupertino_icons` |
+| Icons | `lucide_icons` (primary), `cupertino_icons` (fallback) |
 | Equality | `equatable` |
 | Code Gen | `build_runner`, `hive_generator` |
 

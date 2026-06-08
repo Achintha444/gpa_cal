@@ -37,6 +37,23 @@ Use `flex: 1; display:flex; flex-direction:column; justify-content:flex-end` on 
 
 Use `height: "fit-content"` when content may exceed 844px (e.g., forms with multiple course cards). This prevents clipping. Use it proactively for screens D-09 (First Semester) and Add Semester.
 
+Start screens at 844px then call `update_styles({ height: "fit-content" })` after all content is added. This cleans up trailing empty space cleanly.
+
+## FAB positioning with fit-content artboards (V4 Editorial)
+
+On V4 Editorial screens (flat bottom nav, no floating pill):
+- FAB: `position: absolute; bottom: 94px; right: 24px; width: 56px; height: 56px`
+- Bottom Nav: `height: 82px` (56px + 26px safe area) as last flex child
+- Add `paddingBottom: 24px` to the last content group (semester cards, empty state) so content doesn't clip behind the FAB
+
+## Empty state zero-GPA display (V4 Editorial)
+
+When CGPA is 0.00 (no data), use `color: #CBD5E1` (`disabled` token) instead of `#F97316` for the GPA number. This visually communicates "no data yet" vs. "a real GPA of 0".
+
+## Splash screen centering (V4 Editorial)
+
+Splash content sits slightly below center naturally (~55% down) when using `justify-content: center` on the artboard. This is intentional — optically centered feels higher than geometric center, so slight downward offset is correct. The tiny accent dot at `bottom: 48px` with `position: absolute` completes the minimal brand moment.
+
 ## Progress bar (full-width, no padding)
 
 Place the progress bar as a direct child of the artboard, BEFORE any padded containers. Do NOT wrap it in a padded container.
