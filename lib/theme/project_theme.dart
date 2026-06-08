@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 final projectTheme = ThemeData(
   primaryColor: ProjectColours.DARKER_COLOR,
