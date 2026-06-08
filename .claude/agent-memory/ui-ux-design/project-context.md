@@ -61,7 +61,26 @@ All V3 screen artboards (D-06 through D-22) exist on the V3 page but need to be 
 | D-19 — Settings | `4KG-0` | 844px fixed, profile + preferences + data + about sections + bottom nav (Settings active) |
 | D-20 — Export / Share | `4KH-0` | 844px fixed, PDF preview card + Save to Files/Share button pair |
 | D-21 — Set Semester Name (Bottom Sheet) | `4KU-0` | 844px fixed, scrim overlay + bottom sheet, input empty/disabled Create state |
-| D-22 — Delete Confirmation Dialog | `4KV-0` | 844px fixed, scrim overlay + centered 320px dialog, destructive Delete button |
+| D-22 — Delete Sheet | `4KV-0` | 844px fixed, scrim overlay + bottom sheet (NOT centered dialog), destructive Delete button |
+
+## Design Patterns (Established)
+
+- **Buttons:** Flat, NO shadow/elevation on primary CTAs
+- **Alerts/Confirmations:** Always bottom sheets — never centered `AlertDialog`
+- **Dividers:** Full-width (no horizontal padding), softer color `rgba(226,232,240,0.5)`
+- **FAB:** 56×56, radiusLarge (16px), accent bg, no shadow
+- **Grade chips:** Color-banded (A=accent, B=gpa, C=surfaceMuted, D/F=error)
+- **Onboarding:** Welcome has no stepper; steps 1/2 and 2/2 on Profile and First Semester
+- **Logo:** `logo-transparent` (5BB-0) and `logo` (5BC-0) on the V4 page as image fills
+
+## Flutter Implementation Status
+
+Theme layer fully implemented in `lib/theme/`:
+- `app_colors.dart` — `AppColors` with all design tokens
+- `app_typography.dart` — `AppTypography` with Inter Tight + Inter via google_fonts
+- `app_spacing.dart` — `AppSpacing` with 8pt grid and border radii
+- `app_decorations.dart` — `AppDecorations` with card/input/sheet decorations
+- `app_theme.dart` — `appTheme()` returns complete Material 3 ThemeData
 
 ## Key Doc Paths
 

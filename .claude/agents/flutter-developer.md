@@ -38,6 +38,8 @@ If any of these files are missing or unreadable, notify the user before proceedi
 - Use hardcoded colors like `Color(0xFF...)` — use `AppColors`
 - Create custom `TextStyle(...)` — use `AppTypography`
 - Hardcode spacing/padding — use `AppSpacing`
+- Create inline `BoxDecoration` for cards/inputs — use `AppDecorations`
+- Use `withOpacity()` — use pre-computed alpha values from `AppColors` derived tints
 - Use `Navigator.push` directly — use GoRouter named routes
 - Leave TODO comments — implement everything fully
 - Use `clone()` that shares mutable collection references — use `copyWith()` with deep copies
@@ -49,6 +51,7 @@ If any of these files are missing or unreadable, notify the user before proceedi
 - Use `// ignore: must_be_immutable` — fix the root cause
 - Use Montserrat font — Inter Tight + Inter (via `google_fonts`) are the only approved fonts
 - Use glassmorphism or heavy BackdropFilter — Editorial design uses subtle borders, not blur
+- Use centered `AlertDialog` — use bottom sheets for all alerts/confirmations
 - **Run `git commit`** — the user owns commit authorship
 - **Run `git push`** under any circumstances
 - **Run destructive git operations** (`git reset --hard`, `git checkout -- <file>`, `git clean -f`)
@@ -62,7 +65,11 @@ If any of these files are missing or unreadable, notify the user before proceedi
 - Use `BlocProvider` at the widget tree level
 - Use `BlocBuilder` with `buildWhen` for optimized rebuilds
 - Use `BlocListener` for side effects (navigation, snackbars)
-- Apply theme tokens exclusively (`AppColors`, `AppTypography`, `AppSpacing`)
+- Apply theme tokens exclusively (`AppColors`, `AppTypography`, `AppSpacing`, `AppDecorations`)
+- Use `appTheme()` from `lib/theme/app_theme.dart` as the app's `ThemeData`
+- Use `abstract final class` for utility/token classes
+- Use bottom sheets for all alerts and confirmations
+- Use full-width dividers with softer color (border at 50% opacity)
 - Handle all states in UI: loading, error, empty, success
 - Keep widget build methods concise — extract complex UI to sub-widgets
 - Add `///` doc comments for all classes and methods — public and private
@@ -91,12 +98,12 @@ lib/
 ├── app/                           # Entry point, router
 │   ├── app.dart
 │   └── router.dart
-├── theme/                         # Theme tokens and decorations
-│   ├── app_colors.dart
-│   ├── app_typography.dart
-│   ├── app_spacing.dart
-│   ├── app_decorations.dart
-│   └── app_theme.dart
+├── theme/                         # V4 Editorial theme tokens (IMPLEMENTED)
+│   ├── app_colors.dart            # AppColors — surfaces, brand, semantic, derived tints
+│   ├── app_typography.dart        # AppTypography — Inter Tight headings + Inter body (google_fonts)
+│   ├── app_spacing.dart           # AppSpacing — 8pt grid, semantic aliases, BorderRadius constants
+│   ├── app_decorations.dart       # AppDecorations — card, input, sheet BoxDecorations + shadows
+│   └── app_theme.dart             # appTheme() — complete Material 3 ThemeData
 ├── core/
 │   ├── entities/                  # Shared domain entities (Subject, Semester, UserResult, UserDetails)
 │   ├── constants/                 # GPA tables, cache keys
@@ -104,7 +111,8 @@ lib/
 │   ├── extensions/
 │   └── utils/                     # GPA calculator, input formatters, logging
 ├── shared/
-│   └── widgets/                   # GlassEffect, CustomAppBar, MainButton, Dialogs, LoadingScreen
+│   ├── widgets.dart               # Barrel file — import 'package:gpa_cal/shared/widgets.dart'
+│   └── widgets/                   # Common widgets added during development
 └── features/<feature_name>/
     ├── domain/
     │   └── repositories/          # Abstract interfaces
@@ -289,9 +297,13 @@ Follow these steps for every feature implementation:
 Before declaring work complete, verify:
 - [ ] No business logic in widgets
 - [ ] No cross-feature imports
-- [ ] All colors use `AppColors`
-- [ ] All typography uses `AppTypography`
-- [ ] All spacing uses `AppSpacing`
+- [ ] All colors use `AppColors` (no `Color(0xFF...)` or `withOpacity()`)
+- [ ] All typography uses `AppTypography` (no custom `TextStyle`)
+- [ ] All spacing uses `AppSpacing` (no raw numbers)
+- [ ] All card/input decorations use `AppDecorations`
+- [ ] No `new` keyword, no SCREAMING_CASE constants
+- [ ] Utility classes use `abstract final class`
+- [ ] Alerts/confirmations use bottom sheets (never `AlertDialog`)
 - [ ] GPA calculation enforced in domain layer
 - [ ] All UI states handled (loading, error, empty, success)
 - [ ] `Equatable` used on all Events and States

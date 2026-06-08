@@ -265,7 +265,50 @@
 | Trend up | `trending-up` |
 | Trend down | `trending-down` |
 
-## 9. Accessibility Requirements
+## 9. Flutter Implementation Reference
+
+The design system is fully implemented in `lib/theme/`. When building UI, import tokens from these files — never hardcode values.
+
+| Design Token | Flutter Class | File |
+|-------------|---------------|------|
+| Colors (surfaces, brand, semantic, derived tints) | `AppColors` | `lib/theme/app_colors.dart` |
+| Typography (Inter Tight headings, Inter body) | `AppTypography` | `lib/theme/app_typography.dart` |
+| Spacing (8pt grid, semantic aliases, border radii) | `AppSpacing` | `lib/theme/app_spacing.dart` |
+| Decorations (cards, inputs, sheets, shadows) | `AppDecorations` | `lib/theme/app_decorations.dart` |
+| ThemeData (Material 3 wiring) | `appTheme()` | `lib/theme/app_theme.dart` |
+
+### Quick Reference
+
+```dart
+// Colors
+Container(color: AppColors.accent)
+Text('3.67', style: AppTypography.displayLarge.copyWith(color: AppColors.gpa))
+
+// Spacing
+Padding(padding: EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding))
+SizedBox(height: AppSpacing.sectionGap)
+
+// Decorations
+DecoratedBox(decoration: AppDecorations.card, child: ...)
+DecoratedBox(decoration: AppDecorations.cardFlat, child: ...)
+
+// Border radii
+ClipRRect(borderRadius: AppSpacing.borderRadiusLarge, child: ...)
+
+// Derived tints (pre-computed, no withOpacity)
+Container(color: AppColors.accentTint)   // accent at 8%
+Container(color: AppColors.successTint)  // success at 8%
+Container(color: AppColors.errorTint)    // error at 6%
+```
+
+### Design Patterns
+
+- **Buttons:** Flat, NO shadow/elevation. Use `ElevatedButton` (primary), `OutlinedButton` (secondary), `TextButton` (tertiary).
+- **Alerts/Confirmations:** Always bottom sheets — never centered `AlertDialog`. Use `BottomSheetThemeData` from `appTheme()`.
+- **Dividers:** Full-width (0 indent), softer color. Use `AppColors.border` at 50% opacity or the theme's `DividerTheme`.
+- **Cards:** Use `AppDecorations.card` or `AppDecorations.cardFlat` — never custom `BoxDecoration`.
+
+## 10. Accessibility Requirements
 
 - All text meets WCAG AA contrast (4.5:1 for text, 3:1 for UI elements)
 - Minimum touch target: 48×48dp for all interactive elements

@@ -38,8 +38,15 @@ lib/
 │   ├── errors/       # Custom failure classes
 │   ├── extensions/   # Dart/Flutter extensions
 │   └── utils/        # GPA calculation, input formatters, logging
-├── theme/            # Colors, typography, spacing tokens, decorations, ThemeData
-├── shared/           # Cross-feature reusable widgets (app bar, glass effect, buttons, dialogs)
+├── theme/            # V4 Editorial design tokens (implemented)
+│   ├── app_colors.dart       # AppColors — surfaces, brand, semantic, derived tints
+│   ├── app_typography.dart   # AppTypography — Inter Tight headings, Inter body
+│   ├── app_spacing.dart      # AppSpacing — 8pt grid, radii, semantic aliases
+│   ├── app_decorations.dart  # AppDecorations — card, input, sheet decorations
+│   └── app_theme.dart        # appTheme() — Material 3 ThemeData
+├── shared/           # Cross-feature reusable widgets
+│   ├── widgets.dart          # Barrel file for shared widget exports
+│   └── widgets/              # Common widgets added during development
 └── features/         # Feature modules (vertical slices)
     └── <feature>/
         ├── domain/        # Repository interfaces
@@ -94,16 +101,21 @@ lib/
 - `BlocBuilder` for UI rebuilds, `BlocListener` for side effects (navigation, snackbars)
 - No `setState` for state managed by BLoC
 
-### Theme Tokens
+### Theme Tokens (V4 Editorial — `lib/theme/`)
 
-- Colors: `AppColors` — never `Color(0xFF...)`
+- Colors: `AppColors` — never `Color(0xFF...)` or `withOpacity()`
 - Typography: `AppTypography` — never custom `TextStyle(...)`
-- Spacing: `AppSpacing` — never raw numbers
+- Spacing: `AppSpacing` — never raw numbers (use `space8`, `screenPadding`, etc.)
+- Decorations: `AppDecorations` — never inline `BoxDecoration` for cards/inputs
+- Theme: `appTheme()` returns the full Material 3 `ThemeData`
 - Headings: Inter Tight (via `google_fonts` package)
 - Body: Inter (via `google_fonts` package)
-- Accent: vibrant blue `#2563EB`, GPA numbers: warm orange `#F97316`
-- Cards: solid borders `#E2E8F0`, no heavy shadows
-- Inputs: filled style (`#F1F5F9` bg, no border at rest)
+- Accent: `AppColors.accent` (#2563EB), GPA numbers: `AppColors.gpa` (#F97316)
+- Cards: `AppDecorations.card` / `AppDecorations.cardFlat` — solid borders, no heavy shadows
+- Inputs: filled style (`AppColors.surfaceMuted` bg, no border at rest, accent border on focus)
+- Buttons: flat, NO shadow/elevation
+- Alerts: always bottom sheets, never centered `AlertDialog`
+- Dividers: full-width (0 indent), softer color
 - 8pt spacing grid
 
 ## UI States
@@ -114,7 +126,7 @@ All screens must handle: **loading**, **error** (with retry), **empty**, **succe
 
 | Concern | Package |
 | --- | --- |
-| State | `flutter_bloc`, `bloc` |
+| State | `flutter_bloc`, `bloc`, `equatable` |
 | DB | `hive`, `hive_flutter` |
 | Router | `go_router` |
 | Fonts | `google_fonts` (Inter Tight + Inter) |

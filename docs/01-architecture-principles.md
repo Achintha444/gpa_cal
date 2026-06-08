@@ -17,7 +17,7 @@ lib/
 │   ├── app_colors.dart            # Color palette tokens
 │   ├── app_typography.dart        # Typography scale tokens
 │   ├── app_spacing.dart           # Spacing and border radius tokens
-│   ├── app_decorations.dart       # Glassmorphism, card shadows, container styles
+│   ├── app_decorations.dart       # Card, input, sheet decorations and elevation shadows
 │   └── app_theme.dart             # ThemeData built from tokens
 ├── core/                          # Shared domain entities, utilities, base classes
 │   ├── entities/                  # Shared domain entities (Subject, Semester, UserResult, UserDetails)
@@ -26,7 +26,8 @@ lib/
 │   ├── extensions/                # Dart/Flutter extensions
 │   └── utils/                     # GPA calculation, input formatters, logging
 ├── shared/                        # Cross-feature reusable widgets (non-feature-specific)
-│   └── widgets/                   # GlassEffect, CustomAppBar, MainButton, AlertDialogs, LoadingScreen
+│   ├── widgets.dart               # Barrel file — import 'package:gpa_cal/shared/widgets.dart'
+│   └── widgets/                   # Common widgets added as development progresses
 └── features/                      # Feature modules (vertical slices)
     ├── splash/                    # Splash screen + first-time detection
     │   ├── domain/
@@ -476,22 +477,21 @@ import 'package:gpa_cal/core/entities/subject.dart';
 import 'package:gpa_cal/theme/app_colors.dart';
 import 'package:gpa_cal/theme/app_spacing.dart';
 
-/// ALLOWED — shared widgets
-import 'package:gpa_cal/shared/widgets/glass_effect.dart';
-import 'package:gpa_cal/shared/widgets/custom_app_bar.dart';
+/// ALLOWED — shared widgets (via barrel file)
+import 'package:gpa_cal/shared/widgets.dart';
 ```
 
 ### 8.2 Shared Widgets
 
 /// Widgets reused across 2+ features belong in `lib/shared/widgets/`.
 
-Current shared widgets:
-- `GlassEffect` — glassmorphism container with configurable blur and gradient
-- `CustomAppBar` — app bar with welcome text and university info
-- `GpaCalMainButton` — primary action button with glass effect
-- `CustomAlertDialog` — confirmation dialog for destructive actions
-- `LoadingScreen` — animated loading indicator
-- `ErrorAnimatedWidget` — slide-in error message animation
+Shared widgets are added incrementally as development progresses. Export each widget from
+`lib/shared/widgets.dart` (the barrel file) so features can import a single path.
+
+**Import pattern:**
+```dart
+import 'package:gpa_cal/shared/widgets.dart';
+```
 
 Feature-specific widgets stay in `features/<feature>/presentation/widgets/`.
 
@@ -504,32 +504,24 @@ Feature-specific widgets stay in `features/<feature>/presentation/widgets/`.
 - Usage example in a doc comment
 
 ```dart
-/// A glassmorphism container with configurable blur, gradient, and border.
-///
-/// Used throughout the app for cards, dialogs, and buttons to maintain
-/// the frosted-glass visual language.
+/// A reusable semester card displaying the semester name, course count,
+/// credit total, and calculated SGPA.
 ///
 /// Example:
 /// ```dart
-/// GlassEffect(
-///   height: 216,
-///   width: 216,
-///   topColorOpacity: 0.4,
-///   child: Image.asset('graphics/logo.png'),
+/// SemesterCard(
+///   semester: semester,
+///   onTap: () => context.pushNamed('semesterDetail', ...),
 /// )
 /// ```
-class GlassEffect extends StatelessWidget {
-  /// The child widget displayed inside the glass container.
-  final Widget child;
+class SemesterCard extends StatelessWidget {
+  /// The semester data to display.
+  final Semester semester;
 
-  /// The fixed height of the glass container.
-  final double height;
+  /// Called when the card is tapped.
+  final VoidCallback? onTap;
 
-  /// The fixed width of the glass container.
-  final double width;
-
-  /// Opacity of the top gradient color. Defaults to 0.3.
-  final double topColorOpacity;
+  const SemesterCard({super.key, required this.semester, this.onTap});
 
   // ...
 }
@@ -609,6 +601,6 @@ test/
 
 - **App launch → interactive**: < 2 seconds
 - **Semester add/edit/delete**: < 200ms perceived latency
-- **Animation frame rate**: Consistent 60fps for glassmorphism effects
+- **Animation frame rate**: Consistent 60fps for transitions and animations
 - **Database query**: < 100ms for data load
 - **App size**: < 30MB (release APK)

@@ -12,12 +12,15 @@ These rules are **NON-NEGOTIABLE**. They are designed to prevent architectural d
     - All domain entities (e.g., `Subject`, `Semester`, `UserResult`, `UserDetails`) live in `lib/core/entities/`.
     - **DO NOT** create `entities/` folders inside feature `domain/` directories.
     - Entities are shared across features — this is by design to avoid duplication.
-3. **Theme & Tokens**:
+3. **Theme & Tokens** (V4 Editorial — IMPLEMENTED):
     - All theme tokens live in `lib/theme/`.
-    - Tokens: `app_colors.dart`, `app_typography.dart`, `app_spacing.dart`
-    - Theme: `app_theme.dart`
-    - Decorations: `app_decorations.dart` (glassmorphism, card shadows, etc.)
+    - Colors: `app_colors.dart` (`AppColors`) — surfaces, brand, semantic, derived tints
+    - Typography: `app_typography.dart` (`AppTypography`) — Inter Tight headings + Inter body
+    - Spacing: `app_spacing.dart` (`AppSpacing`) — 8pt grid, semantic aliases, border radii
+    - Decorations: `app_decorations.dart` (`AppDecorations`) — card, input, sheet decorations + elevation shadows
+    - Theme: `app_theme.dart` (`appTheme()`) — complete Material 3 `ThemeData`
     - **DO NOT** put theme code in `lib/app/` or scatter it across features.
+    - **DO NOT** use `withOpacity()` — use pre-computed alpha values from `AppColors`.
 4. **Path Conventions**:
     - Entities: `lib/core/entities/<entity>.dart`
     - Repositories (Interface): `lib/features/<feature>/domain/repositories/<name>_repository.dart`
@@ -129,7 +132,7 @@ If a user request is vague:
     - State Management: `flutter_bloc`, `bloc`
     - Database: `hive`, `hive_flutter`
     - Routing: `go_router`
-    - Fonts: `google_fonts` (Inter only)
+    - Fonts: `google_fonts` (Inter Tight for headings, Inter for body)
     - SVG: `flutter_svg`
     - Icons: `lucide_icons` (primary), `cupertino_icons` (fallback)
     - Code Gen: `build_runner`, `hive_generator`
@@ -158,15 +161,31 @@ If a user request is vague:
 
 ## 12. Theme Token Compliance
 
+The V4 Editorial theme is implemented in `lib/theme/`. These files are the **single source of truth** for all visual tokens:
+
+| File | Class | Contains |
+|------|-------|----------|
+| `app_colors.dart` | `AppColors` | Surface, brand, semantic, and derived tint colors |
+| `app_typography.dart` | `AppTypography` | Inter Tight (headings) + Inter (body) text styles via `google_fonts` |
+| `app_spacing.dart` | `AppSpacing` | 8pt spacing grid, semantic aliases, border radii |
+| `app_decorations.dart` | `AppDecorations` | Card, input, sheet `BoxDecoration` constants + elevation shadows |
+| `app_theme.dart` | `appTheme()` | Complete `ThemeData` wiring all tokens into Material 3 |
+
+### Rules
+
 - **DO NOT**: Use hardcoded colors like `Color(0xFF...)` — use `AppColors`
 - **DO NOT**: Create custom `TextStyle(...)` — use `AppTypography`
 - **DO NOT**: Hardcode spacing/padding values — use `AppSpacing`
+- **DO NOT**: Use `withOpacity()` — use pre-computed alpha values from `AppColors` derived tints
 - **DO NOT**: Use Montserrat — Inter Tight (headings) + Inter (body) via `google_fonts` are the only approved fonts
 - **DO NOT**: Use glassmorphism / BackdropFilter — the Editorial design uses subtle borders and flat surfaces
-- **DO**: Use the app's defined color palette via token classes (`accent` #2563EB, `gpa` #F97316)
-- **DO**: Follow the 8pt spacing grid
-- **DO**: Use filled input style (`#F1F5F9` bg, no border at rest, blue border when focused)
-- **DO**: Use color-coded grade chips (A=blue, B=orange, C=gray, D/F=red)
+- **DO NOT**: Use `new` keyword — unnecessary in Dart 2+
+- **DO**: Use `AppDecorations.card` / `AppDecorations.cardFlat` for card styling
+- **DO**: Use the app's defined color palette via token classes (`AppColors.accent` #2563EB, `AppColors.gpa` #F97316)
+- **DO**: Follow the 8pt spacing grid (`AppSpacing.space8`, `AppSpacing.screenPadding`, etc.)
+- **DO**: Use filled input style (`AppColors.surfaceMuted` bg, no border at rest, accent border when focused)
+- **DO**: Use color-coded grade chips (A=accent, B=gpa/orange, C=surfaceMuted, D/F=error)
+- **DO**: Use `abstract final class` for utility/token classes (not `abstract class`)
 
 ## 13. Git Rules for Agents
 
