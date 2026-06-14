@@ -436,9 +436,8 @@ class _LineChartPainter extends CustomPainter {
     final List<Offset> points = [];
 
     for (int i = 0; i < count; i++) {
-      final double x = count == 1
-          ? chartWidth / 2
-          : chartWidth * i / (count - 1);
+      final double x =
+          count == 1 ? chartWidth / 2 : chartWidth * i / (count - 1);
       final double normalized = (semesters[i].sgpa / maxGpa).clamp(0.0, 1.0);
       final double y = topPad + chartHeight * (1.0 - normalized);
       points.add(Offset(x, y));
@@ -468,16 +467,14 @@ class _LineChartPainter extends CustomPainter {
     );
 
     for (int i = 0; i < count; i++) {
-      final double x = count == 1
-          ? chartWidth / 2
-          : chartWidth * i / (count - 1);
+      final double x =
+          count == 1 ? chartWidth / 2 : chartWidth * i / (count - 1);
       final double labelY = topPad + chartHeight + 6;
 
       // Abbreviate long names to keep them from overlapping.
       final String rawName = semesters[i].name;
-      final String label = rawName.length > 8
-          ? '${rawName.substring(0, 6)}…'
-          : rawName;
+      final String label =
+          rawName.length > 8 ? '${rawName.substring(0, 6)}…' : rawName;
 
       final TextSpan span = TextSpan(text: label, style: labelStyle);
       final TextPainter tp = TextPainter(
@@ -497,8 +494,7 @@ class _LineChartPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _LineChartPainter oldDelegate) {
-    return oldDelegate.semesters != semesters ||
-        oldDelegate.gpaType != gpaType;
+    return oldDelegate.semesters != semesters || oldDelegate.gpaType != gpaType;
   }
 }
 
@@ -729,7 +725,9 @@ class _SemesterBreakdownRow extends StatelessWidget {
                 Expanded(
                   child: Text(
                     semester.name,
-                    style: AppTypography.bodyLarge,
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -755,14 +753,6 @@ class _SemesterBreakdownRow extends StatelessWidget {
             ),
           ),
         ),
-        if (showDivider)
-          const Divider(
-            height: 1,
-            indent: 0,
-            endIndent: 0,
-            // 50% opacity of AppColors.border (#E2E8F0) → alpha 0x80.
-            color: Color(0x80E2E8F0),
-          ),
       ],
     );
   }
