@@ -384,7 +384,7 @@ class _FirstSemesterActions extends StatelessWidget {
                         color: AppColors.surface,
                       ),
                     )
-                  : const Icon(LucideIcons.chevronRight, size: 18),
+                  : const Icon(LucideIcons.chevronRight),
               label: const Text('Finish Setup'),
               iconAlignment: IconAlignment.end,
             ),

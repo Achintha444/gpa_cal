@@ -150,6 +150,7 @@ ThemeData appTheme() {
         disabledForegroundColor: AppColors.surface,
         elevation: 0,
         shadowColor: Colors.transparent,
+        iconSize: 16,
         minimumSize: const Size(double.infinity, 48),
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.space24,
@@ -174,6 +175,7 @@ ThemeData appTheme() {
         foregroundColor: AppColors.textPrimary,
         disabledForegroundColor: AppColors.disabled,
         elevation: 0,
+        iconSize: 16,
         minimumSize: const Size(double.infinity, 48),
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.space24,
@@ -193,6 +195,7 @@ ThemeData appTheme() {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: AppColors.accent,
+        iconSize: 16,
         textStyle: AppTypography.labelLarge.copyWith(color: AppColors.accent),
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.space12,
