@@ -391,8 +391,14 @@ class _RemainingPlanCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacing.space12),
-            _RemainingSemestersField(
-              initialValue: state.remainingSemesters.toString(),
+            CreditStepper(
+              value: state.remainingSemesters.toDouble(),
+              min: 1,
+              max: 20,
+              step: 1,
+              onChanged: (double value) => context
+                  .read<WhatIfBloc>()
+                  .add(RemainingSemestersChanged(value)),
             ),
           ],
         ),
@@ -421,68 +427,6 @@ class _RemainingPlanCard extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-}
-
-/// A compact 80px-wide filled text field for entering remaining semesters.
-///
-/// Uses the theme's standard filled input style (no manual border).
-/// Dispatches [RemainingSemestersChanged] on every change.
-class _RemainingSemestersField extends StatefulWidget {
-  /// The initial text value.
-  final String initialValue;
-
-  /// Creates a [_RemainingSemestersField].
-  const _RemainingSemestersField({required this.initialValue});
-
-  @override
-  State<_RemainingSemestersField> createState() =>
-      _RemainingSemestersFieldState();
-}
-
-class _RemainingSemestersFieldState extends State<_RemainingSemestersField> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.initialValue);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 80,
-      child: TextField(
-        controller: _controller,
-        keyboardType: TextInputType.number,
-        textAlign: TextAlign.center,
-        style: AppTypography.titleMedium,
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-        ],
-        decoration: InputDecoration(
-          hintText: '1',
-          hintStyle: AppTypography.titleMedium.copyWith(
-            color: AppColors.textPlaceholder,
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.space8,
-            vertical: AppSpacing.space12,
-          ),
-          isDense: true,
-        ),
-        onChanged: (String value) {
-          context.read<WhatIfBloc>().add(RemainingSemestersChanged(value));
-        },
-      ),
     );
   }
 }

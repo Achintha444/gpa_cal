@@ -33,13 +33,12 @@ final class TargetCgpaChanged extends WhatIfEvent {
   List<Object?> get props => [value];
 }
 
-/// Fired when the user changes the remaining semesters field.
+/// Fired when the user adjusts the remaining semesters stepper.
 ///
-/// The raw [value] string is parsed and validated inside the BLoC.
-/// Valid range: 1–20. Out-of-range values are ignored.
+/// [value] comes directly from [CreditStepper]. Valid range: 1–20, step 1.
 final class RemainingSemestersChanged extends WhatIfEvent {
-  /// The raw string value from the text field.
-  final String value;
+  /// The new remaining semesters value.
+  final double value;
 
   /// Creates a [RemainingSemestersChanged] event.
   const RemainingSemestersChanged(this.value);

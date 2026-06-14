@@ -113,20 +113,13 @@ class WhatIfBloc extends Bloc<WhatIfEvent, WhatIfState> {
     emit(_calculate(next));
   }
 
-  /// Handles [RemainingSemestersChanged] — parses, validates range (1–20),
-  /// updates state, and recalculates.
-  ///
-  /// Out-of-range or unparseable values are ignored silently.
+  /// Handles [RemainingSemestersChanged] — updates state and recalculates.
   Future<void> _onRemainingSemestersChanged(
     RemainingSemestersChanged event,
     Emitter<WhatIfState> emit,
   ) async {
-    if (event.value.isEmpty) return;
-
-    final int? parsed = int.tryParse(event.value);
-    if (parsed == null || parsed < 1 || parsed > 20) return;
-
-    final WhatIfState next = state.copyWith(remainingSemesters: parsed);
+    final WhatIfState next =
+        state.copyWith(remainingSemesters: event.value.toInt());
     emit(_calculate(next));
   }
 
