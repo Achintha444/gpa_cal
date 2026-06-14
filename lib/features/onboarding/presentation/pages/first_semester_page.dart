@@ -159,8 +159,7 @@ class _FirstSemesterViewState extends State<_FirstSemesterView> {
                                 key: const Key('first_semester_name'),
                                 controller: _nameController,
                                 textInputAction: TextInputAction.next,
-                                textCapitalization:
-                                    TextCapitalization.words,
+                                textCapitalization: TextCapitalization.words,
                                 style: AppTypography.bodyMedium,
                                 decoration: const InputDecoration(
                                   labelText: 'SEMESTER NAME',
@@ -175,7 +174,6 @@ class _FirstSemesterViewState extends State<_FirstSemesterView> {
                                 courseCount: _subjects.length,
                                 sgpa: _calculateSgpa(state.gpaType),
                               ),
-                              const SizedBox(height: AppSpacing.space12),
                             ],
                           ),
                         ),
@@ -392,13 +390,13 @@ class _FirstSemesterActions extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.space8),
-          TextButton(
+          TextButton.icon(
             onPressed: () => context.pop(),
-            child: Text(
-              '← Back',
-              style: AppTypography.labelLarge.copyWith(
-                color: AppColors.textSecondary,
-              ),
+            icon: const Icon(LucideIcons.chevronLeft,
+                color: AppColors.textSecondary),
+            label: const Text('Back'),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.textSecondary,
             ),
           ),
         ],

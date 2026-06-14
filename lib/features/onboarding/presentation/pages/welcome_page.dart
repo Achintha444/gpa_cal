@@ -52,15 +52,13 @@ class _WelcomeHeroContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Illustration
         SvgPicture.asset(
           'graphics/person.svg',
-          width: 200,
-          height: 200,
         ),
-        const SizedBox(height: AppSpacing.space12),
+        const SizedBox(height: AppSpacing.space48),
         // Headline
         Text(
           'Track your academic journey',

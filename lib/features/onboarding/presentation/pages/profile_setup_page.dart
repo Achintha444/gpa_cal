@@ -285,12 +285,9 @@ class _ScaleSegment extends StatelessWidget {
               Text(
                 label,
                 style: AppTypography.labelLarge.copyWith(
-                  color: isSelected
-                      ? AppColors.surface
-                      : AppColors.textSecondary,
-                  fontWeight: isSelected
-                      ? FontWeight.w600
-                      : FontWeight.w500,
+                  color:
+                      isSelected ? AppColors.surface : AppColors.textSecondary,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 ),
               ),
               Text(
@@ -369,8 +366,7 @@ class _ProfileActions extends StatelessWidget {
                 prev.isProfileValid != curr.isProfileValid ||
                 prev.status != curr.status,
             builder: (BuildContext context, OnboardingState state) {
-              final bool isLoading =
-                  state.status == OnboardingStatus.loading;
+              final bool isLoading = state.status == OnboardingStatus.loading;
               return SizedBox(
                 height: 52,
                 child: ElevatedButton.icon(
@@ -388,7 +384,7 @@ class _ProfileActions extends StatelessWidget {
                             color: AppColors.surface,
                           ),
                         )
-                      : const Icon(LucideIcons.chevronRight, size: 18),
+                      : const Icon(LucideIcons.chevronRight),
                   label: const Text('Continue'),
                   iconAlignment: IconAlignment.end,
                 ),
@@ -396,10 +392,11 @@ class _ProfileActions extends StatelessWidget {
             },
           ),
           const SizedBox(height: AppSpacing.space8),
-          TextButton(
+          TextButton.icon(
             onPressed: () => context.pop(),
-            child: Text(
-              '← Back',
+            icon: const Icon(LucideIcons.chevronLeft, color: AppColors.textSecondary),
+            label: Text(
+              'Back',
               style: AppTypography.labelLarge.copyWith(
                 color: AppColors.textSecondary,
               ),

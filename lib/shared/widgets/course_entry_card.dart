@@ -145,16 +145,6 @@ class _CourseEntryCardState extends State<CourseEntryCard> {
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
           hintText: 'Course name',
-          hintStyle: AppTypography.bodyMedium.copyWith(
-            color: AppColors.textPlaceholder,
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 0,
-          ),
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
         ),
       ),
     );
@@ -185,14 +175,8 @@ class _CourseEntryCardState extends State<CourseEntryCard> {
   /// Builds the credits row with a label on the left and a [CreditStepper] on the right.
   Widget _buildCreditsRow() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Text(
-          'Credits',
-          style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.textSecondary,
-          ),
-        ),
         CreditStepper(
           value: widget.subject.credit,
           onChanged: (double credit) {

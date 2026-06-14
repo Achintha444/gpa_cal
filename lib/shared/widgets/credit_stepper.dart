@@ -137,13 +137,6 @@ class _StepperButton extends StatelessWidget {
           borderRadius: AppSpacing.borderRadiusMedium.subtract(
             const BorderRadius.all(Radius.circular(2)),
           ),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x0F000000),
-              offset: Offset(0, 1),
-              blurRadius: 3,
-            ),
-          ],
         ),
         child: Icon(
           icon,
