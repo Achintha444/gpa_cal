@@ -46,9 +46,6 @@ dependencies:
   # SVG
   flutter_svg: ^2.0.10
 
-  # Preferences (kept for migration path from old data)
-  shared_preferences: ^2.3.0
-
   # App launcher icons
   flutter_launcher_icons: ^0.13.1
 flutter_icons:
