@@ -16,9 +16,10 @@ import 'package:lucide_icons/lucide_icons.dart';
 
 /// The What-If Calculator screen.
 ///
-/// Allows the user to set a target CGPA and configure the next semester's
-/// course count and credits, then see the required average grade to achieve
-/// that target. Provides a [BlocProvider] scoped to this route.
+/// Allows the user to set a target CGPA, specify the number of remaining
+/// semesters and total remaining credits, then see the required average
+/// grade to achieve that target. Provides a [BlocProvider] scoped to this
+/// route.
 ///
 /// Route path: `/what-if`
 class WhatIfPage extends StatelessWidget {
@@ -56,9 +57,9 @@ class _WhatIfView extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
         title: Text('What-If Calculator', style: AppTypography.titleLarge),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: const Divider(height: 1, indent: 0, endIndent: 0),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(height: 1, indent: 0, endIndent: 0),
         ),
       ),
       body: BlocBuilder<WhatIfBloc, WhatIfState>(
@@ -112,8 +113,9 @@ class _WhatIfErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.screenPadding,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -150,7 +152,7 @@ class _WhatIfErrorView extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 /// The main calculator UI — shown in [WhatIfStatus.ready], [calculated],
-/// and [impossible] states.
+/// [alreadyAchieved], and [impossible] states.
 class _WhatIfCalculatorView extends StatelessWidget {
   /// The current what-if state.
   final WhatIfState state;
@@ -171,27 +173,24 @@ class _WhatIfCalculatorView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Current GPA card
-          _CurrentStateCard(state: state),
+          _CurrentGpaCard(state: state),
           const SizedBox(height: AppSpacing.space20),
 
-          // Target CGPA input
+          // Target CGPA section
+          Text('Target CGPA', style: AppTypography.titleMedium),
+          const SizedBox(height: AppSpacing.space12),
           _TargetCgpaInput(
             gpaType: state.gpaType,
-            initialValue:
-                state.targetCgpa > 0 ? state.targetCgpa.toStringAsFixed(2) : '',
+            initialValue: state.targetCgpa > 0
+                ? state.targetCgpa.toStringAsFixed(2)
+                : '',
           ),
           const SizedBox(height: AppSpacing.space24),
 
-          // Next semester section
-          Text('Next Semester', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.space16),
-
-          // Number of courses
-          _CoursesRow(numCourses: state.numCourses),
-          const SizedBox(height: AppSpacing.space16),
-
-          // Credits per course
-          _CreditsRow(creditsPerCourse: state.creditsPerCourse),
+          // Remaining plan section
+          Text('Remaining Plan', style: AppTypography.titleMedium),
+          const SizedBox(height: AppSpacing.space12),
+          _RemainingPlanCard(state: state),
           const SizedBox(height: AppSpacing.space24),
 
           // Result card
@@ -203,16 +202,16 @@ class _WhatIfCalculatorView extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Current state card
+// Current GPA card
 // ---------------------------------------------------------------------------
 
-/// Displays the user's current CGPA, scale, and total credits.
-class _CurrentStateCard extends StatelessWidget {
+/// Displays the user's current CGPA, scale, and total credits earned.
+class _CurrentGpaCard extends StatelessWidget {
   /// The current what-if state.
   final WhatIfState state;
 
-  /// Creates a [_CurrentStateCard].
-  const _CurrentStateCard({required this.state});
+  /// Creates a [_CurrentGpaCard].
+  const _CurrentGpaCard({required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -241,7 +240,6 @@ class _CurrentStateCard extends StatelessWidget {
                   state.currentCgpa.toStringAsFixed(2),
                   style: AppTypography.displayLarge.copyWith(
                     color: AppColors.gpa,
-                    fontSize: 40,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.space8),
@@ -252,25 +250,41 @@ class _CurrentStateCard extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.space12,
-                    vertical: AppSpacing.space4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceMuted,
-                    borderRadius: AppSpacing.borderRadiusSmall,
-                  ),
-                  child: Text(
-                    '${state.currentTotalCredit.toInt()} credits',
-                    style: AppTypography.labelMedium.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
+                _CreditsBadge(
+                  credits: state.currentTotalCredit.toInt(),
                 ),
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A small pill badge showing the total earned credits.
+class _CreditsBadge extends StatelessWidget {
+  /// The total credits earned so far.
+  final int credits;
+
+  /// Creates a [_CreditsBadge].
+  const _CreditsBadge({required this.credits});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.space12,
+        vertical: AppSpacing.space4,
+      ),
+      decoration: const BoxDecoration(
+        color: AppColors.surfaceMuted,
+        borderRadius: AppSpacing.borderRadiusSmall,
+      ),
+      child: Text(
+        '$credits credits',
+        style: AppTypography.labelMedium.copyWith(
+          color: AppColors.textSecondary,
         ),
       ),
     );
@@ -283,12 +297,14 @@ class _CurrentStateCard extends StatelessWidget {
 
 /// A text field for entering the target CGPA.
 ///
-/// Dispatches [TargetCgpaChanged] on valid input changes.
+/// Uses the theme's [InputDecoration] (filled, no border at rest, accent
+/// border on focus) without any additional wrapping container to avoid the
+/// double-border bug. Dispatches [TargetCgpaChanged] on every change.
 class _TargetCgpaInput extends StatefulWidget {
-  /// The GPA scale type for range validation.
+  /// The GPA scale type for range validation hint text.
   final int gpaType;
 
-  /// The initial text value to pre-fill (empty string = no value).
+  /// The initial text value to pre-fill. Empty string means no value.
   final String initialValue;
 
   /// Creates a [_TargetCgpaInput].
@@ -303,287 +319,174 @@ class _TargetCgpaInput extends StatefulWidget {
 
 class _TargetCgpaInputState extends State<_TargetCgpaInput> {
   late final TextEditingController _controller;
-  late final FocusNode _focusNode;
-  bool _isFocused = false;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.initialValue);
-    _focusNode = FocusNode()
-      ..addListener(() {
-        setState(() => _isFocused = _focusNode.hasFocus);
-      });
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _focusNode.dispose();
     super.dispose();
   }
 
-  /// Returns the max GPA value for the chosen scale.
-  double get _maxGpa => widget.gpaType == 1 ? 4.2 : 4.0;
+  /// Returns the max GPA label for the placeholder text.
+  String get _maxGpaLabel => widget.gpaType == 1 ? '4.2' : '4.0';
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Target CGPA', style: AppTypography.headlineMedium),
-        const SizedBox(height: AppSpacing.space12),
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          decoration: _isFocused
-              ? AppDecorations.inputFocused
-              : AppDecorations.input,
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.space16,
+    return TextField(
+      controller: _controller,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+      ],
+      style: AppTypography.titleLarge,
+      decoration: InputDecoration(
+        hintText: 'e.g. 3.50',
+        hintStyle: AppTypography.titleLarge.copyWith(
+          color: AppColors.textPlaceholder,
+        ),
+        helperText: '0.00 – $_maxGpaLabel',
+        helperStyle: AppTypography.labelMedium.copyWith(
+          color: AppColors.textPlaceholder,
+        ),
+      ),
+      onChanged: (String value) {
+        context.read<WhatIfBloc>().add(TargetCgpaChanged(value));
+      },
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Remaining plan card
+// ---------------------------------------------------------------------------
+
+/// A card containing two rows: remaining semesters and total remaining credits.
+///
+/// The remaining semesters row has a compact 80px [TextField] on the right.
+/// The total remaining credits row uses a [CreditStepper].
+class _RemainingPlanCard extends StatelessWidget {
+  /// The current what-if state.
+  final WhatIfState state;
+
+  /// Creates a [_RemainingPlanCard].
+  const _RemainingPlanCard({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: AppDecorations.cardFlat,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.cardPadding),
+        child: Column(
+          children: [
+            // Row 1: Remaining semesters
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Remaining Semesters',
+                    style: AppTypography.bodyMedium,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.space12),
+                _RemainingSemestersField(
+                  initialValue: state.remainingSemesters.toString(),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.space16),
+            const Divider(height: 1, indent: 0, endIndent: 0),
+            const SizedBox(height: AppSpacing.space16),
+            // Row 2: Total remaining credits
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Total Remaining Credits',
+                    style: AppTypography.bodyMedium,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.space12),
+                CreditStepper(
+                  value: state.totalRemainingCredits,
+                  min: 1,
+                  max: 200,
+                  step: 1,
+                  onChanged: (double value) => context
+                      .read<WhatIfBloc>()
+                      .add(TotalRemainingCreditsChanged(value)),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A compact 80px-wide filled text field for entering remaining semesters.
+///
+/// Uses the theme's standard filled input style (no manual border).
+/// Dispatches [RemainingSemestersChanged] on every change.
+class _RemainingSemestersField extends StatefulWidget {
+  /// The initial text value.
+  final String initialValue;
+
+  /// Creates a [_RemainingSemestersField].
+  const _RemainingSemestersField({required this.initialValue});
+
+  @override
+  State<_RemainingSemestersField> createState() =>
+      _RemainingSemestersFieldState();
+}
+
+class _RemainingSemestersFieldState extends State<_RemainingSemestersField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 80,
+      child: TextField(
+        controller: _controller,
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        style: AppTypography.titleMedium,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+        ],
+        decoration: InputDecoration(
+          hintText: '1',
+          hintStyle: AppTypography.titleMedium.copyWith(
+            color: AppColors.textPlaceholder,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.space8,
             vertical: AppSpacing.space12,
           ),
-          child: TextField(
-            controller: _controller,
-            focusNode: _focusNode,
-            keyboardType:
-                const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
-            ],
-            style: AppTypography.titleLarge,
-            decoration: InputDecoration(
-              hintText: '0.00 – ${_maxGpa.toStringAsFixed(1)}',
-              hintStyle: AppTypography.titleLarge.copyWith(
-                color: AppColors.textPlaceholder,
-              ),
-              border: InputBorder.none,
-              isDense: true,
-              contentPadding: EdgeInsets.zero,
-            ),
-            onChanged: (String value) {
-              final double? parsed = double.tryParse(value);
-              if (parsed != null && parsed >= 0 && parsed <= _maxGpa) {
-                context.read<WhatIfBloc>().add(TargetCgpaChanged(parsed));
-              } else if (value.isEmpty) {
-                context.read<WhatIfBloc>().add(const TargetCgpaChanged(0.0));
-              }
-            },
-          ),
+          isDense: true,
         ),
-      ],
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Number of courses row
-// ---------------------------------------------------------------------------
-
-/// A row displaying the "Number of Courses" label with an integer stepper (1–8).
-class _CoursesRow extends StatelessWidget {
-  /// The current number of courses.
-  final int numCourses;
-
-  /// Creates a [_CoursesRow].
-  const _CoursesRow({required this.numCourses});
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: AppDecorations.cardFlat,
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.cardPadding),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Number of Courses', style: AppTypography.titleMedium),
-                  Text(
-                    'How many courses next semester?',
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            _IntegerStepper(
-              value: numCourses,
-              min: 1,
-              max: 8,
-              onChanged: (int value) =>
-                  context.read<WhatIfBloc>().add(NumCoursesChanged(value)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Credits per course row
-// ---------------------------------------------------------------------------
-
-/// A row displaying the "Credits per Course" label with a [CreditStepper].
-class _CreditsRow extends StatelessWidget {
-  /// The current credits-per-course value.
-  final double creditsPerCourse;
-
-  /// Creates a [_CreditsRow].
-  const _CreditsRow({required this.creditsPerCourse});
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: AppDecorations.cardFlat,
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.cardPadding),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Credits per Course', style: AppTypography.titleMedium),
-                  Text(
-                    'Credit hours for each course',
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            CreditStepper(
-              value: creditsPerCourse,
-              min: 0.5,
-              max: 10,
-              step: 0.5,
-              onChanged: (double value) => context
-                  .read<WhatIfBloc>()
-                  .add(CreditsPerCourseChanged(value)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Integer stepper
-// ---------------------------------------------------------------------------
-
-/// A compact minus/value/plus stepper for integer values.
-///
-/// Used for the "Number of Courses" control. Similar to [CreditStepper]
-/// but works with [int] values.
-class _IntegerStepper extends StatelessWidget {
-  /// The current integer value.
-  final int value;
-
-  /// The minimum selectable value.
-  final int min;
-
-  /// The maximum selectable value.
-  final int max;
-
-  /// Called when the value changes.
-  final ValueChanged<int> onChanged;
-
-  /// Creates an [_IntegerStepper].
-  const _IntegerStepper({
-    required this.value,
-    required this.min,
-    required this.max,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.space4),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceMuted,
-        borderRadius: AppSpacing.borderRadiusMedium,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _StepButton(
-            icon: LucideIcons.minus,
-            enabled: value > min,
-            onTap: value > min ? () => onChanged(value - 1) : null,
-          ),
-          SizedBox(
-            width: 36,
-            child: Center(
-              child: Text(
-                '$value',
-                style: AppTypography.headlineMedium.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ),
-          _StepButton(
-            icon: LucideIcons.plus,
-            enabled: value < max,
-            onTap: value < max ? () => onChanged(value + 1) : null,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// A small icon button used inside [_IntegerStepper].
-class _StepButton extends StatelessWidget {
-  /// The icon to display.
-  final IconData icon;
-
-  /// Whether the button is enabled.
-  final bool enabled;
-
-  /// Called when the button is tapped.
-  final VoidCallback? onTap;
-
-  /// Creates a [_StepButton].
-  const _StepButton({
-    required this.icon,
-    required this.enabled,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: AppSpacing.borderRadiusMedium.subtract(
-            const BorderRadius.all(Radius.circular(2)),
-          ),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x0F000000),
-              offset: Offset(0, 1),
-              blurRadius: 3,
-            ),
-          ],
-        ),
-        child: Icon(
-          icon,
-          size: 16,
-          color: enabled ? AppColors.textPrimary : AppColors.disabled,
-        ),
+        onChanged: (String value) {
+          context.read<WhatIfBloc>().add(RemainingSemestersChanged(value));
+        },
       ),
     );
   }
@@ -595,10 +498,11 @@ class _StepButton extends StatelessWidget {
 
 /// Displays the what-if calculation result.
 ///
-/// Shows different content depending on the current [WhatIfStatus]:
-/// - [WhatIfStatus.ready]: prompt the user to enter a target GPA.
-/// - [WhatIfStatus.calculated]: the required average grade.
-/// - [WhatIfStatus.impossible]: an explanation that the target cannot be met.
+/// Shows one of four states based on [WhatIfState.status]:
+/// - [WhatIfStatus.ready]: prompt to enter a target GPA.
+/// - [WhatIfStatus.calculated]: the required average grade across N semesters.
+/// - [WhatIfStatus.alreadyAchieved]: success message.
+/// - [WhatIfStatus.impossible]: explanation with the required (out-of-range) point.
 class _ResultCard extends StatelessWidget {
   /// The current what-if state.
   final WhatIfState state;
@@ -617,43 +521,75 @@ class _ResultCard extends StatelessWidget {
     );
   }
 
-  /// Builds the card body based on the current status.
+  /// Builds the card body based on the current calculation status.
   Widget _buildContent() {
-    if (state.status == WhatIfStatus.calculated && state.result != null) {
-      return _AchievableResult(result: state.result!);
-    }
+    switch (state.status) {
+      case WhatIfStatus.calculated:
+        if (state.result != null) {
+          return _AchievableResult(
+            result: state.result!,
+            remainingSemesters: state.remainingSemesters,
+            totalRemainingCredits: state.totalRemainingCredits,
+          );
+        }
+        return const _ResultPrompt();
 
-    if (state.status == WhatIfStatus.impossible) {
-      return _ImpossibleResult(
-        currentCgpa: state.currentCgpa,
-        gpaType: state.gpaType,
-      );
-    }
+      case WhatIfStatus.alreadyAchieved:
+        return const _AlreadyAchievedResult();
 
-    return _ResultPlaceholder();
+      case WhatIfStatus.impossible:
+        return _ImpossibleResult(
+          result: state.result,
+          gpaType: state.gpaType,
+        );
+
+      default:
+        return const _ResultPrompt();
+    }
   }
 }
 
-/// The result content shown when the target is achievable.
+/// The result content shown when the target is achievable within the plan.
 class _AchievableResult extends StatelessWidget {
   /// The calculated what-if result.
   final WhatIfResult result;
 
+  /// The number of remaining semesters for context display.
+  final int remainingSemesters;
+
+  /// The total remaining credits for context display.
+  final double totalRemainingCredits;
+
   /// Creates an [_AchievableResult].
-  const _AchievableResult({required this.result});
+  const _AchievableResult({
+    required this.result,
+    required this.remainingSemesters,
+    required this.totalRemainingCredits,
+  });
+
+  /// Formats [totalRemainingCredits] as an integer string when whole, otherwise
+  /// as a one-decimal string.
+  String _formatCredits(double v) {
+    return v == v.truncateToDouble()
+        ? v.toInt().toString()
+        : v.toStringAsFixed(1);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final String semesterLabel =
+        remainingSemesters == 1 ? 'semester' : 'semesters';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'You need an average grade of:',
+          'You need an average of',
           style: AppTypography.bodyMedium.copyWith(
             color: AppColors.textSecondary,
           ),
         ),
-        const SizedBox(height: AppSpacing.space12),
+        const SizedBox(height: AppSpacing.space8),
         Row(
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
@@ -676,9 +612,16 @@ class _AchievableResult extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.space8),
         Text(
-          'This is the minimum average you need across all courses in your next semester.',
+          'across $remainingSemesters $semesterLabel',
           style: AppTypography.bodyMedium.copyWith(
             color: AppColors.textSecondary,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.space4),
+        Text(
+          'with ${_formatCredits(totalRemainingCredits)} total credits',
+          style: AppTypography.labelMedium.copyWith(
+            color: AppColors.textPlaceholder,
           ),
         ),
       ],
@@ -686,38 +629,72 @@ class _AchievableResult extends StatelessWidget {
   }
 }
 
-/// The result content shown when the target cannot be achieved.
+/// The result content shown when the target CGPA is already achieved.
+class _AlreadyAchievedResult extends StatelessWidget {
+  /// Creates an [_AlreadyAchievedResult].
+  const _AlreadyAchievedResult();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Icon(
+          LucideIcons.checkCircle2,
+          size: 20,
+          color: AppColors.success,
+        ),
+        const SizedBox(width: AppSpacing.space12),
+        Expanded(
+          child: Text(
+            "You've already achieved this!",
+            style: AppTypography.titleMedium.copyWith(
+              color: AppColors.success,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// The result content shown when the target cannot be achieved with the given
+/// remaining credits.
 class _ImpossibleResult extends StatelessWidget {
-  /// The user's current CGPA.
-  final double currentCgpa;
+  /// The calculation result containing the out-of-range required grade point.
+  final WhatIfResult? result;
 
   /// The GPA scale type.
   final int gpaType;
 
   /// Creates an [_ImpossibleResult].
   const _ImpossibleResult({
-    required this.currentCgpa,
+    required this.result,
     required this.gpaType,
   });
 
   @override
   Widget build(BuildContext context) {
     final String maxGpa = gpaType == 1 ? '4.2' : '4.0';
+    final String requiredStr = result != null
+        ? result!.requiredGradePoint.toStringAsFixed(2)
+        : '—';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Icon(
-              LucideIcons.xCircle,
+              LucideIcons.alertTriangle,
               size: 20,
               color: AppColors.error,
             ),
             const SizedBox(width: AppSpacing.space8),
             Expanded(
               child: Text(
-                'Target is not achievable in one semester',
+                'Target not achievable',
                 style: AppTypography.titleMedium.copyWith(
                   color: AppColors.error,
                 ),
@@ -727,9 +704,9 @@ class _ImpossibleResult extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.space8),
         Text(
-          'Even with straight A+ grades (${maxGpa} pts per course), '
-          'you cannot reach that target in a single semester. '
-          'Try a lower target or add more semesters.',
+          'The required grade point ($requiredStr) exceeds the maximum '
+          '($maxGpa). Consider spreading your goal over more semesters '
+          'or adjusting your target.',
           style: AppTypography.bodyMedium.copyWith(
             color: AppColors.textSecondary,
           ),
@@ -739,17 +716,17 @@ class _ImpossibleResult extends StatelessWidget {
   }
 }
 
-/// A placeholder shown before any calculation has been performed.
-class _ResultPlaceholder extends StatelessWidget {
-  /// Creates a [_ResultPlaceholder].
-  _ResultPlaceholder();
+/// A placeholder shown before any target has been entered.
+class _ResultPrompt extends StatelessWidget {
+  /// Creates a [_ResultPrompt].
+  const _ResultPrompt();
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         const Icon(
-          LucideIcons.calculator,
+          LucideIcons.clipboard,
           size: 20,
           color: AppColors.textPlaceholder,
         ),

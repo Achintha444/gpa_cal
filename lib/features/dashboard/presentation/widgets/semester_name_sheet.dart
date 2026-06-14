@@ -122,16 +122,6 @@ class _SemesterNameSheetState extends State<SemesterNameSheet> {
         ],
         decoration: InputDecoration(
           hintText: 'Semester name',
-          hintStyle: AppTypography.bodyMedium.copyWith(
-            color: AppColors.textPlaceholder,
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.space16,
-            vertical: 0,
-          ),
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
         ),
         onChanged: (_) => setState(() {}),
         onSubmitted: (_) => _onCreate(context),

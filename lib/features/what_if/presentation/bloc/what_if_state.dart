@@ -14,7 +14,10 @@ enum WhatIfStatus {
   /// The required average has been calculated successfully.
   calculated,
 
-  /// The target is mathematically impossible within one semester.
+  /// The target CGPA has already been achieved with the current standing.
+  alreadyAchieved,
+
+  /// The target is mathematically impossible with the given remaining credits.
   impossible,
 
   /// An error occurred during data loading.
@@ -23,10 +26,10 @@ enum WhatIfStatus {
 
 /// Holds the result of a what-if calculation.
 ///
-/// Returned when the calculation succeeds — contains the required average
-/// grade string and whether the target is achievable.
+/// Returned when the calculation produces a definitive outcome — contains the
+/// required average grade point, the grade label, and whether it is achievable.
 class WhatIfResult extends Equatable {
-  /// The required average grade point value.
+  /// The required average grade point value to achieve the target CGPA.
   final double requiredGradePoint;
 
   /// The nearest grade string matching [requiredGradePoint] on the chosen scale.
@@ -34,7 +37,7 @@ class WhatIfResult extends Equatable {
   /// Empty when [isAchievable] is `false`.
   final String requiredGradeLabel;
 
-  /// Whether the target is achievable within one semester at the given inputs.
+  /// Whether the target CGPA is achievable with the given remaining credits.
   final bool isAchievable;
 
   /// Creates a [WhatIfResult].
@@ -45,13 +48,18 @@ class WhatIfResult extends Equatable {
   });
 
   @override
-  List<Object?> get props => [requiredGradePoint, requiredGradeLabel, isAchievable];
+  List<Object?> get props => [
+        requiredGradePoint,
+        requiredGradeLabel,
+        isAchievable,
+      ];
 }
 
 /// The state for [WhatIfBloc].
 ///
-/// Holds the user's current academic standing, the what-if inputs, and
-/// the computed [WhatIfResult]. All mutable fields are replaced via [copyWith].
+/// Holds the user's current academic standing, the what-if planning inputs,
+/// and the computed [WhatIfResult]. All mutable fields are replaced via
+/// [copyWith].
 class WhatIfState extends Equatable {
   /// The current calculation status.
   final WhatIfStatus status;
@@ -71,11 +79,16 @@ class WhatIfState extends Equatable {
   /// The target CGPA the user wants to achieve.
   final double targetCgpa;
 
-  /// The number of courses in the hypothetical next semester (1–8).
-  final int numCourses;
+  /// The number of remaining semesters (1–20).
+  ///
+  /// Informational context displayed in the result card. Does not affect
+  /// the calculation math.
+  final int remainingSemesters;
 
-  /// The credits per course in the hypothetical next semester (0.5–10).
-  final double creditsPerCourse;
+  /// The total credit hours across all remaining semesters (1–200).
+  ///
+  /// This is the credit value directly used in the calculation formula.
+  final double totalRemainingCredits;
 
   /// The result of the last calculation. Null when not yet calculated.
   final WhatIfResult? result;
@@ -83,7 +96,7 @@ class WhatIfState extends Equatable {
   /// The error message to display. Empty string when no error.
   final String errorMessage;
 
-  /// Creates a [WhatIfState].
+  /// Creates a [WhatIfState] with default values for all optional fields.
   const WhatIfState({
     this.status = WhatIfStatus.initial,
     this.currentCgpa = 0.0,
@@ -91,14 +104,11 @@ class WhatIfState extends Equatable {
     this.currentTotalCredit = 0.0,
     this.gpaType = 0,
     this.targetCgpa = 0.0,
-    this.numCourses = 4,
-    this.creditsPerCourse = 3.0,
+    this.remainingSemesters = 1,
+    this.totalRemainingCredits = 12.0,
     this.result,
     this.errorMessage = '',
   });
-
-  /// The total credits for the hypothetical next semester.
-  double get newCredits => numCourses * creditsPerCourse;
 
   @override
   List<Object?> get props => [
@@ -108,13 +118,16 @@ class WhatIfState extends Equatable {
         currentTotalCredit,
         gpaType,
         targetCgpa,
-        numCourses,
-        creditsPerCourse,
+        remainingSemesters,
+        totalRemainingCredits,
         result,
         errorMessage,
       ];
 
   /// Creates a copy of this state with the given fields replaced.
+  ///
+  /// Pass [clearResult] as `true` to set [result] to `null` regardless of
+  /// whether a new [result] value is provided.
   WhatIfState copyWith({
     WhatIfStatus? status,
     double? currentCgpa,
@@ -122,8 +135,8 @@ class WhatIfState extends Equatable {
     double? currentTotalCredit,
     int? gpaType,
     double? targetCgpa,
-    int? numCourses,
-    double? creditsPerCourse,
+    int? remainingSemesters,
+    double? totalRemainingCredits,
     WhatIfResult? result,
     bool clearResult = false,
     String? errorMessage,
@@ -135,8 +148,9 @@ class WhatIfState extends Equatable {
       currentTotalCredit: currentTotalCredit ?? this.currentTotalCredit,
       gpaType: gpaType ?? this.gpaType,
       targetCgpa: targetCgpa ?? this.targetCgpa,
-      numCourses: numCourses ?? this.numCourses,
-      creditsPerCourse: creditsPerCourse ?? this.creditsPerCourse,
+      remainingSemesters: remainingSemesters ?? this.remainingSemesters,
+      totalRemainingCredits:
+          totalRemainingCredits ?? this.totalRemainingCredits,
       result: clearResult ? null : (result ?? this.result),
       errorMessage: errorMessage ?? this.errorMessage,
     );

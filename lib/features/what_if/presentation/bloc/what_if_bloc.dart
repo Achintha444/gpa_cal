@@ -10,19 +10,20 @@ import 'package:gpa_cal/features/what_if/presentation/bloc/what_if_state.dart';
 
 /// Manages the state of the What-If Calculator screen.
 ///
-/// On [WhatIfInitialized], loads the user's current CGPA and GPA scale from
-/// the repositories. On any input change ([TargetCgpaChanged],
-/// [NumCoursesChanged], [CreditsPerCourseChanged]), recalculates the required
-/// average grade point and maps it to the nearest grade string on the chosen
-/// scale.
+/// On [WhatIfInitialized], loads the user's current CGPA, cumulative totals,
+/// and GPA scale from the repositories. On any input change
+/// ([TargetCgpaChanged], [RemainingSemestersChanged],
+/// [TotalRemainingCreditsChanged]), recalculates the required average grade
+/// point and maps it to the nearest grade string on the chosen scale.
 ///
 /// Calculation formula:
 /// ```
-/// requiredGradePoint = (targetCgpa × (currentTotalCredit + newCredits)
-///                       − currentTotalResult) / newCredits
+/// requiredGradePoint = (targetCgpa × (currentTotalCredit + totalRemainingCredits)
+///                       − currentTotalResult) / totalRemainingCredits
 /// ```
-/// If [requiredGradePoint] exceeds the scale maximum, the status becomes
-/// [WhatIfStatus.impossible].
+///
+/// [remainingSemesters] is informational context only — it does not influence
+/// the calculation math.
 class WhatIfBloc extends Bloc<WhatIfEvent, WhatIfState> {
   /// Logger for this BLoC.
   static final Log _log = Log('WhatIfBloc');
@@ -42,8 +43,8 @@ class WhatIfBloc extends Bloc<WhatIfEvent, WhatIfState> {
         super(const WhatIfState()) {
     on<WhatIfInitialized>(_onWhatIfInitialized);
     on<TargetCgpaChanged>(_onTargetCgpaChanged);
-    on<NumCoursesChanged>(_onNumCoursesChanged);
-    on<CreditsPerCourseChanged>(_onCreditsPerCourseChanged);
+    on<RemainingSemestersChanged>(_onRemainingSemestersChanged);
+    on<TotalRemainingCreditsChanged>(_onTotalRemainingCreditsChanged);
   }
 
   /// Handles [WhatIfInitialized] — loads the user's current academic data.
@@ -85,87 +86,126 @@ class WhatIfBloc extends Bloc<WhatIfEvent, WhatIfState> {
     }
   }
 
-  /// Handles [TargetCgpaChanged] — updates target and recalculates.
+  /// Handles [TargetCgpaChanged] — parses, validates, then recalculates.
+  ///
+  /// Ignores empty or unparseable strings. Values outside 0.00–maxScale are
+  /// discarded silently so in-progress typing (e.g. "4.") does not break UI.
   Future<void> _onTargetCgpaChanged(
     TargetCgpaChanged event,
     Emitter<WhatIfState> emit,
   ) async {
-    final WhatIfState next = state.copyWith(targetCgpa: event.targetCgpa);
+    if (event.value.isEmpty) {
+      emit(state.copyWith(
+        targetCgpa: 0.0,
+        status: WhatIfStatus.ready,
+        clearResult: true,
+      ));
+      return;
+    }
+
+    final double? parsed = double.tryParse(event.value);
+    if (parsed == null) return;
+
+    final double maxGpa = state.gpaType == 1 ? 4.2 : 4.0;
+    if (parsed < 0.0 || parsed > maxGpa) return;
+
+    final WhatIfState next = state.copyWith(targetCgpa: parsed);
     emit(_calculate(next));
   }
 
-  /// Handles [NumCoursesChanged] — updates course count and recalculates.
-  Future<void> _onNumCoursesChanged(
-    NumCoursesChanged event,
+  /// Handles [RemainingSemestersChanged] — parses, validates range (1–20),
+  /// updates state, and recalculates.
+  ///
+  /// Out-of-range or unparseable values are ignored silently.
+  Future<void> _onRemainingSemestersChanged(
+    RemainingSemestersChanged event,
     Emitter<WhatIfState> emit,
   ) async {
-    final WhatIfState next = state.copyWith(numCourses: event.numCourses);
+    if (event.value.isEmpty) return;
+
+    final int? parsed = int.tryParse(event.value);
+    if (parsed == null || parsed < 1 || parsed > 20) return;
+
+    final WhatIfState next = state.copyWith(remainingSemesters: parsed);
     emit(_calculate(next));
   }
 
-  /// Handles [CreditsPerCourseChanged] — updates credits and recalculates.
-  Future<void> _onCreditsPerCourseChanged(
-    CreditsPerCourseChanged event,
+  /// Handles [TotalRemainingCreditsChanged] — updates total remaining credits
+  /// and recalculates.
+  ///
+  /// [value] is always valid because it originates from [CreditStepper].
+  Future<void> _onTotalRemainingCreditsChanged(
+    TotalRemainingCreditsChanged event,
     Emitter<WhatIfState> emit,
   ) async {
     final WhatIfState next =
-        state.copyWith(creditsPerCourse: event.creditsPerCourse);
+        state.copyWith(totalRemainingCredits: event.value);
     emit(_calculate(next));
   }
 
-  /// Calculates the required average grade point from the current [state] and
-  /// returns an updated state with a [WhatIfResult] or [WhatIfStatus.impossible].
+  /// Calculates the required average grade point from [next] and returns an
+  /// updated state with the appropriate status and [WhatIfResult].
   ///
-  /// If the target CGPA is 0 or new credits are 0, returns [WhatIfStatus.ready]
-  /// without a result.
+  /// Returns [WhatIfStatus.ready] (no result) when no target has been entered.
+  /// Returns [WhatIfStatus.alreadyAchieved] when the target is already met.
+  /// Returns [WhatIfStatus.impossible] when the required grade exceeds the scale.
+  /// Returns [WhatIfStatus.calculated] on a valid, achievable result.
   WhatIfState _calculate(WhatIfState next) {
     final double targetCgpa = next.targetCgpa;
-    final double newCredits = next.newCredits;
+    final double totalRemainingCredits = next.totalRemainingCredits;
 
-    // No target entered yet.
-    if (targetCgpa <= 0.0 || newCredits <= 0.0) {
+    // No target entered yet — show prompt.
+    if (targetCgpa <= 0.0) {
+      return next.copyWith(status: WhatIfStatus.ready, clearResult: true);
+    }
+
+    if (totalRemainingCredits <= 0.0) {
       return next.copyWith(status: WhatIfStatus.ready, clearResult: true);
     }
 
     final double requiredTotalResult =
-        targetCgpa * (next.currentTotalCredit + newCredits);
+        targetCgpa * (next.currentTotalCredit + totalRemainingCredits);
     final double requiredNewResult =
         requiredTotalResult - next.currentTotalResult;
-    final double requiredGradePoint = requiredNewResult / newCredits;
+    final double requiredGradePoint = requiredNewResult / totalRemainingCredits;
 
     final double maxGpa = next.gpaType == 1 ? 4.2 : 4.0;
 
     _log.d(
-      '_calculate: targetCgpa=$targetCgpa, newCredits=$newCredits, '
+      '_calculate: targetCgpa=$targetCgpa, '
+      'totalRemainingCredits=$totalRemainingCredits, '
       'requiredGradePoint=$requiredGradePoint',
     );
 
+    // Target already achieved — no effort needed.
+    if (requiredGradePoint <= 0.0) {
+      return next.copyWith(
+        status: WhatIfStatus.alreadyAchieved,
+        result: const WhatIfResult(
+          requiredGradePoint: 0.0,
+          requiredGradeLabel: '',
+          isAchievable: true,
+        ),
+      );
+    }
+
+    // Required grade point exceeds the scale maximum — impossible.
     if (requiredGradePoint > maxGpa) {
       return next.copyWith(
         status: WhatIfStatus.impossible,
         result: WhatIfResult(
-          requiredGradePoint: requiredGradePoint,
+          requiredGradePoint: double.parse(
+            requiredGradePoint.toStringAsPrecision(3),
+          ),
           requiredGradeLabel: '',
           isAchievable: false,
         ),
       );
     }
 
-    if (requiredGradePoint < 0.0) {
-      // Target already met — any grade would suffice.
-      final String topGrade = next.gpaType == 1 ? 'A+' : 'A+';
-      return next.copyWith(
-        status: WhatIfStatus.calculated,
-        result: WhatIfResult(
-          requiredGradePoint: 0.0,
-          requiredGradeLabel: topGrade,
-          isAchievable: true,
-        ),
-      );
-    }
-
-    // Map to nearest grade.
+    // Map to the nearest grade on the chosen scale.
     final String gradeLabel = _nearestGrade(requiredGradePoint, next.gpaType);
+
     return next.copyWith(
       status: WhatIfStatus.calculated,
       result: WhatIfResult(
@@ -178,20 +218,23 @@ class WhatIfBloc extends Bloc<WhatIfEvent, WhatIfState> {
     );
   }
 
-  /// Returns the grade string whose point value is closest to [required] from
-  /// above (i.e., the minimum grade that meets or exceeds [required]).
+  /// Returns the grade label for the minimum grade that meets or exceeds
+  /// [required] on the given [gpaType] scale.
   ///
-  /// Falls back to the lowest grade if [required] is lower than all mapped
-  /// values.
+  /// Iterates the scale sorted by descending point value and returns the
+  /// last entry whose point is >= [required]. Falls back to the lowest grade
+  /// if no entry matches (should not happen when [required] <= maxGpa).
   String _nearestGrade(double required, int gpaType) {
     final Map<String, double> scale = GpaTables.scaleFor(gpaType);
 
-    // Build a sorted list of (grade, point) pairs by descending point value.
     final List<MapEntry<String, double>> sorted = scale.entries.toList()
-      ..sort((MapEntry<String, double> a, MapEntry<String, double> b) =>
-          b.value.compareTo(a.value));
+      ..sort(
+        (MapEntry<String, double> a, MapEntry<String, double> b) =>
+            b.value.compareTo(a.value),
+      );
 
-    // Find the lowest grade whose point value is >= required.
+    // Walk from highest to lowest; keep updating match while the entry still
+    // satisfies the requirement. The last match is the minimum qualifying grade.
     String? match;
     for (final MapEntry<String, double> entry in sorted) {
       if (entry.value >= required) {
