@@ -80,14 +80,11 @@ class _SplashContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           // App logo
-          ClipRRect(
-            borderRadius: BorderRadius.circular(32),
-            child: Image.asset(
-              'graphics/launcher_icon-2.png',
-              width: 180,
-              height: 180,
-              fit: BoxFit.cover,
-            ),
+          Image.asset(
+            'graphics/logo.png',
+            width: 180,
+            height: 180,
+            fit: BoxFit.contain,
           ),
           const SizedBox(height: AppSpacing.space20),
           // Tagline

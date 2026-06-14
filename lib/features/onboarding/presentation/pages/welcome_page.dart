@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gpa_cal/app/router.dart';
 import 'package:gpa_cal/theme/app_colors.dart';
@@ -53,15 +54,11 @@ class _WelcomeHeroContent extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Logo
-        ClipRRect(
-          borderRadius: BorderRadius.circular(28),
-          child: Image.asset(
-            'graphics/launcher_icon-2.png',
-            width: 140,
-            height: 140,
-            fit: BoxFit.cover,
-          ),
+        // Illustration
+        SvgPicture.asset(
+          'graphics/person.svg',
+          width: 200,
+          height: 200,
         ),
         const SizedBox(height: AppSpacing.space12),
         // Headline
