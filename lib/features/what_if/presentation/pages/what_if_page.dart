@@ -65,10 +65,10 @@ class _WhatIfView extends StatelessWidget {
       body: BlocBuilder<WhatIfBloc, WhatIfState>(
         builder: (BuildContext context, WhatIfState state) {
           return switch (state.status) {
-            WhatIfStatus.initial || WhatIfStatus.loading =>
+            WhatIfStatus.initial ||
+            WhatIfStatus.loading =>
               const _WhatIfLoadingView(),
-            WhatIfStatus.error =>
-              _WhatIfErrorView(message: state.errorMessage),
+            WhatIfStatus.error => _WhatIfErrorView(message: state.errorMessage),
             _ => _WhatIfCalculatorView(state: state),
           };
         },
@@ -181,9 +181,8 @@ class _WhatIfCalculatorView extends StatelessWidget {
           const SizedBox(height: AppSpacing.space12),
           _TargetCgpaInput(
             gpaType: state.gpaType,
-            initialValue: state.targetCgpa > 0
-                ? state.targetCgpa.toStringAsFixed(2)
-                : '',
+            initialValue:
+                state.targetCgpa > 0 ? state.targetCgpa.toStringAsFixed(2) : '',
           ),
           const SizedBox(height: AppSpacing.space24),
 
@@ -378,54 +377,50 @@ class _RemainingPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: AppDecorations.cardFlat,
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.cardPadding),
-        child: Column(
+    return Column(
+      children: [
+        // Row 1: Remaining semesters
+        Row(
           children: [
-            // Row 1: Remaining semesters
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Remaining Semesters',
-                    style: AppTypography.bodyMedium,
-                  ),
+            Expanded(
+              child: Text(
+                'Remaining Semesters',
+                style: AppTypography.bodyLarge.copyWith(
+                  color: AppColors.textSecondary,
                 ),
-                const SizedBox(width: AppSpacing.space12),
-                _RemainingSemestersField(
-                  initialValue: state.remainingSemesters.toString(),
-                ),
-              ],
+              ),
             ),
-            const SizedBox(height: AppSpacing.space16),
-            const Divider(height: 1, indent: 0, endIndent: 0),
-            const SizedBox(height: AppSpacing.space16),
-            // Row 2: Total remaining credits
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Total Remaining Credits',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.space12),
-                CreditStepper(
-                  value: state.totalRemainingCredits,
-                  min: 1,
-                  max: 200,
-                  step: 1,
-                  onChanged: (double value) => context
-                      .read<WhatIfBloc>()
-                      .add(TotalRemainingCreditsChanged(value)),
-                ),
-              ],
+            const SizedBox(width: AppSpacing.space12),
+            _RemainingSemestersField(
+              initialValue: state.remainingSemesters.toString(),
             ),
           ],
         ),
-      ),
+        const SizedBox(height: AppSpacing.space16),
+        // Row 2: Total remaining credits
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Total Remaining Credits',
+                style: AppTypography.bodyLarge.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.space12),
+            CreditStepper(
+              value: state.totalRemainingCredits,
+              min: 1,
+              max: 200,
+              step: 1,
+              onChanged: (double value) => context
+                  .read<WhatIfBloc>()
+                  .add(TotalRemainingCreditsChanged(value)),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -676,9 +671,8 @@ class _ImpossibleResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String maxGpa = gpaType == 1 ? '4.2' : '4.0';
-    final String requiredStr = result != null
-        ? result!.requiredGradePoint.toStringAsFixed(2)
-        : '—';
+    final String requiredStr =
+        result != null ? result!.requiredGradePoint.toStringAsFixed(2) : '—';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

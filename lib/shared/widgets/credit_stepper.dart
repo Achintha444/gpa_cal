@@ -46,67 +46,56 @@ class CreditStepper extends StatelessWidget {
   /// Formats [value] as an integer string when it has no fractional part,
   /// otherwise as a one-decimal string (e.g., "3" or "2.5").
   String _formatValue(double v) {
-    return v == v.truncateToDouble() ? v.toInt().toString() : v.toStringAsFixed(1);
+    return v == v.truncateToDouble()
+        ? v.toInt().toString()
+        : v.toStringAsFixed(1);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          'CREDITS',
-          style: AppTypography.labelSmall.copyWith(
-            color: AppColors.textPlaceholder,
-            letterSpacing: 0.04 * 10,
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.space4),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceMuted,
+        borderRadius: AppSpacing.borderRadiusMedium,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _StepperButton(
+            icon: LucideIcons.minus,
+            onTap: value > min
+                ? () => onChanged(
+                      double.parse(
+                        (value - step).clamp(min, max).toStringAsFixed(1),
+                      ),
+                    )
+                : null,
           ),
-        ),
-        const SizedBox(width: AppSpacing.space12),
-        Container(
-          padding: const EdgeInsets.all(AppSpacing.space4),
-          decoration: BoxDecoration(
-            color: AppColors.surfaceMuted,
-            borderRadius: AppSpacing.borderRadiusMedium,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _StepperButton(
-                icon: LucideIcons.minus,
-                onTap: value > min
-                    ? () => onChanged(
-                          double.parse(
-                            (value - step).clamp(min, max).toStringAsFixed(1),
-                          ),
-                        )
-                    : null,
-              ),
-              SizedBox(
-                width: 36,
-                child: Center(
-                  child: Text(
-                    _formatValue(value),
-                    style: AppTypography.headlineMedium.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+          SizedBox(
+            width: 36,
+            child: Center(
+              child: Text(
+                _formatValue(value),
+                style: AppTypography.headlineMedium.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-              _StepperButton(
-                icon: LucideIcons.plus,
-                onTap: value < max
-                    ? () => onChanged(
-                          double.parse(
-                            (value + step).clamp(min, max).toStringAsFixed(1),
-                          ),
-                        )
-                    : null,
-              ),
-            ],
+            ),
           ),
-        ),
-      ],
+          _StepperButton(
+            icon: LucideIcons.plus,
+            onTap: value < max
+                ? () => onChanged(
+                      double.parse(
+                        (value + step).clamp(min, max).toStringAsFixed(1),
+                      ),
+                    )
+                : null,
+          ),
+        ],
+      ),
     );
   }
 }
