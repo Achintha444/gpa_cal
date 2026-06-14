@@ -5,6 +5,7 @@ import 'package:gpa_cal/core/errors/failures.dart';
 import 'package:gpa_cal/core/utils/log.dart';
 import 'package:gpa_cal/features/onboarding/data/models/user_details_model.dart';
 import 'package:gpa_cal/features/onboarding/domain/repositories/user_details_repository.dart';
+import 'package:gpa_cal/features/semester/data/models/user_result_model.dart';
 
 /// Concrete implementation of [UserDetailsRepository] backed by Hive.
 ///
@@ -66,8 +67,8 @@ class UserDetailsRepositoryImpl implements UserDetailsRepository {
     try {
       await _detailsBox.clear();
       // Also clear the user result box to remove all semester data.
-      final Box<dynamic> resultBox =
-          Hive.box(CacheKeys.hiveUserResultBox);
+      final Box<UserResultModel> resultBox =
+          Hive.box<UserResultModel>(CacheKeys.hiveUserResultBox);
       await resultBox.clear();
       _log.d('clearAll: all user data cleared');
     } catch (e) {
