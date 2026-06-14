@@ -117,7 +117,7 @@ class _ErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _DetailAppBar(semesterName: '', onEdit: () {}),
+        const _DetailAppBar(semesterName: ''),
         Expanded(
           child: Center(
             child: Padding(
@@ -172,14 +172,7 @@ class _ContentView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _DetailAppBar(
-          semesterName: semester.name,
-          onEdit: () => context.pushNamed(
-            AppRoutes.editSemester,
-            pathParameters: {'hash': '${semester.hash}'},
-            extra: {'gpaType': gpaType},
-          ),
-        ),
+        _DetailAppBar(semesterName: semester.name),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
@@ -205,19 +198,13 @@ class _ContentView extends StatelessWidget {
   }
 }
 
-/// The custom app bar for the detail screen with back and edit buttons.
+/// The custom app bar for the detail screen with a back button.
 class _DetailAppBar extends StatelessWidget {
   /// The semester name shown as the centered title.
   final String semesterName;
 
-  /// Called when the edit (pencil) icon is tapped.
-  final VoidCallback onEdit;
-
   /// Creates a [_DetailAppBar].
-  const _DetailAppBar({
-    required this.semesterName,
-    required this.onEdit,
-  });
+  const _DetailAppBar({required this.semesterName});
 
   @override
   Widget build(BuildContext context) {
@@ -245,11 +232,7 @@ class _DetailAppBar extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          IconButton(
-            icon: const Icon(LucideIcons.pencil, size: 18),
-            color: AppColors.textSecondary,
-            onPressed: semesterName.isNotEmpty ? onEdit : null,
-          ),
+          const SizedBox(width: 48),
         ],
       ),
     );
@@ -508,17 +491,26 @@ class _EditButton extends StatelessWidget {
   /// Creates an [_EditButton].
   const _EditButton({required this.semester, required this.gpaType});
 
+  /// Navigates to the edit screen and reloads data on return.
+  Future<void> _navigateToEdit(BuildContext context) async {
+    await context.pushNamed(
+      AppRoutes.editSemester,
+      pathParameters: {'hash': '${semester.hash}'},
+      extra: {'gpaType': gpaType},
+    );
+    if (!context.mounted) return;
+    context
+        .read<SemesterDetailBloc>()
+        .add(SemesterDetailRequested(semester.hash));
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 52,
       child: ElevatedButton.icon(
-        onPressed: () => context.pushNamed(
-          AppRoutes.editSemester,
-          pathParameters: {'hash': '${semester.hash}'},
-          extra: {'gpaType': gpaType},
-        ),
-        icon: const Icon(LucideIcons.pencil, size: 16),
+        onPressed: () => _navigateToEdit(context),
+        icon: const Icon(LucideIcons.pencil),
         label: const Text('Edit Semester'),
         iconAlignment: IconAlignment.start,
       ),

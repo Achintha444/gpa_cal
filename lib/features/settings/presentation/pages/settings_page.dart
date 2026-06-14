@@ -693,7 +693,7 @@ class _AboutSection extends StatelessWidget {
                   child: Text('Version', style: AppTypography.bodyLarge),
                 ),
                 Text(
-                  '1.0.0',
+                  '2.0.0',
                   style: AppTypography.bodyMedium.copyWith(
                     color: AppColors.textSecondary,
                   ),

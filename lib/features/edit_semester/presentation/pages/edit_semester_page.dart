@@ -72,9 +72,13 @@ class _EditSemesterView extends StatelessWidget {
           curr.status != prev.status,
       listener: (BuildContext ctx, EditSemesterState state) {
         if (state.status == EditSemesterStatus.saved) {
-          // Refresh the home BLoC before popping so the dashboard reflects
-          // the updated semester data.
           ctx.read<HomeBloc>().add(const HomeDataRequested());
+          ScaffoldMessenger.of(ctx).showSnackBar(
+            const SnackBar(
+              content: Text('Semester saved successfully.'),
+              backgroundColor: AppColors.textPrimary,
+            ),
+          );
           Navigator.of(ctx).pop();
         } else if (state.status == EditSemesterStatus.deleted) {
           ctx.read<HomeBloc>().add(const HomeDataRequested());
