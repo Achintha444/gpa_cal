@@ -81,7 +81,7 @@ class _BottomBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 56,
+          height: 80,
           child: Row(
             children: List.generate(items.length, (int index) {
               final bool isActive = index == currentIndex;
