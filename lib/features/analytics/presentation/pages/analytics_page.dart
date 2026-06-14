@@ -591,9 +591,9 @@ class _SummaryCard extends StatelessWidget {
             children: [
               Text(
                 label.toUpperCase(),
-                style: AppTypography.labelMedium.copyWith(
-                  color: AppColors.textSecondary,
-                  letterSpacing: 0.06 * 12,
+                style: AppTypography.labelSmall.copyWith(
+                  color: AppColors.textPlaceholder,
+                  fontWeight: FontWeight.w700,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -601,14 +601,13 @@ class _SummaryCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.space4),
               Text(
                 title,
-                style: AppTypography.titleMedium,
+                style: AppTypography.titleSmall,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: AppSpacing.space8),
               Text(
                 value,
-                style: AppTypography.headlineMedium.copyWith(
+                style: AppTypography.headlineSmall.copyWith(
                   color: valueColor,
                 ),
               ),
@@ -711,49 +710,39 @@ class _SemesterBreakdownRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(
-          height: 48,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.screenPadding,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    semester.name,
-                    style: AppTypography.bodyLarge.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.space12),
-                Text(
-                  '${semester.totalCredit.toInt()} cr',
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.space16),
-                SizedBox(
-                  width: 48,
-                  child: Text(
-                    semester.sgpa.toStringAsFixed(2),
-                    style: AppTypography.titleMedium.copyWith(
-                      color: AppColors.gpa,
-                    ),
-                    textAlign: TextAlign.end,
-                  ),
-                ),
-              ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.screenPadding,
+        vertical: AppSpacing.space8,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              semester.name,
+              style: AppTypography.bodyLarge.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-        ),
-      ],
+          const SizedBox(width: AppSpacing.space12),
+          Text(
+            '${semester.totalCredit.toInt()} cr',
+            style: AppTypography.bodyMedium.copyWith(
+              color: AppColors.textPlaceholder,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.space12),
+          Text(
+            semester.sgpa.toStringAsFixed(2),
+            style: AppTypography.titleSmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.end,
+          ),
+        ],
+      ),
     );
   }
 }

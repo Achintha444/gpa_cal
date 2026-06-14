@@ -52,6 +52,15 @@ abstract final class AppTypography {
         color: AppColors.textPrimary,
       );
 
+  /// 18 / 24px — Inter Tight SemiBold — for card titles and sub-section headers.
+  static TextStyle get headlineSmall => GoogleFonts.interTight(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        height: 24 / 18,
+        letterSpacing: -0.01 * 18,
+        color: AppColors.textPrimary,
+      );
+
   // ---------------------------------------------------------------------------
   // Titles
   // ---------------------------------------------------------------------------
@@ -70,6 +79,15 @@ abstract final class AppTypography {
         fontSize: 16,
         fontWeight: FontWeight.w600,
         height: 22 / 16,
+        letterSpacing: 0,
+        color: AppColors.textPrimary,
+      );
+
+  /// 14 / 20px — Inter Tight SemiBold — for field labels and list item subtitles.
+  static TextStyle get titleSmall => GoogleFonts.interTight(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        height: 20 / 14,
         letterSpacing: 0,
         color: AppColors.textPrimary,
       );
